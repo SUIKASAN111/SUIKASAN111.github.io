@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/">
+  <title>Markdown学习笔记</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="Markdown学习笔记">
+    
+    
+      <meta 
+        property="og:url" 
+        content="http://example.com/2022/11/19/Learn-markdown/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/images/theme/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-11-19">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-12-03">
+      <meta 
+        property="og:article:author" 
+        content="suikasan">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="Blog">
+        
+          <meta 
+            property="og:article:tag" 
+            content="Markdown">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/images/theme/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">suikasan</p>
+<p class="author-description">Sic Parvis Magna</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>4</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>2</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>6</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E9%A2%98"><span class="toc-text">标题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-text">语法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AE%B5%E8%90%BD"><span class="toc-text">段落</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F"><span class="toc-text">注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%A2%E8%A1%8C"><span class="toc-text">换行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E4%BD%93%E6%A0%B7%E5%BC%8F"><span class="toc-text">字体样式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%97%E4%BD%93"><span class="toc-text">粗体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%9C%E4%BD%93"><span class="toc-text">斜体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%97%E6%96%9C%E4%BD%93"><span class="toc-text">粗斜体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E7%BA%BF"><span class="toc-text">删除线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%97%E8%A1%A8"><span class="toc-text">列表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="toc-text">有序列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="toc-text">无序列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E8%A1%A8%E5%B5%8C%E5%A5%97"><span class="toc-text">列表嵌套</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%88%97%E8%A1%A8"><span class="toc-text">任务列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8"><span class="toc-text">引用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%A4%9A%E4%B8%AA%E6%AE%B5%E8%90%BD"><span class="toc-text">引用多个段落</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%B5%8C%E5%A5%97"><span class="toc-text">引用嵌套</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%85%B6%E4%BB%96%E5%85%83%E7%B4%A0"><span class="toc-text">引用其他元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="toc-text">代码块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%8C%E5%86%85%E4%BB%A3%E7%A0%81"><span class="toc-text">行内代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%B4%E6%A0%8F%E5%BC%8F%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="toc-text">围栏式代码块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E6%A0%BC"><span class="toc-text">表格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%A1%A8%E6%A0%BC"><span class="toc-text">使用表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%A1%A8%E6%A0%BC%E5%AF%B9%E9%BD%90%E6%96%B9%E5%BC%8F"><span class="toc-text">设置表格对齐方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E8%A1%A8%E6%A0%BC%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96%E5%85%83%E7%B4%A0"><span class="toc-text">在表格中使用其他元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84A-%E5%B8%B8%E7%94%A8%E7%AC%A6%E5%8F%B7%E8%A1%A5%E5%85%85%EF%BC%88%E5%B5%8C%E5%85%A5HTML%EF%BC%89"><span class="toc-text">附A.常用符号补充（嵌入HTML）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%AC%A6%E5%8F%B7"><span class="toc-text">常用符号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E6%A0%BC"><span class="toc-text">空格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E7%AC%A6%E5%8F%B7"><span class="toc-text">特殊符号</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/Blog/" 
+        title="Blog">
+        <div class="tags-list-item">Blog</div>
+      </a>
+    
+      <a 
+        href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" 
+        title="踩坑记录">
+        <div class="tags-list-item">踩坑记录</div>
+      </a>
+    
+      <a 
+        href="/tags/test/" 
+        title="test">
+        <div class="tags-list-item">test</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E7%90%86%E8%A7%A3/" 
+        title="底层原理理解">
+        <div class="tags-list-item">底层原理理解</div>
+      </a>
+    
+      <a 
+        href="/tags/C/" 
+        title="C++">
+        <div class="tags-list-item">C++</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      Markdown学习笔记
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-11-19T09:00:34.491Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-11-19</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/Tools/" 
+          class="post-meta-link">
+          Tools
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.2k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/Blog/" 
+            class="post-meta-link">
+            Blog
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/Markdown/" 
+            class="post-meta-link">
+            Markdown
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <p>本文主要是我学习使用Markdown写博客文章的学习笔记，用于个人后续复习查阅。<br>Markdown语法学习主要参考b站up主<a target="_blank" rel="noopener" href="https://space.bilibili.com/44231880">我是何方</a>的<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1hG4y1H7iZ/?spm_id_from=333.999.0.0&vd_source=35f8e710e512926b9ee52be47f147a7a">Markdown教程</a>。<br>由于hexo中使用的是Markdown的扩展语法GFM（Github Flavored Markdown），与标准Markdown稍有不同，因此本文在上述教程讲义的基础上进行了必要的增删改。</p>
+<h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>Markdown标题分为六级</p>
+<pre class="line-numbers language-none"><code class="language-none"># 标题1
+## 标题2
+### 标题3
+#### 标题4
+##### 标题5
+###### 标题6<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>为了防止右侧索引变乱，这里就不放效果了。</p>
+<p><em>注：其中标题1不知道是hexo的问题还是主题的问题，暂时不知道原因，以后知道了再改。hexo自动生成的hello-world倒是也没有用一级标题，所以就先不用了吧</em></p>
+<h2 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h2><p>在Markdown中直接顶行写文本就会生成段落，各个段落之间以空行分隔。</p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>Markdown里的段落前不能有过多空白字符，不然该行文本会被生成代码块。</p>
+<h2 id="换行"><a href="#换行" class="headerlink" title="换行"></a>换行</h2><p>上一句 + 3个以上空格 + Enter + 下一句</p>
+<h2 id="字体样式"><a href="#字体样式" class="headerlink" title="字体样式"></a>字体样式</h2><h3 id="粗体"><a href="#粗体" class="headerlink" title="粗体"></a>粗体</h3><table>
+<thead>
+<tr>
+<th align="left">Markdown</th>
+<th align="center">HTML</th>
+<th align="right">预览</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>**粗体**</code></td>
+<td align="center"><code>&lt;strong&gt;粗体&lt;/strong&gt;</code></td>
+<td align="right"><strong>粗体</strong></td>
+</tr>
+<tr>
+<td align="left"><code>__粗体__</code></td>
+<td align="center"><code>&lt;strong&gt;粗体&lt;/strong&gt;</code></td>
+<td align="right"><strong>粗体</strong></td>
+</tr>
+</tbody></table>
+<h3 id="斜体"><a href="#斜体" class="headerlink" title="斜体"></a>斜体</h3><table>
+<thead>
+<tr>
+<th align="left">Markdown</th>
+<th align="center">HTML</th>
+<th align="right">预览</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>*斜体*</code></td>
+<td align="center"><code>&lt;em&gt;斜体&lt;/em&gt;</code></td>
+<td align="right"><em>斜体</em></td>
+</tr>
+<tr>
+<td align="left"><code>_斜体_</code></td>
+<td align="center"><code>&lt;em&gt;斜体&lt;/em&gt;</code></td>
+<td align="right"><em>斜体</em></td>
+</tr>
+</tbody></table>
+<h3 id="粗斜体"><a href="#粗斜体" class="headerlink" title="粗斜体"></a>粗斜体</h3><table>
+<thead>
+<tr>
+<th align="left">Markdown</th>
+<th align="center">HTML</th>
+<th align="right">预览</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>***粗斜体***</code></td>
+<td align="center"><code>&lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt;</code></td>
+<td align="right"><em><strong>粗斜体</strong></em></td>
+</tr>
+<tr>
+<td align="left"><code>___粗斜体___</code></td>
+<td align="center"><code>&lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt;</code></td>
+<td align="right"><em><strong>粗斜体</strong></em></td>
+</tr>
+<tr>
+<td align="left"><code>_**粗斜体**_</code></td>
+<td align="center"><code>&lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt;</code></td>
+<td align="right"><strong><em>粗斜体</em></strong></td>
+</tr>
+<tr>
+<td align="left"><code>**_粗斜体_**</code></td>
+<td align="center"><code>&lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt;</code></td>
+<td align="right"><strong><em>粗斜体</em></strong></td>
+</tr>
+<tr>
+<td align="left"><code>__*粗斜体*__</code></td>
+<td align="center"><code>&lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt;</code></td>
+<td align="right"><strong><em>粗斜体</em></strong></td>
+</tr>
+<tr>
+<td align="left"><code>_**粗斜体**_</code></td>
+<td align="center"><code>&lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt;</code></td>
+<td align="right"><strong><em>粗斜体</em></strong></td>
+</tr>
+<tr>
+<td align="left"><code>**_粗斜体_**</code></td>
+<td align="center"><code>&lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt;</code></td>
+<td align="right"><strong><em>粗斜体</em></strong></td>
+</tr>
+<tr>
+<td align="left"><code>*__粗斜体__*</code></td>
+<td align="center"><code>&lt;strong&gt;&lt;em&gt;粗斜体&lt;/em&gt;&lt;/strong&gt;</code></td>
+<td align="right"><em><strong>粗斜体</strong></em></td>
+</tr>
+</tbody></table>
+<h3 id="删除线"><a href="#删除线" class="headerlink" title="删除线"></a>删除线</h3><table>
+<thead>
+<tr>
+<th align="left">Markdown</th>
+<th align="center">HTML</th>
+<th align="right">预览</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>~~带删除线的文本~~</code></td>
+<td align="center"><code>&lt;s&gt;带删除线的文本&lt;/s&gt;</code></td>
+<td align="right"><del>带删除线的文本</del></td>
+</tr>
+</tbody></table>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h3><p>在文本前面添加数字加点加空格可以构成有序列表。最终生成的列表前面的序号和前面的数字没有绝对关系，总是从第一个数字开始依次增加。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Markdown</th>
+<th align="center">HTML</th>
+<th align="right">预览</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>1. 有序列表项 1</code><br/><code>2. 有序列表项 2</code></td>
+<td align="center"><code>&lt;ol&gt;</code><br/><code>&lt;li&gt;有序列表项 1&lt;/li&gt;</code><br/><code>&lt;li&gt;有序列表项 2&lt;/li&gt;</code><br/><code>&lt;/ol&gt;</code></td>
+<td align="right"><ol><li>有序列表项 1</li><li>有序列表项 2</li></ol></td>
+</tr>
+<tr>
+<td align="left"><code>1. 有序列表项 1</code><br/><code>1. 有序列表项 2</code></td>
+<td align="center"><code>&lt;ol&gt;</code><br/><code>&lt;li&gt;有序列表项 1&lt;/li&gt;</code><br/><code>&lt;li&gt;有序列表项 2&lt;/li&gt;</code><br/><code>&lt;/ol&gt;</code></td>
+<td align="right"><ol><li>有序列表项 1</li><li>有序列表项 2</li></ol></td>
+</tr>
+<tr>
+<td align="left"><code>5. 有序列表项 1</code><br/><code>6. 有序列表项 2</code></td>
+<td align="center"><code>&lt;ol start=&quot;5&quot;&gt;</code><br/><code>&lt;li&gt;有序列表项 1&lt;/li&gt;</code><br/><code>&lt;li&gt;有序列表项 2&lt;/li&gt;</code><br/><code>&lt;/ol&gt;</code></td>
+<td align="right"><ol start="5"><li>有序列表项 1</li><li>有序列表项 2</li></ol></td>
+</tr>
+</tbody></table>
+<h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><p>无序列表可以在文本前面加上减号<code>-</code>、星号<code>*</code>、加号<code>+</code>实现。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Markdown</th>
+<th align="center">HTML</th>
+<th align="right">预览</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>- 无序列表项 1</code><br/><code>- 无序列表项 2</code></td>
+<td align="center"><code>&lt;ul&gt;</code><br/><code>&lt;li&gt;无序列表项 1&lt;/li&gt;</code><br/><code>&lt;li&gt;无序列表项 2&lt;/li&gt;</code><br/><code>&lt;ul&gt;</code></td>
+<td align="right">• 无序列表项 1<br/>• 无序列表项 2</td>
+</tr>
+<tr>
+<td align="left"><code>* 无序列表项 1</code><br/><code>* 无序列表项 2</code></td>
+<td align="center"><code>&lt;ul&gt;</code><br/><code>&lt;li&gt;无序列表项 1&lt;/li&gt;</code><br/><code>&lt;li&gt;无序列表项 2&lt;/li&gt;</code><br/><code>&lt;ul&gt;</code></td>
+<td align="right">• 无序列表项 1<br/>• 无序列表项 2</td>
+</tr>
+<tr>
+<td align="left"><code>+ 无序列表项 1</code><br/><code>+ 无序列表项 2</code></td>
+<td align="center"><code>&lt;ul&gt;</code><br/><code>&lt;li&gt;无序列表项 1&lt;/li&gt;</code><br/><code>&lt;li&gt;无序列表项 2&lt;/li&gt;</code><br/><code>&lt;ul&gt;</code></td>
+<td align="right">• 无序列表项 1<br/>• 无序列表项 2</td>
+</tr>
+</tbody></table>
+<h3 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h3><p>有序列表、无序列表都可以嵌套。在列表项前面添加两个以上空格或制表符可以把该行变成子列表</p>
+<table>
+<thead>
+<tr>
+<th align="left">Markdown</th>
+<th align="center">HTML</th>
+<th align="right">预览</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>1. 有序列表项 1</code><br/><code>1. 有序列表项 2</code></td>
+<td align="center"><code>&lt;ol&gt;</code><br/><code>&lt;li&gt;</code><br/><code>有序列表项 1</code><br/><code>&lt;ul&gt;</code><br/><code>&lt;li&gt;</code><br/><code>有序列表项 2</code><br/><code>&lt;li&gt;</code><br/><code>&lt;ul&gt;</code><br/><code>&lt;li&gt;</code><br/><code>&lt;ol&gt;</code></td>
+<td align="right">1. 有序列表项 1<br/>1. 有序列表项 2</td>
+</tr>
+<tr>
+<td align="left"><code>- 有序列表项 1</code><br/><code>- 有序列表项 2</code></td>
+<td align="center"><code>&lt;ul&gt;</code><br/><code>&lt;li&gt;</code><br/><code>无序列表项 1</code><br/><code>&lt;ul&gt;</code><br/><code>&lt;li&gt;</code><br/><code>无序列表项 2</code><br/><code>&lt;li&gt;</code><br/><code>&lt;ul&gt;</code><br/><code>&lt;li&gt;</code><br/><code>&lt;ul&gt;</code></td>
+<td align="right">• 无序列表项 1<br/>○ 无序列表项 2</td>
+</tr>
+</tbody></table>
+<h3 id="任务列表"><a href="#任务列表" class="headerlink" title="任务列表"></a>任务列表</h3><p>有序列表和无序列表都可以做为任务列表使用，任务列表会在每项前面添加一个复选框<br>下面的Markdown代码</p>
+<pre class="line-numbers language-none"><code class="language-none">**有序任务列表**
+1. [x] 已选中的项目
+2. [ ] 未选中的项目
+
+**无序任务列表**
+- [x] 已选中的项目
+- [ ] 未选中的项目<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>会生成下面的效果</p>
+<p><strong>有序任务列表</strong></p>
+<ol>
+<li><input checked="" disabled="" type="checkbox"> 已选中的项目</li>
+<li><input disabled="" type="checkbox"> 未选中的项目</li>
+</ol>
+<p><strong>无序任务列表</strong></p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> 已选中的项目</li>
+<li><input disabled="" type="checkbox"> 未选中的项目</li>
+</ul>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><h3 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h3><p>Markdown可以使用大于号<code>&gt;</code>和空格生成引用<code>&lt;blockquote&gt;...&lt;/blockquote&gt;</code><br>下面的代码</p>
+<pre class="line-numbers language-none"><code class="language-none">&gt; 这是一个引用段落<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>会生成下面效果</p>
+<blockquote>
+<p>这是一个引用段落</p>
+</blockquote>
+<h3 id="引用多个段落"><a href="#引用多个段落" class="headerlink" title="引用多个段落"></a>引用多个段落</h3><p>引用可以包含多个段落，引用内段落和普通段落一样，不过在空行前面也要加上小于号。<br>下面的代码</p>
+<pre class="line-numbers language-none"><code class="language-none">&gt; 这是一个引用段落
+&gt;
+&gt; 这是另一个引用段落<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>会生成下面效果</p>
+<blockquote>
+<p>这是一个引用段落</p>
+<p>这是另一个引用段落</p>
+</blockquote>
+<h3 id="引用嵌套"><a href="#引用嵌套" class="headerlink" title="引用嵌套"></a>引用嵌套</h3><p>在一个引用块里面还可以再引用其他段落。在段落的前面加多个小于号。<br>下面的代码</p>
+<pre class="line-numbers language-none"><code class="language-none">&gt; 这是一个引用段落
+&gt;
+&gt;&gt; 这是另一个引用段落<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>会生成下面效果</p>
+<blockquote>
+<p>这是一个引用段落</p>
+<blockquote>
+<p>这是另一个引用段落</p>
+</blockquote>
+</blockquote>
+<h3 id="引用其他元素"><a href="#引用其他元素" class="headerlink" title="引用其他元素"></a>引用其他元素</h3><p>引用不只可以有段落，还可以存在列表、粗斜体等。<br>下面的代码</p>
+<pre class="line-numbers language-none"><code class="language-none">&gt; 这是一个*引用* **段落**
+&gt; 
+&gt; 1. 有序列表项 1
+&gt; 1. 有序列表项 2
+&gt; 1. 有序列表项 3
+&gt;
+&gt; - 无序列表项 1
+&gt; - 无序列表项 2
+&gt; - 无序列表项 3<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>会生成下面效果</p>
+<blockquote>
+<p>这是一个<em>引用</em> <strong>段落</strong></p>
+<ol>
+<li>有序列表项 1</li>
+<li>有序列表项 2</li>
+<li>有序列表项 3</li>
+</ol>
+<ul>
+<li>无序列表项 1</li>
+<li>无序列表项 2</li>
+<li>无序列表项 3</li>
+</ul>
+</blockquote>
+<h2 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h2><h3 id="行内代码"><a href="#行内代码" class="headerlink" title="行内代码"></a>行内代码</h3><p>使用一对反引号<code>`</code>(<code>~</code>号同键位)来创建。如果在行内代码中需要包含反引号本身，可以使用两个反引号对加前后空格来创建（本句就是）。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Markdown</th>
+<th align="center">HTML</th>
+<th align="right">预览</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>这是行内`代码`</code></td>
+<td align="center"><code>&lt;p&gt;这是行内&lt;code&gt;代码&lt;/code&gt;&lt;/p&gt;</code></td>
+<td align="right">这是行内<code>代码</code></td>
+</tr>
+</tbody></table>
+<h3 id="围栏式代码块"><a href="#围栏式代码块" class="headerlink" title="围栏式代码块"></a>围栏式代码块</h3><p>将一段文本上下用三个反引号<code>```</code>包围，这些文本就会变成代码块。<br><em><code>Prism.js</code>插件支持代码高亮，只需文本上方的<code>```</code>后加上编程语言对应的代码，如<code>```cpp</code>表示为该代码块中的C++代码添加高亮效果</em><br>下面的代码</p>
+<pre class="line-numbers language-none"><code class="language-none">&#96;&#96;&#96;cpp
+#include&lt;iostream&gt;
+using namespace std;
+&#96;&#96;&#96;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>会生成下面效果</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">#include&lt;iostream&gt;
+using namespace std;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+
+
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>在Markdown中可以使用表格，同时可以设置每列对齐的方式。</p>
+<h3 id="使用表格"><a href="#使用表格" class="headerlink" title="使用表格"></a>使用表格</h3><p>表格使用竖线<code>|</code>区分每一列，在表格头和表格体之间使用至少三个减号<code>-</code>来做为分隔。<br>例如，下面的代码</p>
+<pre class="line-numbers language-none"><code class="language-none">|COL_1|COL_2|COL_3
+|:---|:---:|---:|
+|ROW_1,COL_1|ROW_1,COL_2|ROW_1,COL_3|
+|ROW_2,COL_1|ROW_2,COL_2|ROW_2,COL_3|<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>会生成下面的效果</p>
+<table>
+<thead>
+<tr>
+<th align="left">COL_1</th>
+<th align="center">COL_2</th>
+<th align="right">COL_3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ROW_1,COL_1</td>
+<td align="center">ROW_1,COL_2</td>
+<td align="right">ROW_1,COL_3</td>
+</tr>
+<tr>
+<td align="left">ROW_2,COL_1</td>
+<td align="center">ROW_2,COL_2</td>
+<td align="right">ROW_2,COL_3</td>
+</tr>
+</tbody></table>
+<h3 id="设置表格对齐方式"><a href="#设置表格对齐方式" class="headerlink" title="设置表格对齐方式"></a>设置表格对齐方式</h3><p>下列代码，在第二行的每一列都添加了冒号<code>:</code>，左侧添加一个冒号表示该列左对齐，右侧添加一个冒号表示该列右对齐，左右各添加一个冒号表示该列居中对齐。</p>
+<pre class="line-numbers language-none"><code class="language-none">|COL_1|COL_2|COL_3
+|:---|:---:|---:|
+|左对齐|居中对齐|右对齐|<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>会产生下面效果</p>
+<table>
+<thead>
+<tr>
+<th align="left">COL_1</th>
+<th align="center">COL_2</th>
+<th align="right">COL_3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">左对齐</td>
+<td align="center">居中对齐</td>
+<td align="right">右对齐</td>
+</tr>
+</tbody></table>
+<h3 id="在表格中使用其他元素"><a href="#在表格中使用其他元素" class="headerlink" title="在表格中使用其他元素"></a>在表格中使用其他元素</h3><h2 id="附A-常用符号补充（嵌入HTML）"><a href="#附A-常用符号补充（嵌入HTML）" class="headerlink" title="附A.常用符号补充（嵌入HTML）"></a>附A.常用符号补充（嵌入HTML）</h2><h3 id="常用符号"><a href="#常用符号" class="headerlink" title="常用符号"></a>常用符号</h3><table>
+<thead>
+<tr>
+<th align="center">Markdown</th>
+<th align="center">预览</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>&amp;#124;</code></td>
+<td align="center">&amp;#124;</td>
+<td align="center">竖线(表格内可用)</td>
+</tr>
+</tbody></table>
+<h3 id="空格"><a href="#空格" class="headerlink" title="空格"></a>空格</h3><table>
+<thead>
+<tr>
+<th align="center">Markdown</th>
+<th align="center">预览</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>&amp;ensp;</code></td>
+<td align="center">d&amp;ensp;b</td>
+<td align="center">半角空格(En Space)</td>
+</tr>
+<tr>
+<td align="center"><code>&amp;emsp;</code></td>
+<td align="center">d&amp;emsp;b</td>
+<td align="center">全角空格(Em Space)</td>
+</tr>
+<tr>
+<td align="center"><code>&amp;nbsp;</code></td>
+<td align="center">d&amp;nbsp;b</td>
+<td align="center">不换行空格(No-Break Space)</td>
+</tr>
+<tr>
+<td align="center">&#x2F;</td>
+<td align="center">db</td>
+<td align="center">无空格</td>
+</tr>
+</tbody></table>
+<h3 id="特殊符号"><a href="#特殊符号" class="headerlink" title="特殊符号"></a>特殊符号</h3><table>
+<thead>
+<tr>
+<th align="center">Markdown</th>
+<th align="center">预览</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>&amp;#10004;</code></td>
+<td align="center">&amp;#10004;</td>
+<td align="center">对勾</td>
+</tr>
+<tr>
+<td align="center"><code>&amp;#10005;</code></td>
+<td align="center">&amp;#10005;</td>
+<td align="center">叉</td>
+</tr>
+</tbody></table>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="http://example.com/2022/11/19/Learn-markdown/">
+            http://example.com/2022/11/19/Learn-markdown/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2022/12/01/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">写博客的踩坑记录 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2022/11/12/Test/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">Test </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E9%A2%98"><span class="toc-text">标题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-text">语法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AE%B5%E8%90%BD"><span class="toc-text">段落</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F"><span class="toc-text">注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%A2%E8%A1%8C"><span class="toc-text">换行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E4%BD%93%E6%A0%B7%E5%BC%8F"><span class="toc-text">字体样式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%97%E4%BD%93"><span class="toc-text">粗体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%9C%E4%BD%93"><span class="toc-text">斜体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%97%E6%96%9C%E4%BD%93"><span class="toc-text">粗斜体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E7%BA%BF"><span class="toc-text">删除线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%97%E8%A1%A8"><span class="toc-text">列表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="toc-text">有序列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="toc-text">无序列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E8%A1%A8%E5%B5%8C%E5%A5%97"><span class="toc-text">列表嵌套</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%88%97%E8%A1%A8"><span class="toc-text">任务列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8"><span class="toc-text">引用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%A4%9A%E4%B8%AA%E6%AE%B5%E8%90%BD"><span class="toc-text">引用多个段落</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%B5%8C%E5%A5%97"><span class="toc-text">引用嵌套</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%85%B6%E4%BB%96%E5%85%83%E7%B4%A0"><span class="toc-text">引用其他元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="toc-text">代码块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%8C%E5%86%85%E4%BB%A3%E7%A0%81"><span class="toc-text">行内代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%B4%E6%A0%8F%E5%BC%8F%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="toc-text">围栏式代码块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E6%A0%BC"><span class="toc-text">表格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%A1%A8%E6%A0%BC"><span class="toc-text">使用表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%A1%A8%E6%A0%BC%E5%AF%B9%E9%BD%90%E6%96%B9%E5%BC%8F"><span class="toc-text">设置表格对齐方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E8%A1%A8%E6%A0%BC%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96%E5%85%83%E7%B4%A0"><span class="toc-text">在表格中使用其他元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84A-%E5%B8%B8%E7%94%A8%E7%AC%A6%E5%8F%B7%E8%A1%A5%E5%85%85%EF%BC%88%E5%B5%8C%E5%85%A5HTML%EF%BC%89"><span class="toc-text">附A.常用符号补充（嵌入HTML）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%AC%A6%E5%8F%B7"><span class="toc-text">常用符号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E6%A0%BC"><span class="toc-text">空格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E7%AC%A6%E5%8F%B7"><span class="toc-text">特殊符号</span></a></li></ol></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E9%A2%98"><span class="toc-text">标题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-text">语法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AE%B5%E8%90%BD"><span class="toc-text">段落</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F"><span class="toc-text">注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%A2%E8%A1%8C"><span class="toc-text">换行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E4%BD%93%E6%A0%B7%E5%BC%8F"><span class="toc-text">字体样式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%97%E4%BD%93"><span class="toc-text">粗体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%9C%E4%BD%93"><span class="toc-text">斜体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%97%E6%96%9C%E4%BD%93"><span class="toc-text">粗斜体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E7%BA%BF"><span class="toc-text">删除线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%97%E8%A1%A8"><span class="toc-text">列表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="toc-text">有序列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%BA%8F%E5%88%97%E8%A1%A8"><span class="toc-text">无序列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E8%A1%A8%E5%B5%8C%E5%A5%97"><span class="toc-text">列表嵌套</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%88%97%E8%A1%A8"><span class="toc-text">任务列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8"><span class="toc-text">引用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="toc-text">语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%A4%9A%E4%B8%AA%E6%AE%B5%E8%90%BD"><span class="toc-text">引用多个段落</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%B5%8C%E5%A5%97"><span class="toc-text">引用嵌套</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%85%B6%E4%BB%96%E5%85%83%E7%B4%A0"><span class="toc-text">引用其他元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="toc-text">代码块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%8C%E5%86%85%E4%BB%A3%E7%A0%81"><span class="toc-text">行内代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%B4%E6%A0%8F%E5%BC%8F%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="toc-text">围栏式代码块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E6%A0%BC"><span class="toc-text">表格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%A1%A8%E6%A0%BC"><span class="toc-text">使用表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%A1%A8%E6%A0%BC%E5%AF%B9%E9%BD%90%E6%96%B9%E5%BC%8F"><span class="toc-text">设置表格对齐方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E8%A1%A8%E6%A0%BC%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96%E5%85%83%E7%B4%A0"><span class="toc-text">在表格中使用其他元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84A-%E5%B8%B8%E7%94%A8%E7%AC%A6%E5%8F%B7%E8%A1%A5%E5%85%85%EF%BC%88%E5%B5%8C%E5%85%A5HTML%EF%BC%89"><span class="toc-text">附A.常用符号补充（嵌入HTML）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%AC%A6%E5%8F%B7"><span class="toc-text">常用符号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E6%A0%BC"><span class="toc-text">空格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E7%AC%A6%E5%8F%B7"><span class="toc-text">特殊符号</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-12-03</div>
+        <a href="/2022/12/03/C++%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5%E8%BF%87%E7%A8%8B%E7%9A%84%E7%90%86%E8%A7%A3/"><div class="recent-posts-item-content">C++编译链接工作流的理解</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-12-01</div>
+        <a href="/2022/12/01/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/"><div class="recent-posts-item-content">写博客的踩坑记录</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-11-19</div>
+        <a href="/2022/11/19/Learn-markdown/"><div class="recent-posts-item-content">Markdown学习笔记</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-11-12</div>
+        <a href="/2022/11/12/Test/"><div class="recent-posts-item-content">Test</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020
+          
+          
+                - 
+                2022
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+  </body>
+</html>

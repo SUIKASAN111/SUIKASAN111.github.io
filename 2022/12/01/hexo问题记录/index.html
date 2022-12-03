@@ -18,17 +18,17 @@
   <link 
     rel="icon" 
     href="/">
-  <title>Friends</title>
+  <title>写博客的踩坑记录</title>
   
     
       <meta 
         property="og:title" 
-        content="Friends">
+        content="写博客的踩坑记录">
     
     
       <meta 
         property="og:url" 
-        content="http://example.com/links/index.html">
+        content="http://example.com/2022/12/01/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/index.html">
     
     
       <meta 
@@ -36,6 +36,30 @@
         content="/images/theme/logo.jpg">
     
     
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-12-01">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-12-03">
+      <meta 
+        property="og:article:author" 
+        content="suikasan">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="Blog">
+        
+          <meta 
+            property="og:article:tag" 
+            content="踩坑记录">
+        
+      
     
   
   
@@ -52,6 +76,8 @@
   <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
   
   
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
   
   <script>
     function loadScript(url, cb) {
@@ -321,6 +347,18 @@
                <div class="sticky-tablet">
   
   
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981-hexo-g%E6%8A%A5%E9%94%99"><span class="toc-text">问题1.hexo g报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982-%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-text">问题2.目录格式问题</span></a></li></ol>
+      </div>
+    </article>
+  
   
   <article class="card card-content categories-widget">
     <div class="categories-card">
@@ -401,65 +439,166 @@
   </article>
   
   
-    <article class="card card-content widescreen-archive archive-widget">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2022" 
-        class="archive-card-list-item">
-        2022
-        <span class="archive-card-list-item-badge">4</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
-  
 </div>
             </aside>
             <main class="main-column">
               
-<div class="card card-content">
-  <h1 class="widget-title">Friends</h1>
-</div>
-<div class="card card-content friend-card">
-  <ul class="friend-links">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      写博客的踩坑记录
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-12-01T08:11:21.980Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-12-01</span>
+    </time>
     
-  </ul>
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/Tools/" 
+          class="post-meta-link">
+          Tools
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>155 words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/Blog/" 
+            class="post-meta-link">
+            Blog
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" 
+            class="post-meta-link">
+            踩坑记录
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h4 id="问题1-hexo-g报错"><a href="#问题1-hexo-g报错" class="headerlink" title="问题1.hexo g报错"></a>问题1.hexo g报错</h4><pre class="line-numbers language-none"><code class="language-none">TypeError: Prism.languages.typescript.keyword.push is not a function<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>解决思路</strong>：看着像是代码语言问题，发现在写博客时候markdown代码块前使用<code> ```md</code>后里面的代码会变成和外面一样，怀疑是这个导致的。把md去掉，果然可以正常生成博客。</p>
+<h4 id="问题2-目录格式问题"><a href="#问题2-目录格式问题" class="headerlink" title="问题2.目录格式问题"></a>问题2.目录格式问题</h4><p>如下的文章分级会导致目录格式出问题</p>
+<pre class="line-numbers language-none"><code class="language-none">### 说明
+## 标题
+### 语法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>下图所示<br><img src="/..%5Cimages%5Chexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95%5C%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98code.PNG" alt="目录问题代码" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/..%5Cimages%5Chexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95%5C%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98code.PNG" class="lozad post-image"><img src="/..%5Cimages%5Chexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95%5C%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98.PNG" alt="目录问题代码" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/..%5Cimages%5Chexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95%5C%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98.PNG" class="lozad post-image"></p>
+<p><strong>解决思路</strong>：文章前言加标题应该和全文最高级标题一致，或者前言完全可以选择不加标题。</p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="http://example.com/2022/12/01/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
+            http://example.com/2022/12/01/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2022/12/03/C++%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5%E8%BF%87%E7%A8%8B%E7%9A%84%E7%90%86%E8%A7%A3/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">C++编译链接工作流的理解 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2022/11/19/Learn-markdown/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">Markdown学习笔记 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
 </div>
 
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981-hexo-g%E6%8A%A5%E9%94%99"><span class="toc-text">问题1.hexo g报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982-%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-text">问题2.目录格式问题</span></a></li></ol>
+</div>
             </main>
             <aside class="right-column">
               <div class="sticky-widescreen">
   
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981-hexo-g%E6%8A%A5%E9%94%99"><span class="toc-text">问题1.hexo g报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982-%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-text">问题2.目录格式问题</span></a></li></ol>
+    </article>
   
   
   <article class="card card-content">
@@ -496,48 +635,6 @@
 </div>
   </article>
   
-  
-    <article class="card card-content">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2022" 
-        class="archive-card-list-item">
-        2022
-        <span class="archive-card-list-item-badge">4</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
   
 </div>
             </aside>
@@ -641,6 +738,36 @@
 </a> 
      
      
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
      
      
     <script src="/js/main.js"></script> 
