@@ -57,7 +57,7 @@
         
           <meta 
             property="og:article:tag" 
-            content="底层原理理解">
+            content="底层原理">
         
       
     
@@ -423,9 +423,9 @@
       </a>
     
       <a 
-        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E7%90%86%E8%A7%A3/" 
-        title="底层原理理解">
-        <div class="tags-list-item">底层原理理解</div>
+        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
+        title="底层原理">
+        <div class="tags-list-item">底层原理</div>
       </a>
     
       <a 
@@ -493,9 +493,9 @@
             <span class="dot"></span>
           
           <a 
-            href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E7%90%86%E8%A7%A3/" 
+            href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
             class="post-meta-link">
-            底层原理理解
+            底层原理
           </a>
         
       </div>
@@ -552,7 +552,7 @@ EndBrace.h
 <p>可以看到Math.cpp，EndBrace.h中的代码很怪，但是Math.cpp能编译成功。这也解释了为何前文说<code>#include</code>其实就是找到对应文件将其中内容拷贝过来，同时这也可以解释为什么有时候我们明明没写几行代码，但是生成的obj却有几十kb，因为有其他文件中成千上万行的代码被拷贝过来了。<br>如果要进一步验证，可以在VS中修改ProjectProperties，其中Configuration Properties-&gt;C&#x2F;C++-&gt;Preprocessor中的Preprocess to a File属性改为Yes。此时编译就会产生.i文件，这就是预处理后的代码文件，对比可以看到它和正常写法生成的.i文件产生一样的效果。这里就不演示了。<br><em>测试完记得把设置改回来，不然不会生成obj文件</em></p>
 <p>关于obj文件，我们也可以生成一个稍微可读一点的代码，在VS中修改ProjectProperties，其中Configuration Properties-&gt;C&#x2F;C++-&gt;OutPut Files中的Assembler Output的属性改为Assembly-Only Listing(&#x2F;FA)。此时编译会生成.asm文件，这里面就是汇编指令。</p>
 <h2 id="How-C-the-Linker-Works"><a href="#How-C-the-Linker-Works" class="headerlink" title="How C++ the Linker Works"></a>How C++ the Linker Works</h2><p>链接器的工作就是找到每个符号和函数的位置并将它们链接到一起。编译时的每个Translation Unit都不互相关联。即便没有其他外部文件中的函数，程序依然需要借助链接器找到程序的入口点(main函数)。每个.exe文件都必须有一个入口点，这个入口点可以自定义，并不非得是main函数，但是一般都是。</p>
-<p>链接器链对比的其实是函数名和函数签名(Signature)。因此，如果两个函数有相同的函数名和函数签名，那么链接器就不知道该怎么链接了（重定义问题）。<br>结合上述<code>#include</code>的实质进行思考，就不难理解为什么我们不该在.h头文件中定义函数而只是进行声明。因为当我们在其他文件中include这个头文件时候就是将代码拷贝过来，我们因此有了一段函数定义，并且它的函数名和函数签名与头文件对应的源文件中定义的函数一模一样，此时链接器就不知道需要链接的到底是我们拷贝到Main的这个函数还是另一个文件中定义的函数。<br>当然如果非要在.h文件中定义函数，可以将其定义为static或者inline。</p>
+<p>链接器链对比的其实是函数名和函数签名(Signature)。因此，如果两个函数有相同的函数名和函数签名，那么链接器就不知道该怎么链接了（重定义问题）。<br>结合上述<code>#include</code>的实质进行思考，就不难理解为什么我们不该在.h头文件中定义函数而只是进行声明。因为当我们在其他文件中include这个头文件时候就是将代码拷贝过来，我们因此有了一段函数定义，并且它的函数名和函数签名与头文件对应的源文件中定义的函数一模一样，此时链接器就不知道需要链接的到底是我们拷贝到Main的这个函数还是另一个文件中定义的函数。当然如果非要在.h文件中定义函数，可以将其定义为static或者inline。<br>PS:头文件要<code>#Pragma once</code>也是类似道理</p>
 <p>以我个人的理解一句话总结就是，<strong>Linking要不重不漏。</strong></p>
 <h4 id="tips-1"><a href="#tips-1" class="headerlink" title="tips"></a>tips</h4><p>关于报错。编译阶段的错误，如语法错误，名称会以C开头，比如error C2143…而链接阶段的错误会以LNK开头，如LNK1561。</p>
 <h3 id="一些演示-1"><a href="#一些演示-1" class="headerlink" title="一些演示"></a>一些演示</h3><pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Math.cpp
