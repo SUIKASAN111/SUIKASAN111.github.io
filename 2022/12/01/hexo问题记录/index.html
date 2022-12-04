@@ -209,6 +209,7 @@
   
   
   <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
 <meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
@@ -358,7 +359,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981-hexo-g%E6%8A%A5%E9%94%99"><span class="toc-text">问题1.hexo g报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982-%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-text">问题2.目录格式问题</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981hexo-g%E6%8A%A5%E9%94%99"><span class="toc-text"> 问题1.hexo g报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-text"> 问题2.目录格式问题</span></a></li></ol>
       </div>
     </article>
   
@@ -440,15 +441,15 @@
       </a>
     
       <a 
-        href="/tags/Markdown/" 
-        title="Markdown">
-        <div class="tags-list-item">Markdown</div>
-      </a>
-    
-      <a 
         href="/tags/test/" 
         title="test">
         <div class="tags-list-item">test</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
       </a>
     
       <a 
@@ -498,7 +499,7 @@
     
     
       <span class="dot"></span>
-      <span>155 words</span>
+      <span>156 words</span>
     
   </div>
   
@@ -534,13 +535,16 @@
   <div 
     id="section" 
     class="post-content">
-    <h4 id="问题1-hexo-g报错"><a href="#问题1-hexo-g报错" class="headerlink" title="问题1.hexo g报错"></a>问题1.hexo g报错</h4><pre class="line-numbers language-none"><code class="language-none">TypeError: Prism.languages.typescript.keyword.push is not a function<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+    <h4 id="问题1hexo-g报错"><a class="markdownIt-Anchor" href="#问题1hexo-g报错"></a> 问题1.hexo g报错</h4>
+<pre class="line-numbers language-none"><code class="language-none">TypeError: Prism.languages.typescript.keyword.push is not a function<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><strong>解决思路</strong>：看着像是代码语言问题，发现在写博客时候markdown代码块前使用<code> ```md</code>后里面的代码会变成和外面一样，怀疑是这个导致的。把md去掉，果然可以正常生成博客。</p>
-<h4 id="问题2-目录格式问题"><a href="#问题2-目录格式问题" class="headerlink" title="问题2.目录格式问题"></a>问题2.目录格式问题</h4><p>如下的文章分级会导致目录格式出问题</p>
+<h4 id="问题2目录格式问题"><a class="markdownIt-Anchor" href="#问题2目录格式问题"></a> 问题2.目录格式问题</h4>
+<p>如下的文章分级会导致目录格式出问题</p>
 <pre class="line-numbers language-none"><code class="language-none">### 说明
 ## 标题
 ### 语法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>下图所示<br><img src="/../images/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98code.PNG" alt="目录问题代码" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/../images/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98code.PNG" class="lozad post-image"><img src="/../images/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98.PNG" alt="目录问题" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/../images/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98.PNG" class="lozad post-image"></p>
+<p>下图所示<br />
+<img src="../images/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98code.PNG" alt="目录问题代码" / srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="../images/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98code.PNG" class="lozad post-image"><img src="../images/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98.PNG" alt="目录问题" / srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="../images/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98.PNG" class="lozad post-image"></p>
 <p><strong>解决思路</strong>：文章前言加标题应该和全文最高级标题一致，或者前言完全可以选择不加标题。</p>
 
   </div>
@@ -612,7 +616,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981-hexo-g%E6%8A%A5%E9%94%99"><span class="toc-text">问题1.hexo g报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982-%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-text">问题2.目录格式问题</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981hexo-g%E6%8A%A5%E9%94%99"><span class="toc-text"> 问题1.hexo g报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-text"> 问题2.目录格式问题</span></a></li></ol>
 </div>
             </main>
             <aside class="right-column">
@@ -626,7 +630,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981-hexo-g%E6%8A%A5%E9%94%99"><span class="toc-text">问题1.hexo g报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982-%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-text">问题2.目录格式问题</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%981hexo-g%E6%8A%A5%E9%94%99"><span class="toc-text"> 问题1.hexo g报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%982%E7%9B%AE%E5%BD%95%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98"><span class="toc-text"> 问题2.目录格式问题</span></a></li></ol>
     </article>
   
   
