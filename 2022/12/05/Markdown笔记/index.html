@@ -33,7 +33,7 @@
     
       <meta 
         property="og:img" 
-        content="/images/theme/logo.jpg">
+        content="/theme/logo.jpg">
     
     
     
@@ -318,7 +318,7 @@
               <div class="card card-author">
                 
   <img 
-    src="/images/theme/logo.jpg" 
+    src="/theme/logo.jpg" 
     class="author-img"
     width="88"
     height="88"
@@ -665,7 +665,7 @@
 </table>
 <h3 id="字体格式-颜色-大小"><a class="markdownIt-Anchor" href="#字体格式-颜色-大小"></a> 字体格式、颜色、大小</h3>
 <pre class="line-numbers language-none"><code class="language-none">&lt;font face&#x3D;&quot;黑体&quot; color&#x3D;red size&#x3D;5&gt;黑体，红色，尺寸为5&lt;&#x2F;font&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><font face="黑体" color=red size=5>黑体，红色，尺寸为5</font></p>
+<p><font face="黑体" color="red" size="5">黑体，红色，尺寸为5</font></p>
 <h2 id="列表"><a class="markdownIt-Anchor" href="#列表"></a> 列表</h2>
 <h3 id="有序列表"><a class="markdownIt-Anchor" href="#有序列表"></a> 有序列表</h3>
 <p>在文本前面添加数字加点加空格可以构成有序列表。最终生成的列表前面的序号和前面的数字没有绝对关系，总是从第一个数字开始依次增加。</p>
@@ -714,7 +714,7 @@
 **无序任务列表**
 - [x] 已选中的项目
 - [ ] 未选中的项目<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>效果<br />
+<p>效果<br>
 <strong>有序任务列表</strong></p>
 <ol>
 <li>[x] 已选中的项目</li>
@@ -779,7 +779,7 @@
 <h3 id="行内代码"><a class="markdownIt-Anchor" href="#行内代码"></a> 行内代码</h3>
 <p>使用一对反引号<code>`</code>(<code>~</code>号同键位)来创建。如果在行内代码中需要包含反引号本身，可以使用两个反引号对加前后空格<code>`` ` ``</code>来创建。</p>
 <h3 id="围栏式代码块"><a class="markdownIt-Anchor" href="#围栏式代码块"></a> 围栏式代码块</h3>
-<p>将一段文本上下用三个反引号<code>```</code>包围，这些文本就会变成代码块。<br />
+<p>将一段文本上下用三个反引号<code>```</code>包围，这些文本就会变成代码块。<br>
 <code>Prism.js</code>插件支持代码高亮，只需文本上方的<code>```</code>后加上编程语言对应的代码，如<code>```cpp</code>表示为该代码块中的C++代码添加高亮效果*</p>
 <pre class="line-numbers language-none"><code class="language-none">&#96;&#96;&#96;cpp
 #include&lt;iostream&gt;
@@ -796,9 +796,9 @@ using namespace std;<span aria-hidden="true" class="line-numbers-rows"><span></s
 
 ___<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>效果</p>
-<hr />
-<hr />
-<hr />
+<hr>
+<hr>
+<hr>
 <p>在使用<code>---</code>分隔线时注意上下各留一行空行，不然可能会生成标题。</p>
 <h2 id="超链接"><a class="markdownIt-Anchor" href="#超链接"></a> 超链接</h2>
 <h3 id="链接到网站"><a class="markdownIt-Anchor" href="#链接到网站"></a> 链接到网站</h3>
@@ -810,7 +810,7 @@ ___<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
 <h2 id="图片"><a class="markdownIt-Anchor" href="#图片"></a> 图片</h2>
 <h3 id="添加图片"><a class="markdownIt-Anchor" href="#添加图片"></a> 添加图片</h3>
 <pre class="line-numbers language-none"><code class="language-none">![logo](..&#x2F;images&#x2F;theme&#x2F;logo.jpg)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p><img src="../images/theme/logo.jpg" alt="logo" / srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="../images/theme/logo.jpg" class="lozad post-image"></p>
+<p><img src="../images/theme/logo.jpg" alt="logo" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="../images/theme/logo.jpg" class="lozad post-image"></p>
 <h2 id="emoji"><a class="markdownIt-Anchor" href="#emoji"></a> Emoji</h2>
 <p>在Markdown里使用Emoji有两种方法</p>
 <ol>
@@ -820,7 +820,7 @@ ___<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
 <h2 id="表格"><a class="markdownIt-Anchor" href="#表格"></a> 表格</h2>
 <p>在Markdown中可以使用表格，同时可以设置每列对齐的方式。</p>
 <h3 id="使用表格"><a class="markdownIt-Anchor" href="#使用表格"></a> 使用表格</h3>
-<p>表格使用竖线<code>|</code>区分每一列，在表格头和表格体之间使用至少三个减号<code>-</code>来做为分隔。<br />
+<p>表格使用竖线<code>|</code>区分每一列，在表格头和表格体之间使用至少三个减号<code>-</code>来做为分隔。<br>
 例如，下面的代码</p>
 <pre class="line-numbers language-none"><code class="language-none">|COL_1|COL_2|COL_3
 |:---|:---:|---:|
@@ -874,8 +874,8 @@ ___<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
 <p>前后各使用一个<code>$</code>包围。</p>
 <pre class="line-numbers language-none"><code class="language-none">$a^2 &#x3D; b^2 + c^2$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>2</mn></msup><mo>=</mo><msup><mi>b</mi><mn>2</mn></msup><mo>+</mo><msup><mi>c</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">a^2 = b^2 + c^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></p>
-<p>公式问题以及语法参考<br />
-<a target="_blank" rel="noopener" href="https://github.com/CHENXCHEN/hexo-renderer-markdown-it-plus">hexo-renderer-markdown-it-plus</a><br />
+<p>公式问题以及语法参考<br>
+<a target="_blank" rel="noopener" href="https://github.com/CHENXCHEN/hexo-renderer-markdown-it-plus">hexo-renderer-markdown-it-plus</a><br>
 <a target="_blank" rel="noopener" href="https://katex.org/docs/supported.html">katex docs</a></p>
 <h2 id="注释"><a class="markdownIt-Anchor" href="#注释"></a> 注释</h2>
 <pre class="line-numbers language-none"><code class="language-none">&lt;!-- 注释内容 --&gt;不显示<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>

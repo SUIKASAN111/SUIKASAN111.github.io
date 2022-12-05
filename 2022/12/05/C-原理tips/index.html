@@ -33,7 +33,7 @@
     
       <meta 
         property="og:img" 
-        content="/images/theme/logo.jpg">
+        content="/theme/logo.jpg">
     
     
     
@@ -318,7 +318,7 @@
               <div class="card card-author">
                 
   <img 
-    src="/images/theme/logo.jpg" 
+    src="/theme/logo.jpg" 
     class="author-img"
     width="88"
     height="88"
@@ -537,10 +537,10 @@
     class="post-content">
     <h2 id="内存相关"><a class="markdownIt-Anchor" href="#内存相关"></a> 内存相关</h2>
 <h3 id="小端存储"><a class="markdownIt-Anchor" href="#小端存储"></a> 小端存储</h3>
-<p>Watch1<br />
-<img src="./C-%E5%8E%9F%E7%90%86tips/watch1.PNG" alt="a自动分配的初值" / srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="./C-%E5%8E%9F%E7%90%86tips/watch1.PNG" class="lozad post-image"><br />
-Memory1中&amp;a的情况<br />
-<img src="./C-%E5%8E%9F%E7%90%86tips/memory1.PNG" alt="内存中的情况" / srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="./C-%E5%8E%9F%E7%90%86tips/memory1.PNG" class="lozad post-image"></p>
+<p>Watch1<br>
+<img src="/2022/12/05/C-%E5%8E%9F%E7%90%86tips/watch1.PNG" alt="a自动分配的初值" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/05/C-%E5%8E%9F%E7%90%86tips/watch1.PNG" class="lozad post-image"><br>
+Memory1中&amp;a的情况<br>
+<img src="/2022/12/05/C-%E5%8E%9F%E7%90%86tips/memory1.PNG" alt="内存中的情况" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/05/C-%E5%8E%9F%E7%90%86tips/memory1.PNG" class="lozad post-image"></p>
 <h3 id="指针类型"><a class="markdownIt-Anchor" href="#指针类型"></a> 指针类型</h3>
 <p><strong>Type of Pointer Means Nothing！</strong>，它既不改变其中的地址，也不会决定该地址存着的数据类型。唯一的差别就是不同指针类型在进行+1操作时候步进的bytes不一样。</p>
 <h3 id="引用的本质是指针常量"><a class="markdownIt-Anchor" href="#引用的本质是指针常量"></a> 引用的本质是指针常量</h3>
@@ -548,8 +548,8 @@ Memory1中&amp;a的情况<br />
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">int* const ptr;&#x2F;&#x2F;指针常量——指针是个常量，即指向无法改变
 const int* ptr;&#x2F;&#x2F;常量指针——指针指向的是个常量，即指向的值无法改变，但是指向可以改变<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <h3 id="struct-vs-class"><a class="markdownIt-Anchor" href="#struct-vs-class"></a> Struct VS Class</h3>
-<p>技术上说，基本上没区别😂，但是实际使用又有区别<br />
-struct中成员默认权限为public，class中成员默认权限为private<br />
+<p>技术上说，基本上没区别😂，但是实际使用又有区别<br>
+struct中成员默认权限为public，class中成员默认权限为private<br>
 struct在C++中存在的唯一理由就是维持其对于C的兼容性</p>
 <p>实际使用中没有绝对的用法。但是可以考虑使用struct定义Plain Old Data(POD)，而需要继承时候使用class。只将结构体简单地用作数据结构的定义,而需要实现各种功能时候使用类。But, it’s up to you after all.</p>
 
