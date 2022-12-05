@@ -18,17 +18,17 @@
   <link 
     rel="icon" 
     href="/">
-  <title>Categories</title>
+  <title>C++原理tips</title>
   
     
       <meta 
         property="og:title" 
-        content="Categories">
+        content="C++原理tips">
     
     
       <meta 
         property="og:url" 
-        content="http://example.com/categories/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/index.html">
+        content="http://example.com/2022/12/05/C-%E5%8E%9F%E7%90%86tips/index.html">
     
     
       <meta 
@@ -36,6 +36,30 @@
         content="/images/theme/logo.jpg">
     
     
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-12-05">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-12-05">
+      <meta 
+        property="og:article:author" 
+        content="suikasan">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="C/C++">
+        
+          <meta 
+            property="og:article:tag" 
+            content="底层原理">
+        
+      
     
   
   
@@ -52,6 +76,8 @@
   <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
   
   
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
   
   <script>
     function loadScript(url, cb) {
@@ -325,6 +351,18 @@
                <div class="sticky-tablet">
   
   
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3"><span class="toc-text"> 内存相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8"><span class="toc-text"> 小端存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 指针类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F"><span class="toc-text"> 引用的本质是指针常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-vs-class"><span class="toc-text"> Struct VS Class</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
   
   <article class="card card-content categories-widget">
     <div class="categories-card">
@@ -336,10 +374,24 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/C-CPP/">
+      <a href="/categories/Settings/">
         <div class="categories-list-item">
-          C-CPP
-          <span class="categories-list-item-badge">2</span>
+          Settings
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%8E%9F%E7%90%86/">
+        <div class="categories-list-item">
+          编程语言原理
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
         </div>
       </a>
     
@@ -347,20 +399,6 @@
         <div class="categories-list-item">
           Tools
           <span class="categories-list-item-badge">2</span>
-        </div>
-      </a>
-    
-      <a href="/categories/C-CPP/setup/">
-        <div class="categories-list-item">
-          C-CPP/setup
-          <span class="categories-list-item-badge">1</span>
-        </div>
-      </a>
-    
-      <a href="/categories/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/">
-        <div class="categories-list-item">
-          底层原理
-          <span class="categories-list-item-badge">1</span>
         </div>
       </a>
     
@@ -379,6 +417,12 @@
   <div class="tags-list">
     
       <a 
+        href="/tags/C-C/" 
+        title="C/C++">
+        <div class="tags-list-item">C/C++</div>
+      </a>
+    
+      <a 
         href="/tags/Blog/" 
         title="Blog">
         <div class="tags-list-item">Blog</div>
@@ -388,12 +432,6 @@
         href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
         title="底层原理">
         <div class="tags-list-item">底层原理</div>
-      </a>
-    
-      <a 
-        href="/tags/C-C/" 
-        title="C/C++">
-        <div class="tags-list-item">C/C++</div>
       </a>
     
       <a 
@@ -431,91 +469,175 @@
   </article>
   
   
-    <article class="card card-content widescreen-archive archive-widget">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2022" 
-        class="archive-card-list-item">
-        2022
-        <span class="archive-card-list-item-badge">6</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
-  
 </div>
             </aside>
             <main class="main-column">
               
-<div class="card card-content category-page-card">
-  <div class="categories-page-title">Categories&nbsp-&nbsp底层原理</div>
-</div>
-<div class="archive-timeline">
-  
-  
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      C++原理tips
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-12-05T08:36:53.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-12-05</span>
+    </time>
     
-      <div class="archive-timeline-tag"><span>2022</span></div>
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%8E%9F%E7%90%86/" 
+          class="post-meta-link">
+          编程语言原理
+        </a>
       
     
-    <div class="archive-timeline-item">
-      <div class="archive-timeline-post">
-        <div class="card card-content">
-          <div class="archive-timeline-post-date">2022-12-03</div>
-          <div class="archive-timeline-post-content">
-            <a 
-              href="/2022/12/03/x86%E5%92%8Cx64%E7%9A%84%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8/" 
-              class="archive-timeline-post-item">
-              x86和x64的小端存储
-            </a>
-          </div>
-        </div>
+    
+      <span class="dot"></span>
+      <span>297 words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/C-C/" 
+            class="post-meta-link">
+            C/C++
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
+            class="post-meta-link">
+            底层原理
+          </a>
+        
       </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="内存相关"><a class="markdownIt-Anchor" href="#内存相关"></a> 内存相关</h2>
+<h3 id="小端存储"><a class="markdownIt-Anchor" href="#小端存储"></a> 小端存储</h3>
+<p>Watch1<br />
+<img src="./C-%E5%8E%9F%E7%90%86tips/watch1.PNG" alt="a自动分配的初值" / srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="./C-%E5%8E%9F%E7%90%86tips/watch1.PNG" class="lozad post-image"><br />
+Memory1中&amp;a的情况<br />
+<img src="./C-%E5%8E%9F%E7%90%86tips/memory1.PNG" alt="内存中的情况" / srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="./C-%E5%8E%9F%E7%90%86tips/memory1.PNG" class="lozad post-image"></p>
+<h3 id="指针类型"><a class="markdownIt-Anchor" href="#指针类型"></a> 指针类型</h3>
+<p><strong>Type of Pointer Means Nothing！</strong>，它既不改变其中的地址，也不会决定该地址存着的数据类型。唯一的差别就是不同指针类型在进行+1操作时候步进的bytes不一样。</p>
+<h3 id="引用的本质是指针常量"><a class="markdownIt-Anchor" href="#引用的本质是指针常量"></a> 引用的本质是指针常量</h3>
+<p>引用就是一种很典型的语法糖(Syntax Sugar)</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">int* const ptr;&#x2F;&#x2F;指针常量——指针是个常量，即指向无法改变
+const int* ptr;&#x2F;&#x2F;常量指针——指针指向的是个常量，即指向的值无法改变，但是指向可以改变<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="struct-vs-class"><a class="markdownIt-Anchor" href="#struct-vs-class"></a> Struct VS Class</h3>
+<p>技术上说，基本上没区别😂，但是实际使用又有区别<br />
+struct中成员默认权限为public，class中成员默认权限为private<br />
+struct在C++中存在的唯一理由就是维持其对于C的兼容性</p>
+<p>实际使用中没有绝对的用法。但是可以考虑使用struct定义Plain Old Data(POD)，而需要继承时候使用class。只将结构体简单地用作数据结构的定义,而需要实现各种功能时候使用类。But, it’s up to you after all.</p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="http://example.com/2022/12/05/C-%E5%8E%9F%E7%90%86tips/">
+            http://example.com/2022/12/05/C-%E5%8E%9F%E7%90%86tips/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2022/12/05/Best-Visual-Studio-Setup-for-C-Projects/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">Best Visual Studio Setup for C++ Projects </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2022/12/05/C-%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5%E8%BF%87%E7%A8%8B%E7%9A%84%E7%90%86%E8%A7%A3/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">C++编译链接过程的理解 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
     </div>
   
 </div>
 
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3"><span class="toc-text"> 内存相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8"><span class="toc-text"> 小端存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 指针类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F"><span class="toc-text"> 引用的本质是指针常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-vs-class"><span class="toc-text"> Struct VS Class</span></a></li></ol></li></ol>
+</div>
             </main>
             <aside class="right-column">
               <div class="sticky-widescreen">
   
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3"><span class="toc-text"> 内存相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8"><span class="toc-text"> 小端存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 指针类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F"><span class="toc-text"> 引用的本质是指针常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-vs-class"><span class="toc-text"> Struct VS Class</span></a></li></ol></li></ol>
+    </article>
   
   
   <article class="card card-content">
@@ -529,79 +651,29 @@
   <div class="recent-posts-list">
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-12-03</div>
-        <a href="/2022/12/03/Best%20Visual%20Studio%20Setup%20for%20C++%20Projects/"><div class="recent-posts-item-content">Best Visual Studio Setup for C++ Projects - The Cherno</div></a>
+        <div class="recent-posts-item-title">2022-12-05</div>
+        <a href="/2022/12/05/Markdown%E7%AC%94%E8%AE%B0/"><div class="recent-posts-item-content">Markdown笔记</div></a>
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-12-03</div>
-        <a href="/2022/12/03/x86%E5%92%8Cx64%E7%9A%84%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8/"><div class="recent-posts-item-content">x86和x64的小端存储</div></a>
+        <div class="recent-posts-item-title">2022-12-05</div>
+        <a href="/2022/12/05/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/"><div class="recent-posts-item-content">hexo问题记录</div></a>
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-12-03</div>
-        <a href="/2022/12/03/C++%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5%E8%BF%87%E7%A8%8B%E7%9A%84%E7%90%86%E8%A7%A3/"><div class="recent-posts-item-content">C++编译链接工作流的理解</div></a>
+        <div class="recent-posts-item-title">2022-12-05</div>
+        <a href="/2022/12/05/Best-Visual-Studio-Setup-for-C-Projects/"><div class="recent-posts-item-content">Best Visual Studio Setup for C++ Projects</div></a>
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-12-01</div>
-        <a href="/2022/12/01/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/"><div class="recent-posts-item-content">hexo问题记录</div></a>
+        <div class="recent-posts-item-title">2022-12-05</div>
+        <a href="/2022/12/05/C-%E5%8E%9F%E7%90%86tips/"><div class="recent-posts-item-content">C++原理tips</div></a>
       </div>
     
   </div>
 </div>
   </article>
   
-  
-    <article class="card card-content">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2022" 
-        class="archive-card-list-item">
-        2022
-        <span class="archive-card-list-item-badge">6</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
   
 </div>
             </aside>
@@ -708,6 +780,36 @@
       
  
      
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
      
      
     <script src="/js/main.js"></script> 
