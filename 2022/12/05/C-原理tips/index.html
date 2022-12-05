@@ -359,7 +359,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3"><span class="toc-text"> 内存相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8"><span class="toc-text"> 小端存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 指针类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F"><span class="toc-text"> 引用的本质是指针常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-vs-class"><span class="toc-text"> Struct VS Class</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3"><span class="toc-text"> 内存相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8"><span class="toc-text"> 小端存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 指针类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F"><span class="toc-text"> 引用的本质是指针常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-vs-class"><span class="toc-text"> Struct VS Class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#static-in-c"><span class="toc-text"> Static in C++</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#extern%E5%85%B3%E9%94%AE%E8%AF%8D"><span class="toc-text"> extern关键词</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -499,7 +499,7 @@
     
     
       <span class="dot"></span>
-      <span>297 words</span>
+      <span>700 words</span>
     
   </div>
   
@@ -552,6 +552,18 @@ const int* ptr;&#x2F;&#x2F;常量指针——指针指向的是个常量，即�
 struct中成员默认权限为public，class中成员默认权限为private<br>
 struct在C++中存在的唯一理由就是维持其对于C的兼容性</p>
 <p>实际使用中没有绝对的用法。但是可以考虑使用struct定义Plain Old Data(POD)，而需要继承时候使用class。只将结构体简单地用作数据结构的定义,而需要实现各种功能时候使用类。But, it’s up to you after all.</p>
+<h3 id="static-in-c"><a class="markdownIt-Anchor" href="#static-in-c"></a> Static in C++</h3>
+<p>C++中的static有两种意思。<br>
+类<strong>外</strong>static：在link阶段是局部的，static修饰的内容只对定义它的translation unit可见。<br>
+类<strong>内</strong>static：static修饰的这部分内存有所有该类的实例共享。普通字段每个实例都会进行实例化，而静态字段只实例化一次而由所有实例对象共享。可以理解为，普通字段属于每个实例对象，而静态对象属于这个类。<br>
+静态方法道理类似。<br>
+<em>对struct同理</em></p>
+<p>如果在头文件定义了static变量，而在两个cpp文件中包含了头文件，那么两个文件会分别各自定义一个静态变量，因为头文件内容被拷贝过去了。</p>
+<p>善用static。事实上，在不希望变量全局可见时应该尽量static。不然linker在会所有翻译单元中总惦记着这个全局变量，这常常导致奇奇怪怪的错误。划重点，<strong>尽量让全局函数和变量static</strong>，除非必须要用在其他翻译单元中。<br>
+类比想想看为什么在类中总是能用private就用private，因为全局可见的特性本身就和封装的思想在一定程度上相背。</p>
+<h3 id="extern关键词"><a class="markdownIt-Anchor" href="#extern关键词"></a> extern关键词</h3>
+<p>修饰变量，表示该变量定义于其他Translation Unit, Linker在链接时候会从其他翻译单元找定义。<br>
+修饰常量，表示该常量有外部链接，可被其他翻译单元发现。常量默认只会内部链接，不可被其他翻译单元发现。</p>
 
   </div>
   <div>
@@ -622,7 +634,7 @@ struct在C++中存在的唯一理由就是维持其对于C的兼容性</p>
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3"><span class="toc-text"> 内存相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8"><span class="toc-text"> 小端存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 指针类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F"><span class="toc-text"> 引用的本质是指针常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-vs-class"><span class="toc-text"> Struct VS Class</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3"><span class="toc-text"> 内存相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8"><span class="toc-text"> 小端存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 指针类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F"><span class="toc-text"> 引用的本质是指针常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-vs-class"><span class="toc-text"> Struct VS Class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#static-in-c"><span class="toc-text"> Static in C++</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#extern%E5%85%B3%E9%94%AE%E8%AF%8D"><span class="toc-text"> extern关键词</span></a></li></ol></li></ol>
 </div>
             </main>
             <aside class="right-column">
@@ -636,7 +648,7 @@ struct在C++中存在的唯一理由就是维持其对于C的兼容性</p>
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3"><span class="toc-text"> 内存相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8"><span class="toc-text"> 小端存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 指针类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F"><span class="toc-text"> 引用的本质是指针常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-vs-class"><span class="toc-text"> Struct VS Class</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3"><span class="toc-text"> 内存相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8"><span class="toc-text"> 小端存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 指针类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F"><span class="toc-text"> 引用的本质是指针常量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-vs-class"><span class="toc-text"> Struct VS Class</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#static-in-c"><span class="toc-text"> Static in C++</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#extern%E5%85%B3%E9%94%AE%E8%AF%8D"><span class="toc-text"> extern关键词</span></a></li></ol></li></ol>
     </article>
   
   
