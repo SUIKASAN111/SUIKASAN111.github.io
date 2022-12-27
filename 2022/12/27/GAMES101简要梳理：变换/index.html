@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/">
+  <title>GAMES101简要梳理：变换</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="GAMES101简要梳理：变换">
+    
+    
+      <meta 
+        property="og:url" 
+        content="http://example.com/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/theme/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-12-27">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-12-27">
+      <meta 
+        property="og:article:author" 
+        content="suikasan">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="GAMES101知识梳理">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/theme/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">suikasan</p>
+<p class="author-description">Sic Parvis Magna</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>5</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>4</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>6</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text"> 介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#modeling-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%8D%A2"><span class="toc-text"> Modeling-模型变换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2d-linear-transformations-%E4%BA%8C%E7%BB%B4%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="toc-text"> 2D Linear Transformations-二维线性变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#scaling-%E7%BC%A9%E6%94%BE"><span class="toc-text"> Scaling-缩放</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%A9%E6%94%BE%E7%9F%A9%E9%98%B5"><span class="toc-text"> 缩放矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%A9%E6%94%BE%E5%8F%98%E6%8D%A2"><span class="toc-text"> 缩放变换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#shearing-%E5%88%87%E5%8F%98"><span class="toc-text"> Shearing-切变</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%87%E5%8F%98%E7%9F%A9%E9%98%B5"><span class="toc-text"> 切变矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%87%E5%8F%98%E5%8F%98%E6%8D%A2"><span class="toc-text"> 切变变换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rotation-%E6%97%8B%E8%BD%AC"><span class="toc-text"> Rotation-旋转</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5"><span class="toc-text"> 旋转矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E5%8F%98%E6%8D%A2"><span class="toc-text"> 旋转变换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#reflection-%E5%AF%B9%E7%A7%B0"><span class="toc-text"> Reflection-对称</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5"><span class="toc-text"> 对称变换矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8F%98%E6%8D%A2"><span class="toc-text"> 对称变换</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#translationaffine-transformation-%E5%B9%B3%E7%A7%BB%E4%B8%8E%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2"><span class="toc-text"> Translation&amp;Affine Transformation-平移与仿射变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#translation-%E5%B9%B3%E7%A7%BB"><span class="toc-text"> Translation-平移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#affine-%E4%BB%BF%E5%B0%84"><span class="toc-text"> Affine-仿射</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%8F%98%E6%8D%A2"><span class="toc-text"> 其他变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#inverse-transformation-%E9%80%86%E5%8F%98%E6%8D%A2"><span class="toc-text"> Inverse Transformation-逆变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#compositiondecomposition-of-transformation-%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BB%84%E5%90%88%E4%B8%8E%E5%88%86%E8%A7%A3"><span class="toc-text"> Composition&amp;Decomposition of Transformation-变换的组合与分解</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%98%E6%8D%A2%E7%BB%84%E5%90%88"><span class="toc-text"> 变换组合</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%98%E6%8D%A2%E5%88%86%E8%A7%A3"><span class="toc-text"> 变换分解</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3d-linear-transformations-%E4%B8%89%E7%BB%B4%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="toc-text"> 3D Linear Transformations-三维线性变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E7%BC%A9%E6%94%BE"><span class="toc-text"> 三维缩放</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E5%B9%B3%E7%A7%BB"><span class="toc-text"> 三维平移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E6%97%8B%E8%BD%AC"><span class="toc-text"> 三维旋转</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mvp-transformation"><span class="toc-text"> M.V.P Transformation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#modeling-transformation-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%8D%A2"><span class="toc-text"> Modeling Transformation-模型变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#viewing-transformation-"><span class="toc-text"> Viewing Transformation-</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#projection-transformation"><span class="toc-text"> Projection Transformation</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Blog/">
+        <div class="categories-list-item">
+          Blog
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" 
+        title="踩坑记录">
+        <div class="tags-list-item">踩坑记录</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
+        title="底层原理">
+        <div class="tags-list-item">底层原理</div>
+      </a>
+    
+      <a 
+        href="/tags/C-C/" 
+        title="C/C++">
+        <div class="tags-list-item">C/C++</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      GAMES101简要梳理：变换
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-12-27T02:55:13.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-12-27</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/GAMES101/" 
+          class="post-meta-link">
+          GAMES101
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>1.2k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+            class="post-meta-link">
+            GAMES101知识梳理
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<h3 id="介绍"><a class="markdownIt-Anchor" href="#介绍"></a> 介绍</h3>
+<p>本系列文章为学习GAMES101课程后的简要知识梳理，主要为便于复习与总结，因此不包含过多的推导过程。</p>
+<p>本系列将根据课程顺序，结合部分本课程参考书<strong>Fundamentals of Computer Graphics, 5th Edition</strong>（下称<strong>虎书</strong>）中内容，分为变换、光栅化、着色、几何、光线追踪、动画与模拟几部分内容分别整理。GAMES101中Lecture17-20的内容以拓展了解为主，包括图形学中相对更高级的内容，本系列中不做梳理。</p>
+<p><strong>文章中图片、公式相关的内容大都来源于虎书和闫老师的课程PPT，若有其他来源会特别注明。</strong></p>
+<h3 id="说明"><a class="markdownIt-Anchor" href="#说明"></a> 说明</h3>
+<p>GAMES101以及虎书中使用的是列向量，使用的坐标系为右手系。本系列文章遵循课程的习惯，以避免不必要的混乱。</p>
+<p>图形学应用中左右手系都很常用，比如OpenGL使用右手系而Direct3D使用左手系，常见游戏引擎如UE和Unity中使用左手系。但是其本质是完全一样的，无非是使用列向量与行向量、矩阵转置、矩阵右乘左乘的差别，左手系的具体论述可参考<strong>3D Math Primer for Graphics and Game Development</strong>（3D数学基础：图形和游戏开发）。</p>
+<h2 id="modeling-模型变换"><a class="markdownIt-Anchor" href="#modeling-模型变换"></a> Modeling-模型变换</h2>
+<h3 id="2d-linear-transformations-二维线性变换"><a class="markdownIt-Anchor" href="#2d-linear-transformations-二维线性变换"></a> 2D Linear Transformations-二维线性变换</h3>
+<p>二维线性变换形如：<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/2DLinearTrans.PNG" alt="二维线性变换" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/2DLinearTrans.PNG" class="lozad post-image"></p>
+<h4 id="scaling-缩放"><a class="markdownIt-Anchor" href="#scaling-缩放"></a> Scaling-缩放</h4>
+<h5 id="缩放矩阵"><a class="markdownIt-Anchor" href="#缩放矩阵"></a> 缩放矩阵</h5>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ScalingMat.PNG" alt="缩放矩阵" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ScalingMat.PNG" class="lozad post-image"><br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ScalingForm.PNG" alt="缩放公式" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ScalingForm.PNG" class="lozad post-image"><br>
+<em>使用列向量需左乘变换矩阵，如果使用行向量则为右乘，所用的矩阵互为转置</em></p>
+<h5 id="缩放变换"><a class="markdownIt-Anchor" href="#缩放变换"></a> 缩放变换</h5>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Scaling1.PNG" alt="缩放1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Scaling1.PNG" class="lozad post-image"><br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Scaling2.PNG" alt="缩放2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Scaling2.PNG" class="lozad post-image"></p>
+<h4 id="shearing-切变"><a class="markdownIt-Anchor" href="#shearing-切变"></a> Shearing-切变</h4>
+<h5 id="切变矩阵"><a class="markdownIt-Anchor" href="#切变矩阵"></a> 切变矩阵</h5>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ShearingMat.PNG" alt="切变矩阵" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ShearingMat.PNG" class="lozad post-image"></p>
+<h5 id="切变变换"><a class="markdownIt-Anchor" href="#切变变换"></a> 切变变换</h5>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Shearing1.PNG" alt="切变1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Shearing1.PNG" class="lozad post-image"><br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Shearing2.PNG" alt="切变2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Shearing2.PNG" class="lozad post-image"></p>
+<h4 id="rotation-旋转"><a class="markdownIt-Anchor" href="#rotation-旋转"></a> Rotation-旋转</h4>
+<h5 id="旋转矩阵"><a class="markdownIt-Anchor" href="#旋转矩阵"></a> 旋转矩阵</h5>
+<p>默认为逆时针方向。<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/RotationMat.PNG" alt="2D旋转矩阵" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/RotationMat.PNG" class="lozad post-image"></p>
+<h5 id="旋转变换"><a class="markdownIt-Anchor" href="#旋转变换"></a> 旋转变换</h5>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Rotation.PNG" alt="旋转变换" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Rotation.PNG" class="lozad post-image"></p>
+<h4 id="reflection-对称"><a class="markdownIt-Anchor" href="#reflection-对称"></a> Reflection-对称</h4>
+<h5 id="对称变换矩阵"><a class="markdownIt-Anchor" href="#对称变换矩阵"></a> 对称变换矩阵</h5>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ReflectionMat.PNG" alt="对称变换矩阵" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ReflectionMat.PNG" class="lozad post-image"></p>
+<h5 id="对称变换"><a class="markdownIt-Anchor" href="#对称变换"></a> 对称变换</h5>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Reflection1.PNG" alt="对称变换1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Reflection1.PNG" class="lozad post-image"><br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Reflection2.PNG" alt="对称变换2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Reflection2.PNG" class="lozad post-image"></p>
+<h3 id="translationaffine-transformation-平移与仿射变换"><a class="markdownIt-Anchor" href="#translationaffine-transformation-平移与仿射变换"></a> Translation&amp;Affine Transformation-平移与仿射变换</h3>
+<h4 id="translation-平移"><a class="markdownIt-Anchor" href="#translation-平移"></a> Translation-平移</h4>
+<p>以二维平移变换为例，其变化无法表示为线性形式，为此，在二维点或向量中多加入一个维度（点的第三维为1，向量的第三维为0），使得其可以用齐次坐标表示，如下所示<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/AddThirdCoord.PNG" alt="二维齐次" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/AddThirdCoord.PNG" class="lozad post-image"></p>
+<p>于是，向量平移可表示为<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/VecTrans.PNG" alt="向量平移" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/VecTrans.PNG" class="lozad post-image"><br>
+点平移可表示为<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Poitrans.PNG" alt="点平移" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Poitrans.PNG" class="lozad post-image"></p>
+<p>同理可得其他基本变换类型的变换矩阵<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/OtherTrans.PNG" alt="其他" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/OtherTrans.PNG" class="lozad post-image"></p>
+<h4 id="affine-仿射"><a class="markdownIt-Anchor" href="#affine-仿射"></a> Affine-仿射</h4>
+<p>仿射变换为线性变换加平移变换，形如<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Homogeneous1.PNG" alt="二维平移齐次坐标" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Homogeneous1.PNG" class="lozad post-image"><br>
+增加维度后可表示为<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Aff.PNG" alt="仿射" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Aff.PNG" class="lozad post-image"></p>
+<h3 id="其他变换"><a class="markdownIt-Anchor" href="#其他变换"></a> 其他变换</h3>
+<h4 id="inverse-transformation-逆变换"><a class="markdownIt-Anchor" href="#inverse-transformation-逆变换"></a> Inverse Transformation-逆变换</h4>
+<p>逆变换就是乘以原变换的逆矩阵</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>M</mi><mo>=</mo><msub><mi>M</mi><mn>1</mn></msub><msub><mi>M</mi><mn>2</mn></msub><mo>⋯</mo><msub><mi>M</mi><mi>n</mi></msub><mspace linebreak="newline"></mspace><msup><mi>M</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>=</mo><msubsup><mi>M</mi><mi>n</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>⋯</mo><msubsup><mi>M</mi><mn>2</mn><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msubsup><mi>M</mi><mn>1</mn><mrow><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">M=M_1M_2\cdots M_n\\
+M^{-1}=M_n^{-1}\cdots M_2^{-1}M_1^{-1}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">⋯</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.864108em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.864108em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.1205469999999997em;vertical-align:-0.256439em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-2.4530000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">⋯</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-2.4435610000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.256439em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-2.4435610000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.256439em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<p>特别地，对于旋转矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mi>θ</mi></msub></mrow><annotation encoding="application/x-tex">R_\theta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，由于其正交性，其逆变换<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>R</mi><mi>θ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">R_\theta^{-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1555469999999999em;vertical-align:-0.3013079999999999em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.854239em;"><span style="top:-2.3986920000000005em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span><span style="top:-3.1031310000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3013079999999999em;"><span></span></span></span></span></span></span></span></span></span>（即旋转<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>θ</mi></mrow><annotation encoding="application/x-tex">-\theta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span></span></span></span>的变换<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mrow><mo>−</mo><mi>θ</mi></mrow></msub></mrow><annotation encoding="application/x-tex">R_{-\theta}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.891661em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span>）等于其转置矩阵</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>R</mi><mrow><mo>−</mo><mi>θ</mi></mrow></msub><mo>=</mo><msubsup><mi>R</mi><mi>θ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>=</mo><msubsup><mi>R</mi><mi>θ</mi><mi>T</mi></msubsup></mrow><annotation encoding="application/x-tex">R_{-\theta}=R_\theta^{-1}=R_\theta^T
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.891661em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.1555469999999999em;vertical-align:-0.2914389999999999em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-2.408561em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2914389999999999em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.138331em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8913309999999999em;"><span style="top:-2.4530000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<h4 id="compositiondecomposition-of-transformation-变换的组合与分解"><a class="markdownIt-Anchor" href="#compositiondecomposition-of-transformation-变换的组合与分解"></a> Composition&amp;Decomposition of Transformation-变换的组合与分解</h4>
+<p>上述各基本线性变换可组合变成复合变换。相反，复合变换也可进行变换分解，变成几种基本变换类型的组合。</p>
+<h5 id="变换组合"><a class="markdownIt-Anchor" href="#变换组合"></a> 变换组合</h5>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Com.PNG" alt="变换组合" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Com.PNG" class="lozad post-image"><br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ComForm.PNG" alt="组合" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ComForm.PNG" class="lozad post-image"></p>
+<p>即便变换矩阵相同，执行变换顺序改变也可能带来不同结果，如下所示<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ComOrder.PNG" alt="组合顺序" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/ComOrder.PNG" class="lozad post-image"></p>
+<p><strong>tip</strong>：矩阵没有交换律，但是有结合律。</p>
+<h5 id="变换分解"><a class="markdownIt-Anchor" href="#变换分解"></a> 变换分解</h5>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/DeCom.PNG" alt="变换分解" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/DeCom.PNG" class="lozad post-image"><br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/DeComForm.PNG" alt="分解" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/DeComForm.PNG" class="lozad post-image"></p>
+<h3 id="3d-linear-transformations-三维线性变换"><a class="markdownIt-Anchor" href="#3d-linear-transformations-三维线性变换"></a> 3D Linear Transformations-三维线性变换</h3>
+<p>三维变换可完全由二维类比。<br>
+齐次坐标表示<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/3DHomoCoord.PNG" alt="三维齐次" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/3DHomoCoord.PNG" class="lozad post-image"></p>
+<h4 id="三维缩放"><a class="markdownIt-Anchor" href="#三维缩放"></a> 三维缩放</h4>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/3DScaling.PNG" alt="三维缩放" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/3DScaling.PNG" class="lozad post-image"></p>
+<h4 id="三维平移"><a class="markdownIt-Anchor" href="#三维平移"></a> 三维平移</h4>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/3DTranslation.PNG" alt="三维平移" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/3DTranslation.PNG" class="lozad post-image"></p>
+<h4 id="三维旋转"><a class="markdownIt-Anchor" href="#三维旋转"></a> 三维旋转</h4>
+<p><img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/3DRotation.PNG" alt="三维旋转" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/3DRotation.PNG" class="lozad post-image"></p>
+<p>所有三维旋转都可以分解成绕<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo separator="true">,</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">x,y,z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span></span></span></span>轴分别旋转的组合，即用欧拉角表示。<br>
+绕任意轴的三维旋转可以用<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>o</mi><mi>d</mi><mi>r</mi><mi>i</mi><mi>g</mi><mi>u</mi><mi>e</mi><msup><mi>s</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mi>R</mi><mi>o</mi><mi>t</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>F</mi><mi>o</mi><mi>r</mi><mi>m</mi><mi>u</mi><mi>l</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">Rodrigues&#x27; Rotation Formula</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.946332em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal">o</span><span class="mord mathnormal">d</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">u</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal">o</span><span class="mord mathnormal">t</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">m</span><span class="mord mathnormal">u</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">a</span></span></span></span>（罗德里格斯旋转公式）表示<br>
+<img src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Rodrigues'.PNG" alt="罗德里格斯旋转公式" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/Rodrigues'.PNG" class="lozad post-image"><br>
+其中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">n</span></span></span></span> 为旋转轴（单位向量），<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>为正方向旋转角度，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi></mrow><annotation encoding="application/x-tex">I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span>为单位矩阵。<br>
+公式推导可参考《3D数学基础：图形和游戏开发》第二版的5.1.3节，其中对此有十分具体的推导（该书使用的是左手系）。</p>
+<p>四元数在GAMES101中仅由闫老师口头提及。<br>
+四元数在旋转的主要作用是可以避免欧拉角万向节死锁问题，也可以很好地表示旋转角度的插值。<br>
+关于四元数的具体论述可参考《3D数学基础：图形和游戏开发》第二版的8.5节。</p>
+<h2 id="mvp-transformation"><a class="markdownIt-Anchor" href="#mvp-transformation"></a> M.V.P Transformation</h2>
+<h3 id="modeling-transformation-模型变换"><a class="markdownIt-Anchor" href="#modeling-transformation-模型变换"></a> Modeling Transformation-模型变换</h3>
+<p>同上节所述模型变换一致，是对被观测物体本身的变换。</p>
+<p>我们定义的相机位置与方向、物体位置等都是对于世界坐标系而言的，在进行视图与透视变换之前，我们先将物体用相机坐标系（相机位于原点，上方为+Y方向，看向-Z方向）表示物体，这便是模型变换。</p>
+<h3 id="viewing-transformation-"><a class="markdownIt-Anchor" href="#viewing-transformation-"></a> Viewing Transformation-</h3>
+<h3 id="projection-transformation"><a class="markdownIt-Anchor" href="#projection-transformation"></a> Projection Transformation</h3>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="http://example.com/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/">
+            http://example.com/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2022/12/27/GAMES101%E4%BD%9C%E4%B8%9A1%EF%BC%9A%E6%97%8B%E8%BD%AC%E4%B8%8E%E6%8A%95%E5%BD%B1/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">GAMES101作业1：旋转与投影 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text"> 介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#modeling-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%8D%A2"><span class="toc-text"> Modeling-模型变换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2d-linear-transformations-%E4%BA%8C%E7%BB%B4%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="toc-text"> 2D Linear Transformations-二维线性变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#scaling-%E7%BC%A9%E6%94%BE"><span class="toc-text"> Scaling-缩放</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%A9%E6%94%BE%E7%9F%A9%E9%98%B5"><span class="toc-text"> 缩放矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%A9%E6%94%BE%E5%8F%98%E6%8D%A2"><span class="toc-text"> 缩放变换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#shearing-%E5%88%87%E5%8F%98"><span class="toc-text"> Shearing-切变</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%87%E5%8F%98%E7%9F%A9%E9%98%B5"><span class="toc-text"> 切变矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%87%E5%8F%98%E5%8F%98%E6%8D%A2"><span class="toc-text"> 切变变换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rotation-%E6%97%8B%E8%BD%AC"><span class="toc-text"> Rotation-旋转</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5"><span class="toc-text"> 旋转矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E5%8F%98%E6%8D%A2"><span class="toc-text"> 旋转变换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#reflection-%E5%AF%B9%E7%A7%B0"><span class="toc-text"> Reflection-对称</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5"><span class="toc-text"> 对称变换矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8F%98%E6%8D%A2"><span class="toc-text"> 对称变换</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#translationaffine-transformation-%E5%B9%B3%E7%A7%BB%E4%B8%8E%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2"><span class="toc-text"> Translation&amp;Affine Transformation-平移与仿射变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#translation-%E5%B9%B3%E7%A7%BB"><span class="toc-text"> Translation-平移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#affine-%E4%BB%BF%E5%B0%84"><span class="toc-text"> Affine-仿射</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%8F%98%E6%8D%A2"><span class="toc-text"> 其他变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#inverse-transformation-%E9%80%86%E5%8F%98%E6%8D%A2"><span class="toc-text"> Inverse Transformation-逆变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#compositiondecomposition-of-transformation-%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BB%84%E5%90%88%E4%B8%8E%E5%88%86%E8%A7%A3"><span class="toc-text"> Composition&amp;Decomposition of Transformation-变换的组合与分解</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%98%E6%8D%A2%E7%BB%84%E5%90%88"><span class="toc-text"> 变换组合</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%98%E6%8D%A2%E5%88%86%E8%A7%A3"><span class="toc-text"> 变换分解</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3d-linear-transformations-%E4%B8%89%E7%BB%B4%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="toc-text"> 3D Linear Transformations-三维线性变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E7%BC%A9%E6%94%BE"><span class="toc-text"> 三维缩放</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E5%B9%B3%E7%A7%BB"><span class="toc-text"> 三维平移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E6%97%8B%E8%BD%AC"><span class="toc-text"> 三维旋转</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mvp-transformation"><span class="toc-text"> M.V.P Transformation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#modeling-transformation-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%8D%A2"><span class="toc-text"> Modeling Transformation-模型变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#viewing-transformation-"><span class="toc-text"> Viewing Transformation-</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#projection-transformation"><span class="toc-text"> Projection Transformation</span></a></li></ol></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text"> 介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#modeling-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%8D%A2"><span class="toc-text"> Modeling-模型变换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2d-linear-transformations-%E4%BA%8C%E7%BB%B4%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="toc-text"> 2D Linear Transformations-二维线性变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#scaling-%E7%BC%A9%E6%94%BE"><span class="toc-text"> Scaling-缩放</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%A9%E6%94%BE%E7%9F%A9%E9%98%B5"><span class="toc-text"> 缩放矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%A9%E6%94%BE%E5%8F%98%E6%8D%A2"><span class="toc-text"> 缩放变换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#shearing-%E5%88%87%E5%8F%98"><span class="toc-text"> Shearing-切变</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%87%E5%8F%98%E7%9F%A9%E9%98%B5"><span class="toc-text"> 切变矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%87%E5%8F%98%E5%8F%98%E6%8D%A2"><span class="toc-text"> 切变变换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rotation-%E6%97%8B%E8%BD%AC"><span class="toc-text"> Rotation-旋转</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5"><span class="toc-text"> 旋转矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E5%8F%98%E6%8D%A2"><span class="toc-text"> 旋转变换</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#reflection-%E5%AF%B9%E7%A7%B0"><span class="toc-text"> Reflection-对称</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5"><span class="toc-text"> 对称变换矩阵</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8F%98%E6%8D%A2"><span class="toc-text"> 对称变换</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#translationaffine-transformation-%E5%B9%B3%E7%A7%BB%E4%B8%8E%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2"><span class="toc-text"> Translation&amp;Affine Transformation-平移与仿射变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#translation-%E5%B9%B3%E7%A7%BB"><span class="toc-text"> Translation-平移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#affine-%E4%BB%BF%E5%B0%84"><span class="toc-text"> Affine-仿射</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%8F%98%E6%8D%A2"><span class="toc-text"> 其他变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#inverse-transformation-%E9%80%86%E5%8F%98%E6%8D%A2"><span class="toc-text"> Inverse Transformation-逆变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#compositiondecomposition-of-transformation-%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BB%84%E5%90%88%E4%B8%8E%E5%88%86%E8%A7%A3"><span class="toc-text"> Composition&amp;Decomposition of Transformation-变换的组合与分解</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%98%E6%8D%A2%E7%BB%84%E5%90%88"><span class="toc-text"> 变换组合</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%98%E6%8D%A2%E5%88%86%E8%A7%A3"><span class="toc-text"> 变换分解</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3d-linear-transformations-%E4%B8%89%E7%BB%B4%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="toc-text"> 3D Linear Transformations-三维线性变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E7%BC%A9%E6%94%BE"><span class="toc-text"> 三维缩放</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E5%B9%B3%E7%A7%BB"><span class="toc-text"> 三维平移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E6%97%8B%E8%BD%AC"><span class="toc-text"> 三维旋转</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mvp-transformation"><span class="toc-text"> M.V.P Transformation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#modeling-transformation-%E6%A8%A1%E5%9E%8B%E5%8F%98%E6%8D%A2"><span class="toc-text"> Modeling Transformation-模型变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#viewing-transformation-"><span class="toc-text"> Viewing Transformation-</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#projection-transformation"><span class="toc-text"> Projection Transformation</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-12-27</div>
+        <a href="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/"><div class="recent-posts-item-content">GAMES101简要梳理：变换</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-12-27</div>
+        <a href="/2022/12/27/GAMES101%E4%BD%9C%E4%B8%9A1%EF%BC%9A%E6%97%8B%E8%BD%AC%E4%B8%8E%E6%8A%95%E5%BD%B1/"><div class="recent-posts-item-content">GAMES101作业1：旋转与投影</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-12-05</div>
+        <a href="/2022/12/05/Markdown%E7%AC%94%E8%AE%B0/"><div class="recent-posts-item-content">Markdown笔记</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-12-05</div>
+        <a href="/2022/12/05/hexo%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/"><div class="recent-posts-item-content">hexo问题记录</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020
+          
+          
+                - 
+                2022
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+  </body>
+</html>
