@@ -631,14 +631,7 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float z
     
     return rotation;
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>套用罗德里格斯旋转公式即可，公式如下（公式推导参考：3D Math Primer for Graphics and Game Development - Ch5.1.3
-
-	<div class="row">
-    <embed src="/pdf/3D" width="100%" height="550" type="application/pdf">
-	</div>
-
-
-)</p>
+<p>套用罗德里格斯旋转公式即可，公式如下（公式推导参考：3D Math Primer for Graphics and Game Development - Ch5.1.3)</p>
 <p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>R</mi><mo stretchy="false">(</mo><mi mathvariant="bold-italic">n</mi><mo separator="true">,</mo><mi>α</mi><mo stretchy="false">)</mo><mo>=</mo><mi>c</mi><mi>o</mi><mi>s</mi><mo stretchy="false">(</mo><mi>α</mi><mo stretchy="false">)</mo><mi mathvariant="bold">I</mi><mo>+</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>c</mi><mi>o</mi><mi>s</mi><mo stretchy="false">(</mo><mi>α</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mi mathvariant="bold-italic">n</mi><mi><msup><mi mathvariant="bold-italic">n</mi><mi mathvariant="bold-italic">T</mi></msup></mi><mo>+</mo><mi>s</mi><mi>i</mi><mi>n</mi><mo stretchy="false">(</mo><mi>α</mi><mo stretchy="false">)</mo><munder><munder><mrow><mo fence="true">[</mo><mtable rowspacing="0.15999999999999992em" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><msub><mi>n</mi><mi>z</mi></msub></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>n</mi><mi>y</mi></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>n</mi><mi>z</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><msub><mi>n</mi><mi>x</mi></msub></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><msub><mi>n</mi><mi>y</mi></msub></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>n</mi><mi>x</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mo stretchy="true">⏟</mo></munder><mtext>N</mtext></munder></mrow><annotation encoding="application/x-tex">R(\bm{n},\alpha)=cos(\alpha)\bold{I}+(1-cos(\alpha))\bm{n}\bm{n^T}+sin(\alpha)\underbrace{
 \begin{bmatrix}
 0 &amp; -n_z &amp; n_y \\
