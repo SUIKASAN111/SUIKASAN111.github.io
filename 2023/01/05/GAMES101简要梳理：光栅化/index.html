@@ -45,7 +45,7 @@
         content="2023-01-05">
       <meta 
         property="og:article:modified_time" 
-        content="2023-01-06">
+        content="2023-01-16">
       <meta 
         property="og:article:author" 
         content="suikasan">
@@ -333,7 +333,7 @@
   <a 
     class="author-posts-count" 
     href="/archives">
-    <span>7</span>
+    <span>8</span>
     <span>Posts</span>
   </a>
   <a 
@@ -387,7 +387,7 @@
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
-          <span class="categories-list-item-badge">4</span>
+          <span class="categories-list-item-badge">5</span>
         </div>
       </a>
     
@@ -518,8 +518,8 @@
     id="section" 
     class="post-content">
     <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
-<p>本系列文章为学习<a target="_blank" rel="noopener" href="https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html">GAMES101课程</a>后的简要知识梳理，用于复习与总结，不包含细致的推导过程。本系列将根据课程顺序，分为变换、光栅化、着色、几何、光线追踪、动画与模拟等部分内容分别整理。</p>
-<p><em>为了便于查阅和避免翻译问题导致的歧义，文章对于书籍和专有名词大都同时保留了其英文名称。</em></p>
+<p><a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>为学习<a target="_blank" rel="noopener" href="https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html">GAMES101课程</a>后的简要知识梳理，用于复习与总结，不包含细致的推导过程。本系列将根据课程顺序，分为变换、光栅化、着色、几何、光线追踪、动画与模拟等部分内容分别整理。</p>
+<p><em>为了便于查阅和避免翻译问题导致的歧义，文中对于书籍和专有名词等尽量同时保留了其英文名称。</em></p>
 <h2 id="本节说明"><a class="markdownIt-Anchor" href="#本节说明"></a> 本节说明</h2>
 <p>严格来说，GAMES101课程中视口变换实际上是光栅化部分的内容，但是为了变换部分梳理的完整性和便于把握从场景模型到屏幕空间的完整变换过程，本系列将其放在变换部分进行梳理，具体参见<a href="https://suikasan111.github.io/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/">GAMES101简要梳理：变换</a>。GAMES101课程中与视口变换一同说明的屏幕空间定义相关内容本文不再赘述。</p>
 <p>本部分内容涉及了一部分信号与系统(Signals and Systems)、数字信号处理(Digital Signal Processing, DSP)学科中的内容，限于篇幅此部分并不会进行详细说明，如需了解更加具体的内容可参考文末Further Reading部分中的书籍。</p>
@@ -719,7 +719,6 @@ Rasterization = Sampling A 2D Indicator Function<br>
 <p><strong>注</strong>：Z-Buffer算法假设不会出现两个三角形在同一个像素位置具有同样深度。</p>
 <p>至此，我们已经能将一个3D变换到屏幕空间，并且正确判断各物体的遮挡关系了。<br>
 但是要计算出每个像素颜色具体应该是什么值，我们还需要使用着色相关的知识。</p>
-<p><strong>下一节，着色，TO BE CONTINUE…</strong></p>
 <h2 id="further-reading"><a class="markdownIt-Anchor" href="#further-reading"></a> Further Reading</h2>
 <p><a target="_blank" rel="noopener" href="https://book.douban.com/subject/2151838/">数字信号处理(第四版)</a>, John G.Proakis, Dimitris G.Manolakis. 方艳梅, 刘永清 等译。<br>
 <a target="_blank" rel="noopener" href="https://book.douban.com/subject/21359219/">信号与系统（第二版）</a>, Alan V. Oppenheim, Alan S. Willsky, S. Hamid Nawab. 刘树棠 译。</p>
@@ -822,6 +821,11 @@ Rasterization = Sampling A 2D Indicator Function<br>
   <div class="recent-posts-list">
     
       <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-12</div>
+        <a href="/2023/01/12/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/"><div class="recent-posts-item-content">GAMES101简要梳理：着色</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-10</div>
         <a href="/2023/01/10/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/"><div class="recent-posts-item-content">GAMES101作业2：Triangles and Z-buffering</div></a>
       </div>
@@ -834,11 +838,6 @@ Rasterization = Sampling A 2D Indicator Function<br>
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2022-12-30</div>
         <a href="/2022/12/30/GAMES101%E4%BD%9C%E4%B8%9A1%EF%BC%9A%E6%97%8B%E8%BD%AC%E4%B8%8E%E6%8A%95%E5%BD%B1/"><div class="recent-posts-item-content">GAMES101作业1：旋转与投影</div></a>
-      </div>
-    
-      <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-12-27</div>
-        <a href="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/"><div class="recent-posts-item-content">GAMES101简要梳理：变换</div></a>
       </div>
     
   </div>

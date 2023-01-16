@@ -45,7 +45,7 @@
         content="2022-12-27">
       <meta 
         property="og:article:modified_time" 
-        content="2023-01-06">
+        content="2023-01-16">
       <meta 
         property="og:article:author" 
         content="suikasan">
@@ -333,7 +333,7 @@
   <a 
     class="author-posts-count" 
     href="/archives">
-    <span>7</span>
+    <span>8</span>
     <span>Posts</span>
   </a>
   <a 
@@ -387,7 +387,7 @@
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
-          <span class="categories-list-item-badge">4</span>
+          <span class="categories-list-item-badge">5</span>
         </div>
       </a>
     
@@ -518,8 +518,8 @@
     id="section" 
     class="post-content">
     <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
-<p>本系列文章为学习<a target="_blank" rel="noopener" href="https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html">GAMES101课程</a>后的简要知识梳理，用于复习与总结，不包含细致的推导过程。本系列将根据课程顺序，分为变换、光栅化、着色、几何、光线追踪、动画与模拟等部分内容分别整理。</p>
-<p><em>为了便于查阅和避免翻译问题导致的歧义，文章对于书籍和专有名词大都同时保留了其英文名称。</em></p>
+<p><a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>为学习<a target="_blank" rel="noopener" href="https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html">GAMES101课程</a>后的简要知识梳理，用于复习与总结，不包含细致的推导过程。本系列将根据课程顺序，分为变换、光栅化、着色、几何、光线追踪、动画与模拟等部分内容分别整理。</p>
+<p><em>为了便于查阅和避免翻译问题导致的歧义，文中对于书籍和专有名词等尽量同时保留了其英文名称。</em></p>
 <h2 id="本节说明"><a class="markdownIt-Anchor" href="#本节说明"></a> 本节说明</h2>
 <p>GAMES101以及虎书(<strong>Fundamentals of Computer Graphics, Fourth Edition</strong>)中使用的是列向量，使用的坐标系为右手系。本系列文章遵循课程的习惯，以避免不必要的混乱。</p>
 <p>图形学应用中左右手系都很常用，比如OpenGL使用右手系而Direct3D使用左手系，常见游戏引擎如UE和Unity中使用左手系。但是其本质是完全一样的，无非是使用列向量与行向量、矩阵转置、矩阵右乘左乘的差别，左手系的具体论述可参考Further Readinga中的<strong>3D Math Primer for Graphics and Game Development</strong>。</p>
@@ -1029,7 +1029,6 @@ n &amp; 0 &amp; 0 &amp; 0 \\
 <p>至此，所有变换都执行完毕，我们已经可以由此将一个3D场景变换到屏幕空间了。<br>
 但是，不难看出我们在视口变换时实际上忽略了Z方向上的信息，换言之，我们所做的一切并不难让我们分清楚场景中物体的前后，它们只是被全都挤到了屏幕平面上面。<br>
 这便是光栅化过程中要解决的问题之一。</p>
-<p><strong>下一节，光栅化，TO BE CONTINUE…</strong></p>
 <h2 id="further-reading"><a class="markdownIt-Anchor" href="#further-reading"></a> Further Reading</h2>
 <p><a target="_blank" rel="noopener" href="https://book.douban.com/subject/35755152/">Fundamentals of Computer Graphics, 5th Edition</a>, Steve Marschner, Peter Shirley, et.（只有第二版有中译版，其他暂无，不过有大佬在网上发布的个人翻译可参考）。<br>
 <a target="_blank" rel="noopener" href="https://book.douban.com/subject/10471246/">3D Math Primer for Graphics and Game Development, 2nd Edition</a>, Fletcher Dunn. Ian Parberry. （中译版：<a target="_blank" rel="noopener" href="https://book.douban.com/subject/35077573/">3D数学基础：图形和游戏开发（第二版）</a>，翻译略差，有能力尽量以英文版为主）。</p>
@@ -1132,6 +1131,11 @@ n &amp; 0 &amp; 0 &amp; 0 \\
   <div class="recent-posts-list">
     
       <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-12</div>
+        <a href="/2023/01/12/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/"><div class="recent-posts-item-content">GAMES101简要梳理：着色</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-10</div>
         <a href="/2023/01/10/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/"><div class="recent-posts-item-content">GAMES101作业2：Triangles and Z-buffering</div></a>
       </div>
@@ -1144,11 +1148,6 @@ n &amp; 0 &amp; 0 &amp; 0 \\
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2022-12-30</div>
         <a href="/2022/12/30/GAMES101%E4%BD%9C%E4%B8%9A1%EF%BC%9A%E6%97%8B%E8%BD%AC%E4%B8%8E%E6%8A%95%E5%BD%B1/"><div class="recent-posts-item-content">GAMES101作业1：旋转与投影</div></a>
-      </div>
-    
-      <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-12-27</div>
-        <a href="/2022/12/27/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/"><div class="recent-posts-item-content">GAMES101简要梳理：变换</div></a>
       </div>
     
   </div>
