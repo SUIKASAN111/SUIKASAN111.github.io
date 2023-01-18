@@ -538,7 +538,7 @@
 <p>相关基础知识梳理可参看本博客<a href="https://suikasan111.github.io/2023/01/10/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/">GAMES101简要梳理：着色</a>。</p>
 <h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
 <p>get_projection_matrix()直接复制前两次的即可。注意Z值正负问题。</p>
-<p><strong>注</strong>：代码框架部分使用了一些C<ins>17的新特性，如std::optional。完成作业时候记得将编译器版本改为C</ins>17，或自行用更早C++版本重新实现那些内容。</p>
+<p><strong>注</strong>：代码框架部分使用了一些C++17的新特性，如std::optional。完成作业时候记得将编译器版本改为C++17，或自行用更早C++版本重新实现那些内容。</p>
 <h3 id="rasterize_triangle函数"><a class="markdownIt-Anchor" href="#rasterize_triangle函数"></a> <strong>rasterize_triangle函数</strong></h3>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rasterizer.cpp
 void rst::rasterizer::rasterize_triangle(const Triangle&amp; t, const std::array&lt;Eigen::Vector3f, 3&gt;&amp; view_pos) 
