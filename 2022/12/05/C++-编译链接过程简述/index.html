@@ -45,7 +45,7 @@
         content="2022-12-05">
       <meta 
         property="og:article:modified_time" 
-        content="2023-01-07">
+        content="2023-01-18">
       <meta 
         property="og:article:author" 
         content="suikasan">
@@ -391,7 +391,7 @@
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
-          <span class="categories-list-item-badge">5</span>
+          <span class="categories-list-item-badge">6</span>
         </div>
       </a>
     
@@ -567,7 +567,7 @@ C<ins>中，文件的概念其实并不存在，比如所谓的.cpp文件其实�
 一个翻译单元由其实现文件(.cpp)和其直接或间接包含的所有标头(.h, .hpp etc.)组成。如果在cpp文件中include其他cpp，则在编译时候它们也会被当成一个Translation Unit。<br>
 简而言之，如果所有cpp都不互相include，每个cpp文件都是一个Translation Unit。</p>
 <h3 id="一些演示"><a class="markdownIt-Anchor" href="#一些演示"></a> 一些演示</h3>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Main.cpp
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Main.cpp
 #include&lt;iostream&gt;
 
 void Log(const char* message);
@@ -577,20 +577,20 @@ int main() &#123;
 	std::cin.get();
 &#125;
 
-&#x2F;&#x2F; Log.cpp
+&#x2F;&#x2F; in Log.cpp
 #include&lt;iostream&gt;
 
 void Log(const char* message) &#123;
 	std::cout &lt;&lt; message &lt;&lt; std::endl;
 &#125;
 
-&#x2F;&#x2F; Math.cpp
+&#x2F;&#x2F; in Math.cpp
 int Multiply(int a, int b) &#123;
 	int result &#x3D; a * b;
 	return result;
 #include&quot;EndBrace.h&quot;
 
-&#x2F;&#x2F; EndBrace.h
+&#x2F;&#x2F; in EndBrace.h
 &#125; &#x2F;&#x2F;就是一个&quot;&#125;&quot;，你没看错<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以看到Math.cpp，EndBrace.h中的代码很怪，但是Math.cpp能编译成功。这也解释了为何前文说<code>#include</code>其实就是找到对应文件将其中内容拷贝过来，同时这也可以解释为什么有时候我们明明没写几行代码，但是生成的obj却有几十kb，因为有其他文件中成千上万行的代码被拷贝过来了。</p>
 <p>如果要进一步验证，可以在VS中修改ProjectProperties，其中Configuration Properties-&gt;C/C+±&gt;Preprocessor中的Preprocess to a File属性改为Yes。此时编译就会产生.i文件，这就是预处理后的代码文件，对比可以看到它和正常写法生成的.i文件产生一样的效果。这里就不演示了。<br>
@@ -747,13 +747,13 @@ int main() &#123;
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2023-01-10</div>
-        <a href="/2023/01/10/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/"><div class="recent-posts-item-content">GAMES101作业2：Triangles and Z-buffering</div></a>
+        <div class="recent-posts-item-title">2023-01-12</div>
+        <a href="/2023/01/12/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/"><div class="recent-posts-item-content">GAMES101简要梳理：着色</div></a>
       </div>
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-10</div>
-        <a href="/2023/01/10/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/"><div class="recent-posts-item-content">GAMES101简要梳理：着色</div></a>
+        <a href="/2023/01/10/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/"><div class="recent-posts-item-content">GAMES101作业2：Triangles and Z-buffering</div></a>
       </div>
     
       <div class="recent-posts-item">

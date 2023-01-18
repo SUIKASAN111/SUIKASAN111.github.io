@@ -45,7 +45,7 @@
         content="2023-01-10">
       <meta 
         property="og:article:modified_time" 
-        content="2023-01-10">
+        content="2023-01-18">
       <meta 
         property="og:article:author" 
         content="suikasan">
@@ -387,7 +387,7 @@
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
-          <span class="categories-list-item-badge">5</span>
+          <span class="categories-list-item-badge">6</span>
         </div>
       </a>
     
@@ -490,7 +490,7 @@
     
     
       <span class="dot"></span>
-      <span>2.9k words</span>
+      <span>3k words</span>
     
   </div>
   
@@ -602,8 +602,12 @@ void rst::rasterizer::rasterize_triangle(const Triangle&amp; t) &#123;
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>以上是rasterize_triangle函数的实现。<br>
 首先要完成包围盒的构建，取三角形三个顶点中的最大和最小的x,y值构成最小点和最大点，以这两点为对角构成矩形包围盒。一般来说，要将三角形完全包围在内理应最小点下取整，最大点上取整，但是考虑到我们是用像素中心进行判断，计算时坐标值要加0.5，因此实际上就相当于上取整了，所以pmax坐标计算时没有+1；<br>
-深度值插值的代码使用代码框架给出的即可，这里我在作业1中采用将Z坐标值都改成负数来解决三角形颠倒问题，为了保持一致将代码中的z_interpolated也改为了负值。这个只要自己能理解，前后保持一致就行，应该没什么问题。</p>
-<p><strong>注：代码框架给出的<code>auto[alpha, beta, gamma]</code>这种写法是C++17的新特性，使用这种写法需要设置一下编译器版本。</strong></p>
+深度值插值的代码使用代码框架给出的即可，这里将z_interpolated取负，因为顶点v取得的z值为负的坐标值，而我们要保存的深度值是正值。</p>
+<p><strong>注</strong>：</p>
+<ul>
+<li>代码框架给出的<code>auto[alpha, beta, gamma]</code>这种写法是C++17的新特性，使用这种写法需要设置一下编译器版本。</li>
+<li>在完成作业过程中，看到有各路大神讨论此处深度插值中透视矫正的问题，我个人对此无深入了解，便不在此妄加议论，完成作业时也未更改原框架，据大神们所说透视矫正问题会带来一些偏差，但是在此作业中基本上看不出来，作业3也类似。</li>
+</ul>
 <p><strong>效果</strong><br>
 <img src="/2023/01/10/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/1.png" alt="1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/10/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/1.png" class="lozad post-image"><br>
 如果放大图片看，锯齿还是非常明显的。</p>
@@ -744,13 +748,13 @@ void rst::rasterizer::rasterize_triangle(const Triangle&amp; t) &#123;
   
     <div class="nav-item-prev">
       <a 
-        href="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/" 
+        href="/2023/01/12/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/" 
         class="nav-link">
         <i class="iconfont icon-left nav-prev-icon"></i>
         <div>
           <div class="nav-label">Prev</div>
           
-            <div class="nav-title">GAMES101作业3：Pipeline and Shading </div>
+            <div class="nav-title">GAMES101简要梳理：着色 </div>
           
         </div>
       </a>
@@ -759,12 +763,12 @@ void rst::rasterizer::rasterize_triangle(const Triangle&amp; t) &#123;
   
     <div class="nav-item-next">
       <a 
-        href="/2023/01/10/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/" 
+        href="/2023/01/05/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E6%A0%85%E5%8C%96/" 
         class="nav-link">
         <div>
           <div class="nav-label">Next</div>
           
-            <div class="nav-title">GAMES101简要梳理：着色 </div>
+            <div class="nav-title">GAMES101简要梳理：光栅化 </div>
           
         </div>
         <i class="iconfont icon-right nav-next-icon"></i>
@@ -816,13 +820,13 @@ void rst::rasterizer::rasterize_triangle(const Triangle&amp; t) &#123;
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2023-01-10</div>
-        <a href="/2023/01/10/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/"><div class="recent-posts-item-content">GAMES101作业2：Triangles and Z-buffering</div></a>
+        <div class="recent-posts-item-title">2023-01-12</div>
+        <a href="/2023/01/12/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/"><div class="recent-posts-item-content">GAMES101简要梳理：着色</div></a>
       </div>
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-10</div>
-        <a href="/2023/01/10/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/"><div class="recent-posts-item-content">GAMES101简要梳理：着色</div></a>
+        <a href="/2023/01/10/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/"><div class="recent-posts-item-content">GAMES101作业2：Triangles and Z-buffering</div></a>
       </div>
     
       <div class="recent-posts-item">
