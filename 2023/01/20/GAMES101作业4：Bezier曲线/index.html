@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>GAMES101作业4：Bézier曲线</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="GAMES101作业4：Bézier曲线">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2023-01-20">
+      <meta 
+        property="og:article:modified_time" 
+        content="2023-01-21">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="GAMES101作业">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Pizza, Coke, PC, Dedication</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>11</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>3</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>5</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AF%B4%E6%98%8E"><span class="toc-text"> 更改说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#recursive_bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> recursive_bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E5%8E%9F%E7%90%86%E8%A7%A3%E9%87%8A%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 反走样原理解释与实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C-2"><span class="toc-text"> 效果</span></a></li></ol></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">9</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
+        title="底层原理">
+        <div class="tags-list-item">底层原理</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      GAMES101作业4：Bézier曲线
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2023-01-20T13:19:44.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2023-01-20</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/GAMES101/" 
+          class="post-meta-link">
+          GAMES101
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>1.8k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+            class="post-meta-link">
+            GAMES101作业
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。<br>
+已完成的代码可在我的GitHub<a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111/GAMES101-Assignments">GAMES101作业代码仓库</a>获取。</p>
+<p>GAMES101课程相关基础知识可参看本博客<a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>。</p>
+<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
+<h3 id="任务说明"><a class="markdownIt-Anchor" href="#任务说明"></a> <strong>任务说明</strong></h3>
+<p>本次作业的任务是实现使用控制点绘制出贝塞尔曲线。<br>
+主要工作如下：</p>
+<ul>
+<li>完成recursive_bezier函数：输入控制点序列和浮点数t，得到当前t对应的贝塞尔曲线上的点</li>
+<li>完成bezier函数：实现Bézier曲线的绘制</li>
+<li>提高：实现Bézier曲线的反走样</li>
+</ul>
+<h3 id="重点提要"><a class="markdownIt-Anchor" href="#重点提要"></a> <strong>重点提要</strong></h3>
+<p>主要是对De Casteljau算法的理解，利用其逐阶插值的特点进行代码实现。</p>
+<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
+<p>本次作业中，我将给定的框架进行了少量修改，直接实现对任意控制点数绘制贝塞尔曲线而不是仅仅四个点。<br>
+对框架中给出的naive_bezier函数，并未修改成任意控制点数实现。该函数直接用公式表示贝塞尔曲线上的点，用于验证我们实现的De Casteljau算法的正确性，如要将其也改为实现任意控制点数绘制则需要在其中表示出Bernstein多项式。</p>
+<h3 id="更改说明"><a class="markdownIt-Anchor" href="#更改说明"></a> <strong>更改说明</strong></h3>
+<p>实现对任意控制点数的绘制，需要对给定的代码框架进行一些修改，说明如下</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">void mouse_handler(int event, int x, int y, int flags, void *userdata) 
+&#123;
+    if (event &#x3D;&#x3D; cv::EVENT_LBUTTONDOWN)
+    &#123;
+        std::cout &lt;&lt; &quot;Left button of the mouse is clicked - position (&quot; &lt;&lt; x &lt;&lt; &quot;, &quot;
+        &lt;&lt; y &lt;&lt; &quot;)&quot; &lt;&lt; &#39;\n&#39;;
+        control_points.emplace_back(x, y);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>mouse_handler函数的if语句条件中去掉点序列size的限制。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">int main() 
+&#123;
+    cv::Mat window &#x3D; cv::Mat(700, 700, CV_8UC3, cv::Scalar(0));
+    cv::cvtColor(window, window, cv::COLOR_BGR2RGB);
+    cv::namedWindow(&quot;Bezier Curve&quot;, cv::WINDOW_AUTOSIZE);
+
+    cv::setMouseCallback(&quot;Bezier Curve&quot;, mouse_handler, nullptr);
+
+    int key &#x3D; -1;
+    while (key !&#x3D; 27) 
+    &#123;
+        for (auto &amp;point : control_points) 
+        &#123;
+            cv::circle(window, point, 3, &#123;255, 255, 255&#125;, 3);
+        &#125;
+        &#x2F;********************edited*********************&#x2F;
+        if (key &#x3D;&#x3D; 13)
+        &#123;
+            &#x2F;&#x2F; naive_bezier(control_points, window);
+            bezier(control_points, window);
+            cv::imshow(&quot;Bezier Curve&quot;, window);
+            cv::imwrite(&quot;my_bezier_curve.png&quot;, window);
+            key &#x3D; cv::waitKey(0);
+            return 0;
+        &#125;
+        &#x2F;***********************************************&#x2F;
+        cv::imshow(&quot;Bezier Curve&quot;, window);
+        key &#x3D; cv::waitKey(20);
+    &#125;
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>main函数中while循环中贝塞尔曲线的绘制部分代码放入if语句中，条件是(key==13)，即当键入Enter时，再进行曲线的绘制。<br>
+如此修改后实现的效果是先用鼠标在窗口中按顺序定义出控制点，键入Enter表示定义控制点完成，然后程序根据已定义的控制点进行绘制。</p>
+<h3 id="基础"><a class="markdownIt-Anchor" href="#基础"></a> <strong>基础</strong></h3>
+<h4 id="recursive_bezier函数"><a class="markdownIt-Anchor" href="#recursive_bezier函数"></a> <strong>recursive_bezier函数</strong></h4>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">cv::Point2f recursive_bezier(const std::vector&lt;cv::Point2f&gt; &amp;control_points, float t) 
+&#123;
+    &#x2F;&#x2F; TODO: Implement de Casteljau&#39;s algorithm
+    std::vector&lt;cv::Point2f&gt; points(control_points);
+    std::vector&lt;cv::Point2f&gt; ret;
+    for (auto i &#x3D; points.size(); i &gt; 1; --i)
+    &#123;
+        for (std::size_t j &#x3D; 0; j &lt; i - 1; ++j)
+        &#123;
+            auto point &#x3D; (1 - t) * points[j] + t * points[j + 1];
+            ret.push_back(point);
+        &#125;
+        if (ret.size() &#x3D;&#x3D; 1)
+            break;
+        else
+        &#123;
+            points &#x3D; ret;
+            ret.clear();
+        &#125;
+    &#125;
+    return cv::Point2f(ret[0]);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里是直接实现了对任意点数插值的de Casteljau算法，如果只是完成四个控制点的绘制可以不用循环。<br>
+其中，points保存每一趟循环需要插值的点的序列，ret保存插值结果，一趟插值完毕后ret的结果赋值给point，ret清零，也就是说一趟插值的结果即为下一趟需要插值的点。直到某次插值后ret中仅有一个点，该点就是当前t值对应的贝塞尔曲线上的点。</p>
+<h4 id="bezier函数"><a class="markdownIt-Anchor" href="#bezier函数"></a> bezier函数</h4>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">void bezier(const std::vector&lt;cv::Point2f&gt; &amp;control_points, cv::Mat &amp;window) 
+&#123;
+    &#x2F;&#x2F; TODO: Iterate through all t &#x3D; 0 to t &#x3D; 1 with small steps, and call de Casteljau&#39;s 
+    &#x2F;&#x2F; recursive Bezier algorithm.
+    for (double t &#x3D; 0.0; t &lt;&#x3D; 1.0; t +&#x3D; 0.001)
+    &#123;
+        auto point &#x3D; recursive_bezier(control_points, t);
+        window.at&lt;cv::Vec3b&gt;(point.y, point.x)[1] &#x3D; 255;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>bezier函数就是执行绘制的流程，以0.001为步长绘制t从0到1对应的点形成贝塞尔曲线。</p>
+<h4 id="效果"><a class="markdownIt-Anchor" href="#效果"></a> <strong>效果</strong></h4>
+<p><strong>de Casteljau算法绘制结果</strong><br>
+<img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/4points.png" alt="4points" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/4points.png" class="lozad post-image"></p>
+<p><strong>结果验证</strong><br>
+同时调用naive_bezier和bezier函数，验证算法正确性<br>
+<img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/test.png" alt="test" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/test.png" class="lozad post-image"></p>
+<p><strong>不同数量的控制点</strong><br>
+<img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/3points.png" alt="3points" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/3points.png" class="lozad post-image"><br>
+<img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/6points.png" alt="6points" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/6points.png" class="lozad post-image"></p>
+<h3 id="提高"><a class="markdownIt-Anchor" href="#提高"></a> <strong>提高</strong></h3>
+<p>贝塞尔曲线反走样的实现思路参考了csdn大佬<a target="_blank" rel="noopener" href="https://blog.csdn.net/ycrsw?type=blog">ycr的帐号</a>的<a target="_blank" rel="noopener" href="https://blog.csdn.net/ycrsw/article/details/124117190?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167422752416800222852115%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=167422752416800222852115&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-124117190-null-null.142%5Ev71%5Ejs_top,201%5Ev4%5Eadd_ask&amp;utm_term=games101%E4%BD%9C%E4%B8%9A4&amp;spm=1018.2226.3001.4187">【GAMES101】作业4（提高）含Bazier曲线的反走样处理</a>文章中的处理思路。</p>
+<h4 id="反走样原理解释与实现"><a class="markdownIt-Anchor" href="#反走样原理解释与实现"></a> <strong>反走样原理解释与实现</strong></h4>
+<p>这里使用Excel单元格表示像素来解释走样的形成和反走样思路。<br>
+我们原来仅绘制计算出的点所在的像素点，像这样<br>
+<img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/1.PNG" alt="1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/1.PNG" class="lozad post-image"><br>
+根据作业说明文档的提示：对于一个曲线上的点，不只把它对应于一个像素，你需要根据到像素中心的距离来考虑与它相邻的像素的颜色。<br>
+因此，我们考虑以当前点所在像素为中心的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3\times3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span></span></span></span>范围的9个像素，也就是说一个点会影响它附近的9个像素。中心离当前点越近的像素颜色越接近绿色(0,255,0)，中心离当前点越远则越接近背景黑色(0,0,0)。类似这样<br>
+<img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/2.PNG" alt="2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/2.PNG" class="lozad post-image"><br>
+具体实现就是根据当前点到各像素中心的距离，计算出各像素对应的一个比值，用该比值乘以颜色(0,255,0)为该像素的颜色。其中的距离<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">d</span></span></span></span>取值范围为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>0</mn><mo separator="true">,</mo><mn>3</mn><mi mathvariant="normal">/</mi><msqrt><mn>2</mn></msqrt><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[0,3/\sqrt{2}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1572200000000001em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mord">/</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.90722em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span></span></span><span style="top:-2.86722em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg width="400em" height="1.08em" viewbox="0 0 400000 1080" preserveaspectratio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.13278em;"><span></span></span></span></span></span><span class="mclose">]</span></span></span></span>，因此比值可以表示成</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>r</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mo>=</mo><mn>1</mn><mo>−</mo><mi>d</mi><mo>∗</mo><msqrt><mn>2</mn></msqrt><mi mathvariant="normal">/</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">ratio=1-d*\sqrt{2}/3
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">d</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.206095em;vertical-align:-0.25em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.956095em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span></span></span><span style="top:-2.916095em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg width="400em" height="1.08em" viewbox="0 0 400000 1080" preserveaspectratio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.08390500000000001em;"><span></span></span></span></span></span><span class="mord">/</span><span class="mord">3</span></span></span></span></span></p>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">d</span></span></span></span>从0变化到1，对应的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi></mrow><annotation encoding="application/x-tex">ratio</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span></span></span></span>从1线性变化到0，颜色从(0,255,0)线性变化到(0,0,0)，符合上述的思路。</p>
+<p>代码如下，我的实现是在bezier函数中加入对相邻像素的操作，前面未涉及的注意点请见代码注释</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">void bezier(const std::vector&lt;cv::Point2f&gt; &amp;control_points, cv::Mat &amp;window) 
+&#123;
+    &#x2F;&#x2F; TODO: Iterate through all t &#x3D; 0 to t &#x3D; 1 with small steps, and call de Casteljau&#39;s 
+    &#x2F;&#x2F; recursive Bezier algorithm.
+    for (double t &#x3D; 0.0; t &lt;&#x3D; 1.0; t +&#x3D; 0.001)
+    &#123;
+        auto point &#x3D; recursive_bezier(control_points, t);
+        cv::Point2f pointCenter;&#x2F;&#x2F;中心的像素
+        pointCenter.x &#x3D; std::floor(point.x + 0.5f);
+        pointCenter.y &#x3D; std::floor(point.y + 0.5f);
+        &#x2F;&#x2F;依次遍历3x3范围内的像素
+        for (int i &#x3D; -1; i &lt; 1; ++i)
+        &#123;
+            for (int j &#x3D; -1; j &lt; 1; ++j)
+            &#123;
+                cv::Point2f pointCurr;
+                pointCurr.x &#x3D; pointCenter.x + i;
+                pointCurr.y &#x3D; pointCenter.y + j;
+                &#x2F;&#x2F;保证像素操作不要超出窗口范围
+                if (pointCurr.x &gt; 700 || pointCurr.x &lt; 0 || pointCurr.y&gt;700 || pointCurr.y &lt; 0)
+                    continue;
+                float distance &#x3D; sqrt(pow((pointCurr.x - point.x), 2) + pow((pointCurr.y - point.y), 2));
+                float ratio &#x3D; 1 - distance &#x2F; 3 * sqrt(2);
+                int colorG &#x3D; 255 * ratio;
+                &#x2F;&#x2F;绘制不同点时候会有像素被反复计算，此时保留其颜色的最大值即可
+                if (window.at&lt;cv::Vec3b&gt;(pointCurr.y, pointCurr.x)[1] &lt; colorG)
+                     window.at&lt;cv::Vec3b&gt;(pointCurr.y, pointCurr.x)[1] &#x3D; colorG;
+            &#125;
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="效果-2"><a class="markdownIt-Anchor" href="#效果-2"></a> <strong>效果</strong></h4>
+<p><strong>反走样</strong><br>
+<img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/antialiasing.png" alt="antialiasing" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/antialiasing.png" class="lozad post-image"><br>
+<strong>前后对比</strong><br>
+<img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/3.png" alt="3" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/3.png" class="lozad post-image"><br>
+可见，反走样效果还是十分明显的，原先的曲线锯齿严重，且中间有黑点，像断开了似的；反走样后明显改善。</p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/">
+            https://suikasan111.github.io/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2023/01/20/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">GAMES101知识梳理：光线追踪 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AF%B4%E6%98%8E"><span class="toc-text"> 更改说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#recursive_bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> recursive_bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E5%8E%9F%E7%90%86%E8%A7%A3%E9%87%8A%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 反走样原理解释与实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C-2"><span class="toc-text"> 效果</span></a></li></ol></li></ol></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AF%B4%E6%98%8E"><span class="toc-text"> 更改说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#recursive_bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> recursive_bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E5%8E%9F%E7%90%86%E8%A7%A3%E9%87%8A%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 反走样原理解释与实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C-2"><span class="toc-text"> 效果</span></a></li></ol></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-20</div>
+        <a href="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/"><div class="recent-posts-item-content">GAMES101作业4：Bézier曲线</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-20</div>
+        <a href="/2023/01/20/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101知识梳理：光线追踪</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-18</div>
+        <a href="/2023/01/18/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%87%A0%E4%BD%95/"><div class="recent-posts-item-content">GAMES101知识梳理：几何</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-17</div>
+        <a href="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/"><div class="recent-posts-item-content">GAMES101作业3：Pipeline and Shading</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2023
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+  </body>
+</html>
