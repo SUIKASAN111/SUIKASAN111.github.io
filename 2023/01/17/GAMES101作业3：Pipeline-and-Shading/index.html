@@ -45,7 +45,7 @@
         content="2023-01-17">
       <meta 
         property="og:article:modified_time" 
-        content="2023-01-19">
+        content="2023-01-20">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -333,19 +333,19 @@
   <a 
     class="author-posts-count" 
     href="/archives">
-    <span>11</span>
+    <span>10</span>
     <span>Posts</span>
   </a>
   <a 
     class="author-categories-count" 
     href="/categories">
-    <span>4</span>
+    <span>3</span>
     <span>Categories</span>
   </a>
   <a 
     class="author-tags-count" 
     href="/tags">
-    <span>6</span>
+    <span>5</span>
     <span>Tags</span>
   </a>
 </div>
@@ -426,13 +426,6 @@
         </div>
       </a>
     
-      <a href="/categories/Blog/">
-        <div class="categories-list-item">
-          Blog
-          <span class="categories-list-item-badge">1</span>
-        </div>
-      </a>
-    
   </div>
 </div>
   </article>
@@ -457,12 +450,6 @@
         href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
         title="GAMES101作业">
         <div class="tags-list-item">GAMES101作业</div>
-      </a>
-    
-      <a 
-        href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" 
-        title="踩坑记录">
-        <div class="tags-list-item">踩坑记录</div>
       </a>
     
       <a 
@@ -546,7 +533,8 @@
     id="section" 
     class="post-content">
     <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
-<p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。</p>
+<p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。<br>
+获取已完成的代码请移步我的GitHub<a href="./https://github.com/SUIKASAN111/GAMES101-Assignments">GAMES101作业代码仓库</a>。</p>
 <p>GAMES101课程相关基础知识可参看本博客<a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>。</p>
 <h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
 <h3 id="任务说明"><a class="markdownIt-Anchor" href="#任务说明"></a> <strong>任务说明</strong></h3>
@@ -563,7 +551,7 @@
 </ul>
 <h3 id="重点提要"><a class="markdownIt-Anchor" href="#重点提要"></a> <strong>重点提要</strong></h3>
 <p>Blinn-Phong模型、插值、Bump/Normal Mapping、Displacement mapping…</p>
-<p>相关基础知识梳理可参看本博客<a href="https://suikasan111.github.io/2023/01/10/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/">GAMES101简要梳理：着色</a>。</p>
+<p>相关基础知识梳理可参看本博客<a href="https://suikasan111.github.io/2023/01/10/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/">GAMES101知识梳理：着色</a>。</p>
 <h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
 <p>get_projection_matrix()直接复制前两次的即可。注意Z值正负问题。</p>
 <p><strong>注</strong>：代码框架部分使用了一些C++17的新特性，如std::optional。完成作业时候记得将编译器版本改为C++17，或自行用更早C++版本重新实现那些内容。</p>
@@ -784,7 +772,7 @@ Eigen::Vector3f bump_fragment_shader(const fragment_shader_payload&amp; payload)
 
     return result_color * 255.f;
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>代码框架中给出了伪代码，根据伪代码一步一步实现基本上就行了。其原理就是用纹理颜色记录纹理像素高度的变化，具体细节参考<a href="https://suikasan111.github.io/2023/01/10/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/">GAMES101简要梳理：着色</a>。</p>
+<p>代码框架中给出了伪代码，根据伪代码一步一步实现基本上就行了。其原理就是用纹理颜色记录纹理像素高度的变化，具体细节参考<a href="https://suikasan111.github.io/2023/01/10/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/">GAMES101知识梳理：着色</a>。</p>
 <p>其中最重要的部分是进行坐标变换。如课程中所述，我们用差分方法进行新的法向量计算时将原法向量设为(0,0,1)，也就是说我们使用的是每个像素局部的切线空间坐标系，局部计算结果必须变换回世界坐标系。<br>
 切线空间坐标系由T轴(切线tangant)、B轴(副切线bitangent)、N轴(法线normal)构成。<br>
 将世界坐标系旋转为切线空间坐标系通过左乘TBN矩阵实现，因此将切线空间中的法向量变换为用世界坐标表示也是左乘TBN矩阵。这一点与课程中讲Viewing Transformation的矩阵推导有点类似，只不过当时是先求相机的逆变换再取逆矩阵，而TBN的推导可以利用旋转坐标系和以相反方式旋转坐标系中的向量效果相同的原理。</p>
@@ -980,13 +968,13 @@ main.cpp中有三个Fragment Shader，其中normal_fragment_shader是按照法�
   
     <div class="nav-item-prev">
       <a 
-        href="/2023/01/18/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%87%A0%E4%BD%95/" 
+        href="/2023/01/18/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%87%A0%E4%BD%95/" 
         class="nav-link">
         <i class="iconfont icon-left nav-prev-icon"></i>
         <div>
           <div class="nav-label">Prev</div>
           
-            <div class="nav-title">GAMES101简要梳理：几何 </div>
+            <div class="nav-title">GAMES101知识梳理：几何 </div>
           
         </div>
       </a>
@@ -995,12 +983,12 @@ main.cpp中有三个Fragment Shader，其中normal_fragment_shader是按照法�
   
     <div class="nav-item-next">
       <a 
-        href="/2023/01/12/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/" 
+        href="/2023/01/12/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/" 
         class="nav-link">
         <div>
           <div class="nav-label">Next</div>
           
-            <div class="nav-title">GAMES101简要梳理：着色 </div>
+            <div class="nav-title">GAMES101知识梳理：着色 </div>
           
         </div>
         <i class="iconfont icon-right nav-next-icon"></i>
@@ -1048,12 +1036,12 @@ main.cpp中有三个Fragment Shader，其中normal_fragment_shader是按照法�
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-20</div>
-        <a href="/2023/01/20/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101简要梳理：光线追踪</div></a>
+        <a href="/2023/01/20/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101知识梳理：光线追踪</div></a>
       </div>
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-18</div>
-        <a href="/2023/01/18/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%87%A0%E4%BD%95/"><div class="recent-posts-item-content">GAMES101简要梳理：几何</div></a>
+        <a href="/2023/01/18/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%87%A0%E4%BD%95/"><div class="recent-posts-item-content">GAMES101知识梳理：几何</div></a>
       </div>
     
       <div class="recent-posts-item">
@@ -1063,7 +1051,7 @@ main.cpp中有三个Fragment Shader，其中normal_fragment_shader是按照法�
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-12</div>
-        <a href="/2023/01/12/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/"><div class="recent-posts-item-content">GAMES101简要梳理：着色</div></a>
+        <a href="/2023/01/12/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/"><div class="recent-posts-item-content">GAMES101知识梳理：着色</div></a>
       </div>
     
   </div>
