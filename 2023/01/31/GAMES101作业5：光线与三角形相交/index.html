@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>GAMES101作业5：光线与三角形相交</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="GAMES101作业5：光线与三角形相交">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2023-01-31">
+      <meta 
+        property="og:article:modified_time" 
+        content="2023-01-31">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="GAMES101作业">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Pizza, Coke, PC, Dedication</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>12</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>3</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>5</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer-2"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#castray"><span class="toc-text"> castRay</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">10</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
+        title="底层原理">
+        <div class="tags-list-item">底层原理</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      GAMES101作业5：光线与三角形相交
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2023-01-31T02:25:52.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2023-01-31</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/GAMES101/" 
+          class="post-meta-link">
+          GAMES101
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.1k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+            class="post-meta-link">
+            GAMES101作业
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。<br>
+已完成的代码可在我的GitHub<a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111/GAMES101-Assignments">GAMES101作业代码仓库</a>获取。</p>
+<p>GAMES101课程相关基础知识可参看本博客<a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>。</p>
+<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
+<p>本次作业的任务是完成光线追踪中光线的生成和光线与三角形求交的算法。<br>
+主要工作如下：</p>
+<ul>
+<li>Render() in Renderer.cpp：为每个像素生成一条对应的光线，然后调用函数castRay()来得到颜色，最后将颜色存储在帧缓冲区的相应像素中。</li>
+<li>rayTriangleIntersect() in Triangle.hpp：实现Moller-Trumbore算法。</li>
+</ul>
+<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
+<h3 id="renderer"><a class="markdownIt-Anchor" href="#renderer"></a> <strong>Renderer</strong></h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Renderer.cpp
+void Renderer::Render(const Scene&amp; scene)
+&#123;
+    std::vector&lt;Vector3f&gt; framebuffer(scene.width * scene.height);
+
+    float scale &#x3D; std::tan(deg2rad(scene.fov * 0.5f));
+    float imageAspectRatio &#x3D; scene.width &#x2F; (float)scene.height;
+
+    &#x2F;&#x2F; Use this variable as the eye position to start your rays.
+    Vector3f eye_pos(0);
+    int m &#x3D; 0;
+    for (int j &#x3D; 0; j &lt; scene.height; ++j)
+    &#123;
+        for (int i &#x3D; 0; i &lt; scene.width; ++i)
+        &#123;
+            &#x2F;&#x2F; generate primary ray direction
+            float x;
+            float y;
+            &#x2F;&#x2F; TODO: Find the x and y positions of the current pixel to get the direction
+            &#x2F;&#x2F; vector that passes through it.
+            &#x2F;&#x2F; Also, don&#39;t forget to multiply both of them with the variable *scale*, and
+            &#x2F;&#x2F; x (horizontal) variable with the *imageAspectRatio*
+            x &#x3D; 2 * scale * imageAspectRatio &#x2F; scene.width * (i + 0.5f) - scale * imageAspectRatio;
+            y &#x3D; -2 * scale &#x2F; scene.height * (j + 0.5f) + scale;
+            Vector3f dir &#x3D; Vector3f(x, y, -1); &#x2F;&#x2F; Don&#39;t forget to normalize this direction!
+            dir &#x3D; normalize(dir);
+            framebuffer[m++] &#x3D; castRay(eye_pos, dir, scene, 0);
+        &#125;
+        UpdateProgress(j &#x2F; (float)scene.height);
+    &#125;
+
+    &#x2F;&#x2F; save framebuffer to file
+    FILE* fp &#x3D; fopen(&quot;binary.ppm&quot;, &quot;wb&quot;);
+    (void)fprintf(fp, &quot;P6\n%d %d\n255\n&quot;, scene.width, scene.height);
+    for (auto i &#x3D; 0; i &lt; scene.height * scene.width; ++i) &#123;
+        static unsigned char color[3];
+        color[0] &#x3D; (char)(255 * clamp(0, 1, framebuffer[i].x));
+        color[1] &#x3D; (char)(255 * clamp(0, 1, framebuffer[i].y));
+        color[2] &#x3D; (char)(255 * clamp(0, 1, framebuffer[i].z));
+        fwrite(color, 1, 3, fp);
+    &#125;
+    fclose(fp);    
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从作业代码框架中可知，我们的成像平面位于z=-1。<br>
+框架中已经根据scene中定义的fov和屏幕宽高帮我们计算好<code>scale</code>和<code>imageAspectRatio</code>，利用其就可计算出从相机到对应像素中心的连线的x,y分量。<br>
+<strong>特别注意</strong>：</p>
+<ol>
+<li>由于利用像素中心进行计算，记得将i,j加0.5；</li>
+<li>像素从左上到右下横向遍历，屏幕中在z轴上，计算x,y时记得进行半个屏幕宽高的平移；</li>
+<li>计算出的dir(x,y,-1)就相当于从相机到屏幕像素的连线，而光线方向则需要对dir再进行归一化；</li>
+</ol>
+<h3 id="triangle"><a class="markdownIt-Anchor" href="#triangle"></a> <strong>Triangle</strong></h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">bool rayTriangleIntersect(const Vector3f&amp; v0, const Vector3f&amp; v1, const Vector3f&amp; v2, const Vector3f&amp; orig,
+                          const Vector3f&amp; dir, float&amp; tnear, float&amp; u, float&amp; v)
+&#123;
+    &#x2F;&#x2F; TODO: Implement this function that tests whether the triangle
+    &#x2F;&#x2F; that&#39;s specified bt v0, v1 and v2 intersects with the ray (whose
+    &#x2F;&#x2F; origin is *orig* and direction is *dir*)
+    &#x2F;&#x2F; Also don&#39;t forget to update tnear, u and v.
+    Vector3f E1, E2, S, S1, S2, result1, result;
+    E1 &#x3D; v1 - v0;
+    E2 &#x3D; v2 - v0;
+    S &#x3D; orig - v0;
+    S1 &#x3D; crossProduct(dir, E2);
+    S2 &#x3D; crossProduct(S, E1);
+    result1 &#x3D; Vector3f(dotProduct(S2, E2), dotProduct(S1, S), dotProduct(S2, dir));
+    result &#x3D; result1 &#x2F; dotProduct(S1, E1);
+    tnear &#x3D; result.x;
+    u &#x3D; result.y;
+    v &#x3D; result.z;
+    if (tnear &gt; 0 &amp;&amp; u &gt;&#x3D; 0 &amp;&amp; u &lt;&#x3D; 1 &amp;&amp; v &gt;&#x3D; 0 &amp;&amp; v &lt;&#x3D; 1)
+    &#123;
+        return true;
+    &#125;
+    return false;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这部分其实没什么可说的，就是套Möller Trumbore公式。需要注意的就是，最后记得判断一下有效性，首先tnear必须大于0，这样保证三角形是在光线前方，再者必须保证u,v(对应课程中公式里重心坐标表示的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>b</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">b_1,b_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)在0-1之间，保证交点在三角形内。</p>
+<h3 id="效果"><a class="markdownIt-Anchor" href="#效果"></a> <strong>效果</strong></h3>
+<p><img src="/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/binary.png" alt="Result" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/binary.png" class="lozad post-image"></p>
+<h2 id="代码框架说明"><a class="markdownIt-Anchor" href="#代码框架说明"></a> 代码框架说明</h2>
+<p>本次作业的说明文档给出了不少框架的说明，对于完成作业来说已经基本上足够，这里仅做简要补充。</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; in Document
+global.hpp：包含了整个框架中会使用的基本函数和变量。
+Vector.hpp: 由于我们不再使用 Eigen 库，因此我们在此处提供了常见的向量操作，例如：dotProduct，crossProduct，normalize。
+Object.hpp: 渲染物体的父类。Triangle 和 Sphere 类都是从该类继承的。
+Scene.hpp: 定义要渲染的场景。包括设置参数，物体以及灯光。
+Renderer.hpp: 渲染器类，它实现了所有光线追踪的操作。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="renderer-2"><a class="markdownIt-Anchor" href="#renderer-2"></a> <strong>Renderer</strong></h3>
+<p>渲染器类中的Render成员函数控制整个光线追踪渲染的流程，根据Scene类中定义的屏幕信息逐像素生成光线，然后调用castRay函数完成光线追踪与着色，将结果存入帧缓冲区，绘制出图像。</p>
+<h3 id="castray"><a class="markdownIt-Anchor" href="#castray"></a> <strong>castRay</strong></h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Vector3f castRay(
+        const Vector3f &amp;orig, const Vector3f &amp;dir, const Scene&amp; scene,
+        int depth)
+&#123;
+    if (depth &gt; scene.maxDepth) &#123;
+        return Vector3f(0.0,0.0,0.0);
+    &#125;
+
+    Vector3f hitColor &#x3D; scene.backgroundColor;
+    if (auto payload &#x3D; trace(orig, dir, scene.get_objects()); payload)
+    &#123;
+       ...
+    &#125;
+    return hitColor;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>castRay函数首先调用trace函数进行求交计算，trace函数中根据光线与物体信息，调用相应的intersect函数进行求交，即与三角形或球面求交，具体方法如课程中所述。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Vector3f hitPoint &#x3D; orig + dir * payload-&gt;tNear;
+       Vector3f N; &#x2F;&#x2F; normal
+       Vector2f st; &#x2F;&#x2F; st coordinates
+       payload-&gt;hit_obj-&gt;getSurfaceProperties(hitPoint, dir, payload-&gt;index, payload-&gt;uv, N, st);
+       ...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后根据求交的结果算出交点，获取交点的表面信息，用于计算着色结果和光线进一步反射或折射的方向。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">switch (payload-&gt;hit_obj-&gt;materialType) &#123;
+            ...
+        &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>switch语句就是根据交点所在表面的材质(REFLECTION_AND_REFRACTION,REFLECTION,DIFFUSE_AND_GLOSSY)分成反射与折射、反射、漫反射与高光三种情况进行对应的着色计算。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">case REFLECTION_AND_REFRACTION:
+&#123;
+    Vector3f reflectionDirection &#x3D; normalize(reflect(dir, N));
+    Vector3f refractionDirection &#x3D; normalize(refract(dir, N, payload-&gt;hit_obj-&gt;ior));
+    Vector3f reflectionRayOrig &#x3D; (dotProduct(reflectionDirection, N) &lt; 0) ?
+                                    hitPoint - N * scene.epsilon :
+                                    hitPoint + N * scene.epsilon;
+    Vector3f refractionRayOrig &#x3D; (dotProduct(refractionDirection, N) &lt; 0) ?
+                                    hitPoint - N * scene.epsilon :
+                                    hitPoint + N * scene.epsilon;
+    Vector3f reflectionColor &#x3D; castRay(reflectionRayOrig, reflectionDirection, scene, depth + 1);
+    Vector3f refractionColor &#x3D; castRay(refractionRayOrig, refractionDirection, scene, depth + 1);
+    float kr &#x3D; fresnel(dir, N, payload-&gt;hit_obj-&gt;ior);
+    hitColor &#x3D; reflectionColor * kr + refractionColor * (1 - kr);
+    break;
+&#125;         <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>对于REFLECTION_AND_REFRACTION，即存在反射也存在折射，根据反射与折射的定理计算其反射光线与折射光线，对于每条新光线再次调用castRay计算其相交与着色，其中每次调用castRay都将depth加1，当depth大于Scene设定的最大次数时就不再追踪(其中代码框架默认设置为5次)。<br>
+REFLECTION_AND_REFRACTION情况下，其最终着色结果实际上是对各次新光线追踪着色结果的加权，其中每次折射与反射的比例与强度利用fresnel方程计算。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">case REFLECTION:
+&#123;
+    float kr &#x3D; fresnel(dir, N, payload-&gt;hit_obj-&gt;ior);
+    Vector3f reflectionDirection &#x3D; reflect(dir, N);
+    Vector3f reflectionRayOrig &#x3D; (dotProduct(reflectionDirection, N) &lt; 0) ?
+                                    hitPoint + N * scene.epsilon :
+                                    hitPoint - N * scene.epsilon;
+    hitColor &#x3D; castRay(reflectionRayOrig, reflectionDirection, scene, depth + 1) * kr;
+    break;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>对于REFLECTION与上述REFLECTION_AND_REFRACTION类似，只是没有折射只有反射，就是根据反射定理计算反射光线再调用castRay进行追踪，其反射光线强度也是利用fresnel方程计算，最终着色结果就是各次反射光线着色的结果的加权。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">default:
+&#123;
+    &#x2F;&#x2F; [comment]
+    &#x2F;&#x2F; We use the Phong illumation model int the default case. The phong model
+    &#x2F;&#x2F; is composed of a diffuse and a specular reflection component.
+    &#x2F;&#x2F; [&#x2F;comment]
+    Vector3f lightAmt &#x3D; 0, specularColor &#x3D; 0;
+    Vector3f shadowPointOrig &#x3D; (dotProduct(dir, N) &lt; 0) ?
+                                hitPoint + N * scene.epsilon :
+                                hitPoint - N * scene.epsilon;
+    &#x2F;&#x2F; [comment]
+    &#x2F;&#x2F; Loop over all lights in the scene and sum their contribution up
+    &#x2F;&#x2F; We also apply the lambert cosine law
+    &#x2F;&#x2F; [&#x2F;comment]
+    for (auto&amp; light : scene.get_lights()) &#123;
+        Vector3f lightDir &#x3D; light-&gt;position - hitPoint;
+        &#x2F;&#x2F; square of the distance between hitPoint and the light
+        float lightDistance2 &#x3D; dotProduct(lightDir, lightDir);
+        lightDir &#x3D; normalize(lightDir);
+        float LdotN &#x3D; std::max(0.f, dotProduct(lightDir, N));
+        &#x2F;&#x2F; is the point in shadow, and is the nearest occluding object closer to the object than the light itself?
+        auto shadow_res &#x3D; trace(shadowPointOrig, lightDir, scene.get_objects());
+        bool inShadow &#x3D; shadow_res &amp;&amp; (shadow_res-&gt;tNear * shadow_res-&gt;tNear &lt; lightDistance2);
+
+        lightAmt +&#x3D; inShadow ? 0 : light-&gt;intensity * LdotN;
+        Vector3f reflectionDirection &#x3D; reflect(-lightDir, N);
+
+        specularColor +&#x3D; powf(std::max(0.f, -dotProduct(reflectionDirection, dir)),
+            payload-&gt;hit_obj-&gt;specularExponent) * light-&gt;intensity;
+    &#125;
+
+    hitColor &#x3D; lightAmt * payload-&gt;hit_obj-&gt;evalDiffuseColor(st) * payload-&gt;hit_obj-&gt;Kd + specularColor * payload-&gt;hit_obj-&gt;Ks;
+    break;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>默认材质的着色是利用Phong模型进行着色，由于只考虑漫反射与高光项，因此产生的是硬阴影。</p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/">
+            https://suikasan111.github.io/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2023/01/26/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">GAMES101知识梳理：光线追踪 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer-2"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#castray"><span class="toc-text"> castRay</span></a></li></ol></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer-2"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#castray"><span class="toc-text"> castRay</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-31</div>
+        <a href="/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/"><div class="recent-posts-item-content">GAMES101作业5：光线与三角形相交</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-26</div>
+        <a href="/2023/01/26/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101知识梳理：光线追踪</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-20</div>
+        <a href="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/"><div class="recent-posts-item-content">GAMES101作业4：Bézier曲线</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-18</div>
+        <a href="/2023/01/18/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%87%A0%E4%BD%95/"><div class="recent-posts-item-content">GAMES101知识梳理：几何</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2023
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+  </body>
+</html>

@@ -45,7 +45,7 @@
         content="2023-01-20">
       <meta 
         property="og:article:modified_time" 
-        content="2023-01-21">
+        content="2023-01-31">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -333,7 +333,7 @@
   <a 
     class="author-posts-count" 
     href="/archives">
-    <span>11</span>
+    <span>12</span>
     <span>Posts</span>
   </a>
   <a 
@@ -409,7 +409,7 @@
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
-          <span class="categories-list-item-badge">9</span>
+          <span class="categories-list-item-badge">10</span>
         </div>
       </a>
     
@@ -615,7 +615,7 @@
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里是直接实现了对任意点数插值的de Casteljau算法，如果只是完成四个控制点的绘制可以不用循环。<br>
 其中，points保存每一趟循环需要插值的点的序列，ret保存插值结果，一趟插值完毕后ret的结果赋值给point，ret清零，也就是说一趟插值的结果即为下一趟需要插值的点。直到某次插值后ret中仅有一个点，该点就是当前t值对应的贝塞尔曲线上的点。</p>
-<h4 id="bezier函数"><a class="markdownIt-Anchor" href="#bezier函数"></a> bezier函数</h4>
+<h4 id="bezier函数"><a class="markdownIt-Anchor" href="#bezier函数"></a> <strong>bezier函数</strong></h4>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">void bezier(const std::vector&lt;cv::Point2f&gt; &amp;control_points, cv::Mat &amp;window) 
 &#123;
     &#x2F;&#x2F; TODO: Iterate through all t &#x3D; 0 to t &#x3D; 1 with small steps, and call de Casteljau&#39;s 
@@ -739,15 +739,29 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
 </article>
 <div class="nav">
   
+    <div class="nav-item-prev">
+      <a 
+        href="/2023/01/26/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">GAMES101知识梳理：光线追踪 </div>
+          
+        </div>
+      </a>
+    </div>
+  
   
     <div class="nav-item-next">
       <a 
-        href="/2023/01/20/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/" 
+        href="/2023/01/18/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%87%A0%E4%BD%95/" 
         class="nav-link">
         <div>
           <div class="nav-label">Next</div>
           
-            <div class="nav-title">GAMES101知识梳理：光线追踪 </div>
+            <div class="nav-title">GAMES101知识梳理：几何 </div>
           
         </div>
         <i class="iconfont icon-right nav-next-icon"></i>
@@ -794,23 +808,23 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   <div class="recent-posts-list">
     
       <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-31</div>
+        <a href="/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/"><div class="recent-posts-item-content">GAMES101作业5：光线与三角形相交</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-26</div>
+        <a href="/2023/01/26/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101知识梳理：光线追踪</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-20</div>
         <a href="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/"><div class="recent-posts-item-content">GAMES101作业4：Bézier曲线</div></a>
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2023-01-20</div>
-        <a href="/2023/01/20/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101知识梳理：光线追踪</div></a>
-      </div>
-    
-      <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-18</div>
         <a href="/2023/01/18/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%87%A0%E4%BD%95/"><div class="recent-posts-item-content">GAMES101知识梳理：几何</div></a>
-      </div>
-    
-      <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2023-01-17</div>
-        <a href="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/"><div class="recent-posts-item-content">GAMES101作业3：Pipeline and Shading</div></a>
       </div>
     
   </div>
