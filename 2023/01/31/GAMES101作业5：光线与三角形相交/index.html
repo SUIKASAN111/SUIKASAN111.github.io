@@ -45,7 +45,7 @@
         content="2023-01-31">
       <meta 
         property="og:article:modified_time" 
-        content="2023-01-31">
+        content="2023-02-08">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -646,10 +646,10 @@ Renderer.hpp: 渲染器类，它实现了所有光线追踪的操作。<span ari
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>castRay函数首先调用trace函数进行求交计算，trace函数中根据光线与物体信息，调用相应的intersect函数进行求交，即与三角形或球面求交，具体方法如课程中所述。</p>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Vector3f hitPoint &#x3D; orig + dir * payload-&gt;tNear;
-       Vector3f N; &#x2F;&#x2F; normal
-       Vector2f st; &#x2F;&#x2F; st coordinates
-       payload-&gt;hit_obj-&gt;getSurfaceProperties(hitPoint, dir, payload-&gt;index, payload-&gt;uv, N, st);
-       ...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+Vector3f N; &#x2F;&#x2F; normal
+Vector2f st; &#x2F;&#x2F; st coordinates
+payload-&gt;hit_obj-&gt;getSurfaceProperties(hitPoint, dir, payload-&gt;index, payload-&gt;uv, N, st);
+        ...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>然后根据求交的结果算出交点，获取交点的表面信息，用于计算着色结果和光线进一步反射或折射的方向。</p>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">switch (payload-&gt;hit_obj-&gt;materialType) &#123;
             ...
