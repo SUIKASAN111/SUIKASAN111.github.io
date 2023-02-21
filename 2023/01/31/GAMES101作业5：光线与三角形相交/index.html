@@ -45,7 +45,7 @@
         content="2023-01-31">
       <meta 
         property="og:article:modified_time" 
-        content="2023-02-08">
+        content="2023-02-21">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -333,7 +333,7 @@
   <a 
     class="author-posts-count" 
     href="/archives">
-    <span>13</span>
+    <span>12</span>
     <span>Posts</span>
   </a>
   <a 
@@ -399,17 +399,17 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/GAMES101/">
-        <div class="categories-list-item">
-          GAMES101
-          <span class="categories-list-item-badge">10</span>
-        </div>
-      </a>
-    
       <a href="/categories/CPP/">
         <div class="categories-list-item">
           CPP
           <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">10</span>
         </div>
       </a>
     
@@ -435,15 +435,21 @@
   <div class="tags-list">
     
       <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
         href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
         title="GAMES101作业">
         <div class="tags-list-item">GAMES101作业</div>
       </a>
     
       <a 
-        href="/tags/CPP/" 
-        title="CPP">
-        <div class="tags-list-item">CPP</div>
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
       </a>
     
       <a 
@@ -453,15 +459,9 @@
       </a>
     
       <a 
-        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
-        title="GAMES101知识梳理">
-        <div class="tags-list-item">GAMES101知识梳理</div>
-      </a>
-    
-      <a 
-        href="/tags/Markdown/" 
-        title="Markdown">
-        <div class="tags-list-item">Markdown</div>
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
       </a>
     
   </div>
@@ -499,7 +499,7 @@
     
     
       <span class="dot"></span>
-      <span>2.1k words</span>
+      <span>2.4k words</span>
     
   </div>
   
@@ -609,7 +609,7 @@ void Renderer::Render(const Scene&amp; scene)
     tnear &#x3D; result.x;
     u &#x3D; result.y;
     v &#x3D; result.z;
-    if (tnear &gt; 0 &amp;&amp; u &gt;&#x3D; 0 &amp;&amp; u &lt;&#x3D; 1 &amp;&amp; v &gt;&#x3D; 0 &amp;&amp; v &lt;&#x3D; 1)
+    if (tnear &gt; 0 &amp;&amp; u &gt; 0 &amp;&amp; v &gt; 0 &amp;&amp; (1 - u - v) &gt; 0)
     &#123;
         return true;
     &#125;
@@ -640,20 +640,81 @@ Renderer.hpp: 渲染器类，它实现了所有光线追踪的操作。<span ari
     Vector3f hitColor &#x3D; scene.backgroundColor;
     if (auto payload &#x3D; trace(orig, dir, scene.get_objects()); payload)
     &#123;
-       ...
+        Vector3f hitPoint &#x3D; orig + dir * payload-&gt;tNear;
+        Vector3f N; &#x2F;&#x2F; normal
+        Vector2f st; &#x2F;&#x2F; st coordinates
+        payload-&gt;hit_obj-&gt;getSurfaceProperties(hitPoint, dir, payload-&gt;index, payload-&gt;uv, N, st);
+        switch (payload-&gt;hit_obj-&gt;materialType) &#123;
+            ...
+        &#125;
     &#125;
+
     return hitColor;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>castRay函数首先调用trace函数进行求交计算，trace函数中根据光线与物体信息，调用相应的intersect函数进行求交，即与三角形或球面求交，具体方法如课程中所述。</p>
-<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Vector3f hitPoint &#x3D; orig + dir * payload-&gt;tNear;
-Vector3f N; &#x2F;&#x2F; normal
-Vector2f st; &#x2F;&#x2F; st coordinates
-payload-&gt;hit_obj-&gt;getSurfaceProperties(hitPoint, dir, payload-&gt;index, payload-&gt;uv, N, st);
-        ...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>然后根据求交的结果算出交点，获取交点的表面信息，用于计算着色结果和光线进一步反射或折射的方向。</p>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">switch (payload-&gt;hit_obj-&gt;materialType) &#123;
-            ...
-        &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+    case REFLECTION_AND_REFRACTION:
+    &#123;
+        Vector3f reflectionDirection &#x3D; normalize(reflect(dir, N));
+        Vector3f refractionDirection &#x3D; normalize(refract(dir, N, payload-&gt;hit_obj-&gt;ior));
+        Vector3f reflectionRayOrig &#x3D; (dotProduct(reflectionDirection, N) &lt; 0) ?
+                                        hitPoint - N * scene.epsilon :
+                                        hitPoint + N * scene.epsilon;
+        Vector3f refractionRayOrig &#x3D; (dotProduct(refractionDirection, N) &lt; 0) ?
+                                        hitPoint - N * scene.epsilon :
+                                        hitPoint + N * scene.epsilon;
+        Vector3f reflectionColor &#x3D; castRay(reflectionRayOrig, reflectionDirection, scene, depth + 1);
+        Vector3f refractionColor &#x3D; castRay(refractionRayOrig, refractionDirection, scene, depth + 1);
+        float kr &#x3D; fresnel(dir, N, payload-&gt;hit_obj-&gt;ior);
+        hitColor &#x3D; reflectionColor * kr + refractionColor * (1 - kr);
+        break;
+    &#125;
+    case REFLECTION:
+    &#123;
+        float kr &#x3D; fresnel(dir, N, payload-&gt;hit_obj-&gt;ior);
+        Vector3f reflectionDirection &#x3D; reflect(dir, N);
+        Vector3f reflectionRayOrig &#x3D; (dotProduct(reflectionDirection, N) &lt; 0) ?
+                                        hitPoint + N * scene.epsilon :
+                                        hitPoint - N * scene.epsilon;
+        hitColor &#x3D; castRay(reflectionRayOrig, reflectionDirection, scene, depth + 1) * kr;
+        break;
+    &#125;
+    default:
+    &#123;
+        &#x2F;&#x2F; [comment]
+        &#x2F;&#x2F; We use the Phong illumation model int the default case. The phong model
+        &#x2F;&#x2F; is composed of a diffuse and a specular reflection component.
+        &#x2F;&#x2F; [&#x2F;comment]
+        Vector3f lightAmt &#x3D; 0, specularColor &#x3D; 0;
+        Vector3f shadowPointOrig &#x3D; (dotProduct(dir, N) &lt; 0) ?
+                                    hitPoint + N * scene.epsilon :
+                                    hitPoint - N * scene.epsilon;
+        &#x2F;&#x2F; [comment]
+        &#x2F;&#x2F; Loop over all lights in the scene and sum their contribution up
+        &#x2F;&#x2F; We also apply the lambert cosine law
+        &#x2F;&#x2F; [&#x2F;comment]
+        for (auto&amp; light : scene.get_lights()) &#123;
+            Vector3f lightDir &#x3D; light-&gt;position - hitPoint;
+            &#x2F;&#x2F; square of the distance between hitPoint and the light
+            float lightDistance2 &#x3D; dotProduct(lightDir, lightDir);
+            lightDir &#x3D; normalize(lightDir);
+            float LdotN &#x3D; std::max(0.f, dotProduct(lightDir, N));
+            &#x2F;&#x2F; is the point in shadow, and is the nearest occluding object closer to the object than the light itself?
+            auto shadow_res &#x3D; trace(shadowPointOrig, lightDir, scene.get_objects());
+            bool inShadow &#x3D; shadow_res &amp;&amp; (shadow_res-&gt;tNear * shadow_res-&gt;tNear &lt; lightDistance2);
+
+            lightAmt +&#x3D; inShadow ? 0 : light-&gt;intensity * LdotN;
+            Vector3f reflectionDirection &#x3D; reflect(-lightDir, N);
+
+            specularColor +&#x3D; powf(std::max(0.f, -dotProduct(reflectionDirection, dir)),
+                payload-&gt;hit_obj-&gt;specularExponent) * light-&gt;intensity;
+        &#125;
+
+        hitColor &#x3D; lightAmt * payload-&gt;hit_obj-&gt;evalDiffuseColor(st) * payload-&gt;hit_obj-&gt;Kd + specularColor * payload-&gt;hit_obj-&gt;Ks;
+        break;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>switch语句就是根据交点所在表面的材质(REFLECTION_AND_REFRACTION,REFLECTION,DIFFUSE_AND_GLOSSY)分成反射与折射、反射、漫反射与高光三种情况进行对应的着色计算。</p>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">case REFLECTION_AND_REFRACTION:
 &#123;
@@ -749,18 +810,6 @@ REFLECTION_AND_REFRACTION情况下，其最终着色结果实际上是对各次�
 </article>
 <div class="nav">
   
-    <div class="nav-item-prev">
-      <a 
-        href="/2023/02/11/test/" 
-        class="nav-link">
-        <i class="iconfont icon-left nav-prev-icon"></i>
-        <div>
-          <div class="nav-label">Prev</div>
-          
-        </div>
-      </a>
-    </div>
-  
   
     <div class="nav-item-next">
       <a 
@@ -816,11 +865,6 @@ REFLECTION_AND_REFRACTION情况下，其最终着色结果实际上是对各次�
   <div class="recent-posts-list">
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2023-02-11</div>
-        <a href="/2023/02/11/test/"><div class="recent-posts-item-content"></div></a>
-      </div>
-    
-      <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-31</div>
         <a href="/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/"><div class="recent-posts-item-content">GAMES101作业5：光线与三角形相交</div></a>
       </div>
@@ -833,6 +877,11 @@ REFLECTION_AND_REFRACTION情况下，其最终着色结果实际上是对各次�
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-01-20</div>
         <a href="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/"><div class="recent-posts-item-content">GAMES101作业4：Bézier曲线</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-18</div>
+        <a href="/2023/01/18/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%87%A0%E4%BD%95/"><div class="recent-posts-item-content">GAMES101知识梳理：几何</div></a>
       </div>
     
   </div>
