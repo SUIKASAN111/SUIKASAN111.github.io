@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>GAMES101作业7：路径追踪</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="GAMES101作业7：路径追踪">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2023-03-20">
+      <meta 
+        property="og:article:modified_time" 
+        content="2023-03-20">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="GAMES101作业">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Pizza, Coke, PC, Dedication</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>14</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>3</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>5</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E8%BF%81%E7%A7%BB"><span class="toc-text"> 函数迁移</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 函数实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#path-tracing%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="toc-text"> Path Tracing伪代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86"><span class="toc-text"> 问题处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-text"> 多线程</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">12</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
+        title="底层原理">
+        <div class="tags-list-item">底层原理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      GAMES101作业7：路径追踪
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2023-03-20T09:39:56.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2023-03-20</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/GAMES101/" 
+          class="post-meta-link">
+          GAMES101
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.9k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+            class="post-meta-link">
+            GAMES101作业
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。<br>
+已完成的代码可在我的GitHub<a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111/GAMES101-Assignments">GAMES101作业代码仓库</a>获取。</p>
+<p>GAMES101课程相关基础知识可参看本博客<a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>。</p>
+<p><strong>本文不含提高部分的微表面模型</strong></p>
+<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
+<p>本次实验作业在作业6的基础上实现完整的Path Tracing算法。</p>
+<p>主要工作如下:</p>
+<ol>
+<li>函数迁移：
+<ul>
+<li>Triangle::getIntersection in Triangle.hpp: 将你的光线-三角形相交函数粘贴到此处，请直接将上次实验中实现的内容粘贴在此。</li>
+<li>IntersectP(const Ray&amp; ray, const Vector3f&amp; invDir,const std::array&lt;int, 3&gt;&amp; dirIsNeg) in the Bounds3.hpp: 这个函数的作用是判断包围盒 BoundingBox 与光线是否相交，请直接将上次实验中实现的内容粘贴在此处，并且注意检查 t_enter = t_exit 的时候的判断是否正确。</li>
+<li>getIntersection(BVHBuildNode* node, const Ray ray)in BVH.cpp: BVH查找过程，请直接将上次实验中实现的内容粘贴在此处.</li>
+</ul>
+</li>
+<li>castRay(const Ray ray, int depth)in Scene.cpp中实现Path Tracing算法</li>
+</ol>
+<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
+<h3 id="函数迁移"><a class="markdownIt-Anchor" href="#函数迁移"></a> <strong>函数迁移</strong></h3>
+<p>复制作业6中的相应函数即可。</p>
+<p>请注意，Bounds3::IntersectP函数中进出包围盒时间判断条件有所修改，此前作业中使用的是(tEnter &lt; tExit &amp;&amp; tExit &gt; 0),但是在本次作业中会导致天花板和墙壁变黑，因为本次作业中cornell box模型的墙壁和箱子某些三角形是平行于坐标平面的，会出现包围盒厚度为0的情况，此时如果再以tEnter &lt; tExit为条件判断，会错过很多三角形相交。因此需将条件改为(tEnter &lt;= tExit &amp;&amp; tExit &gt; 0)</p>
+<p><strong>Triangle::getIntersection in Triangle.hpp</strong></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Triangle.hpp
+inline Intersection Triangle::getIntersection(Ray ray)
+&#123;
+    Intersection inter;
+
+    if (dotProduct(ray.direction, normal) &gt; 0)
+        return inter;
+    double u, v, t_tmp &#x3D; 0;
+    Vector3f pvec &#x3D; crossProduct(ray.direction, e2);
+    double det &#x3D; dotProduct(e1, pvec);
+    if (fabs(det) &lt; EPSILON)
+        return inter;
+
+    double det_inv &#x3D; 1. &#x2F; det;
+    Vector3f tvec &#x3D; ray.origin - v0;
+    u &#x3D; dotProduct(tvec, pvec) * det_inv;
+    if (u &lt; 0 || u &gt; 1)
+        return inter;
+    Vector3f qvec &#x3D; crossProduct(tvec, e1);
+    v &#x3D; dotProduct(ray.direction, qvec) * det_inv;
+    if (v &lt; 0 || u + v &gt; 1)
+        return inter;
+    t_tmp &#x3D; dotProduct(e2, qvec) * det_inv;
+
+    &#x2F;&#x2F; TODO find ray triangle intersection
+    inter.coords &#x3D; ray(t_tmp);&#x2F;&#x2F;将相交时间t_tmp传给Ray的函数调用运算符，算得交点
+    inter.distance &#x3D; t_tmp;
+    inter.happened &#x3D; true;
+    inter.m &#x3D; this-&gt;m;
+    inter.normal &#x3D; this-&gt;normal;
+    inter.obj &#x3D; this;
+
+    return inter;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Bounds3.hpp
+inline bool Bounds3::IntersectP(const Ray&amp; ray, const Vector3f&amp; invDir,
+                                const std::array&lt;int, 3&gt;&amp; dirIsNeg) const
+&#123;
+    &#x2F;&#x2F; invDir: ray direction(x,y,z), invDir&#x3D;(1.0&#x2F;x,1.0&#x2F;y,1.0&#x2F;z), use this because Multiply is faster that Division
+    &#x2F;&#x2F; dirIsNeg: ray direction(x,y,z), dirIsNeg&#x3D;[int(x&gt;0),int(y&gt;0),int(z&gt;0)], use this to simplify your logic
+    &#x2F;&#x2F; TODO test if ray bound intersects
+    Vector3f tMin &#x3D; (this-&gt;pMin - ray.origin) * invDir;
+    Vector3f tMax &#x3D; (this-&gt;pMax - ray.origin) * invDir;
+    if(dirIsNeg[0])
+        std::swap(tMin.x, tMax.x);
+    if(dirIsNeg[1])
+        std::swap(tMin.y, tMax.y);
+    if(dirIsNeg[2])
+        std::swap(tMin.z, tMax.z);
+
+    float tEnter, tExit;
+    tEnter &#x3D; std::max(tMin.x, std::max(tMin.y, tMin.z));
+    tExit &#x3D; std::min(tMax.x, std::min(tMax.y, tMax.z));
+    if(tEnter &lt;&#x3D; tExit &amp;&amp; tExit &gt;&#x3D; 0)
+        return true;
+    return false;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in BVH.cpp
+Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray&amp; ray) const
+&#123;
+    &#x2F;&#x2F; TODO Traverse the BVH to find intersection
+    Intersection inter, interL, interR;
+    std::array&lt;int, 3&gt; dirIsNeg;
+    dirIsNeg[0] &#x3D; (int)(ray.direction.x &lt; 0);
+    dirIsNeg[1] &#x3D; (int)(ray.direction.y &lt; 0);
+    dirIsNeg[2] &#x3D; (int)(ray.direction.z &lt; 0);
+
+    &#x2F;&#x2F; 光线与当前包围盒没有交点
+    if(!node-&gt;bounds.IntersectP(ray, ray.direction_inv, dirIsNeg))
+        return inter;
+    &#x2F;&#x2F; 光线与当前包围盒有交点且包围盒是叶子节点
+    else if(node-&gt;left &#x3D;&#x3D; nullptr &amp;&amp; node-&gt;right &#x3D;&#x3D; nullptr)&#123;
+        inter &#x3D; node-&gt;object-&gt;getIntersection(ray);
+        return inter;
+    &#125;
+    &#x2F;&#x2F; 光线与包围盒有交点且包围盒是中间节点
+    else&#123;
+        interL &#x3D; getIntersection(node-&gt;left, ray);
+        interR &#x3D; getIntersection(node-&gt;right, ray);
+        return interL.distance &lt; interR.distance ? interL : interR;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="函数实现"><a class="markdownIt-Anchor" href="#函数实现"></a> <strong>函数实现</strong></h3>
+<h4 id="path-tracing伪代码"><a class="markdownIt-Anchor" href="#path-tracing伪代码"></a> <strong>Path Tracing伪代码</strong></h4>
+<pre class="line-numbers language-none"><code class="language-none">shade (p, wo)
+    sampleLight ( inter , pdf_light )
+    Get x, ws , NN , emit from inter
+    Shoot a ray from p to x
+    If the ray is not blocked in the middle
+    L_dir &#x3D; emit * eval (wo , ws , N) * dot (ws , N) * dot (ws , NN) &#x2F; |x-p|^2 &#x2F; pdf_light
+
+    L_indir &#x3D; 0.0
+    Test Russian Roulette with probability RussianRoulette
+    wi &#x3D; sample (wo , N)
+    Trace a ray r(p, wi)
+    If ray r hit a non - emitting object at q
+    L_indir &#x3D; shade (q, wi) * eval (wo , wi , N) * dot (wi , N) &#x2F; pdf (wo , wi , N) &#x2F; RussianRoulette
+
+    Return L_dir + L_indir<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>castRay</strong></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Scene.cpp
+Vector3f Scene::castRay(const Ray &amp;ray, int depth) const
+&#123;
+    &#x2F;&#x2F; TO DO Implement Path Tracing Algorithm here
+    &#x2F;&#x2F; 直接与间接光照
+    Vector3f L_dir(0, 0, 0);
+    Vector3f L_indir(0, 0, 0);
+
+    &#x2F;&#x2F; 与BVH求交
+    Intersection interObj &#x3D; intersect(ray);
+    &#x2F;&#x2F; 无交点
+    if(!interObj.happened)
+        return Vector3f();
+    &#x2F;&#x2F; 打到光源 若交点材质发光，则是光源，返回光源颜色
+    if(interObj.m-&gt;hasEmission())
+        return interObj.m-&gt;getEmission();
+
+    &#x2F;&#x2F; 直接光照
+    Intersection interLight;
+    float pdfLight; 
+    sampleLight(interLight, pdfLight);
+
+    Vector3f p2x &#x3D; interLight.coords - interObj.coords;
+    Vector3f p2xDir &#x3D; p2x.normalized();
+    float p2xPow &#x3D; p2x.x * p2x.x + p2x.y * p2x.y + p2x.z * p2x.z;&#x2F;&#x2F;|x-p|^2
+
+    Ray p2xRay(interObj.coords, p2xDir);&#x2F;&#x2F;ray from p to x
+    Intersection inter &#x3D; intersect(p2xRay);
+    &#x2F;&#x2F;float比较  当交点p与光源采样点x的求交距离和实际距离之差
+    if(inter.distance - p2x.norm() &gt; -EPSILON)&#123;
+        L_dir &#x3D;  interLight.emit * interObj.m-&gt;eval(ray.direction, p2xDir, interObj.normal)
+                * dotProduct(p2xDir, interObj.normal) * dotProduct(-p2xDir, interLight.normal)
+                &#x2F; p2xPow &#x2F; pdfLight;
+    &#125;
+    &#x2F;&#x2F; 间接光照
+    if(get_random_float() &lt; RussianRoulette)&#123;
+        Vector3f p2nextpDir &#x3D; interObj.m-&gt;sample(ray.direction, interObj.normal).normalized();
+        Ray p2nextpRay(interObj.coords, p2nextpDir);
+        Intersection interNextP &#x3D; intersect(p2nextpRay);
+        if(interNextP.happened &amp;&amp; !interNextP.m-&gt;hasEmission())&#123;
+            float pdf &#x3D; interNextP.m-&gt;pdf(ray.direction, p2nextpDir, interObj.normal);
+            L_indir &#x3D; castRay(p2nextpRay, depth + 1)
+                    * interObj.m-&gt;eval(ray.direction, p2nextpDir, interObj.normal)
+                    * dotProduct(p2nextpDir, interObj.normal) &#x2F; pdf &#x2F; RussianRoulette;
+        &#125;
+    &#125;
+    
+    return L_dir + L_indir;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>castRay函数中完成的是对每条光线的计算，多少SPP就对每个像素调用多少次。<br>
+若无交点，则返回空Vector3f；若直接打到光源，则返回光源颜色。<br>
+之后才是真正计算直接与间接光照。</p>
+<ol>
+<li>直接光照部分：<br>
+（sampleLight函数中将计算结果赋值给interLight, pdfLight，因此这两者可以不用初始化）<br>
+计算采用对光源进行采样积分的方法。如伪代码中所述，需要判断光源与物体之间有无遮挡，这里采用的方法是生成一条由物体上的点射向光源采样点的光线，对该光线进行求交，如果求交得到的距离与物体上的点到光源采样点的距离相等，则中间无遮挡。<br>
+遮挡判断在实际实现时，是两距离之差小于一定值即为相等，这是因为float型比较问题。代码中写作</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">inter.distance - p2x.norm() &gt; -EPSILON<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这种写法初看可能会觉得有点奇怪。这么写的原因是，inter.distance是光线求交算得的距离，p2x.norm()是直接计算出的两点距离，而inter.distance是从物体指向光源的光线，因此只可能&lt;=p2x.norm()，绝不可能大于p2x.norm()，因为其可能存在的最远交点就是光源采样点。<br>
+当满足上述条件后，即使用对光源采样的蒙特卡洛积分方法计算该点直接光照。</p>
+<ol start="2">
+<li>间接光照部分：<br>
+为了防止追踪过程无限递归，引入俄罗斯轮盘赌方法。若由轮盘赌结果光线存活，则有采样函数生成<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">w_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，对该光线进行追踪，若其与不发光物体相交则用对蒙特卡洛积分方法计算该点的间接光照，而由于该点的&amp;L_i&amp;是追踪的后一个交点的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mi>o</mi></msub></mrow><annotation encoding="application/x-tex">L_o</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">o</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，则递归调用castRay函数。</li>
+</ol>
+<p>最终返回直接光照与间接光照之和。</p>
+<p><strong>结果</strong><br>
+效果图<br>
+<img src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/1.png" alt="resu1t_1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/1.png" class="lozad post-image"><br>
+运行时间<br>
+<img src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/time_1.png" alt="time_1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/time_1.png" class="lozad post-image"></p>
+<p>可见渲染结果存在一定问题，存在明显的黑线，而且渲染时间非常长。</p>
+<h3 id="问题处理"><a class="markdownIt-Anchor" href="#问题处理"></a> <strong>问题处理</strong></h3>
+<p>参考了csdn大佬<a target="_blank" rel="noopener" href="https://blog.csdn.net/ycrsw?type=blog">ycr的账号</a>的文章<a target="_blank" rel="noopener" href="https://blog.csdn.net/ycrsw/article/details/124565054?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167911900616800197078582%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=167911900616800197078582&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-1-124565054-null-null.142%5Ev74%5Ewechat_v2,201%5Ev4%5Eadd_ask,239%5Ev2%5Einsert_chatgpt&amp;utm_term=games101%E4%BD%9C%E4%B8%9A7&amp;spm=1018.2226.3001.4187">【GAMES101】作业7 常见问题避坑</a>后，我知道了渲染时间过长的问题很可能是global.hpp下随机数生成函数get_random_float()导致的，而黑线问题很可能是因为直接光部分由于精度问题(EPSILON的取值)导致误判为物体与光源有遮挡。</p>
+<p>于是，着手进行修改。<br>
+将原随机数生成函数改为如下形式，避免其每次调用时返回同一个值</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in global.hpp
+static std::random_device dev;
+static std::mt19937 rng(dev());
+static std::uniform_real_distribution&lt;float&gt; dist(0.f, 1.f); &#x2F;&#x2F; distribution in range [1, 6]
+
+inline float get_random_float()
+&#123;
+    return dist(rng);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将EPSILON改大一些</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Renderer.cpp
+const float EPSILON &#x3D; 0.001;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><strong>结果</strong><br>
+<img src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/2.png" alt="2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/2.png" class="lozad post-image"><br>
+<img src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/time_2.png" alt="time_2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/time_2.png" class="lozad post-image"></p>
+<p>可见渲染时间显著减小，黑线问题也被解决。</p>
+<h3 id="多线程"><a class="markdownIt-Anchor" href="#多线程"></a> <strong>多线程</strong></h3>
+<p>参考文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/ycrsw/article/details/124408789?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167923223516800188569952%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&amp;request_id=167923223516800188569952&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v31_ecpm-8-124408789-null-null.blog_rank_default&amp;utm_term=games101&amp;spm=1018.2226.3001.4450">【GAMES101】作业7（提高）路径追踪 多线程、Microfacet（全镜面反射）、抗锯齿</a></p>
+<p>在Renderer.cpp中修改<br>
+引入头文件</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Renderer.cpp
+#include &lt;omp.h&gt;
+#include &lt;thread&gt;
+#include &lt;mutex&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>定义para函数作为多线程入口</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">omp_lock_t lock1;
+
+int prog &#x3D; 0;
+std::mutex lock;
+
+void para(Vector3f eye_pos, std::vector&lt;Vector3f&gt; &amp;framebuffer, const Scene&amp; scene, int spp, float imageAspectRatio, float scale, int start, int end)&#123;
+    int width, height;
+    width &#x3D; height &#x3D; sqrt(spp);
+    float step &#x3D; 1.0f &#x2F; width;
+    for (uint32_t j &#x3D; start; j &lt; end; ++j) &#123;
+        for (uint32_t i &#x3D; 0; i &lt; scene.width; ++i) &#123;
+            &#x2F;&#x2F; generate primary ray direction   
+            for (int k &#x3D; 0; k &lt; spp; k++)&#123;
+                float x &#x3D; (2 * (i + step &#x2F; 2 + step * (k % width)) &#x2F; (float)scene.width - 1) *
+                        imageAspectRatio * scale;
+                float y &#x3D; (1 - 2 * (j + step &#x2F; 2 + step * (k &#x2F; height)) &#x2F; (float)scene.height) * scale;
+                Vector3f dir &#x3D; normalize(Vector3f(-x, y, 1));
+                framebuffer[j * scene.width + i] +&#x3D; scene.castRay(Ray(eye_pos, dir), 0) &#x2F; spp;  
+            &#125;
+        &#125;
+
+        omp_set_lock(&amp;lock1);
+        prog++;
+        UpdateProgress(prog &#x2F; (float)scene.height);
+        omp_unset_lock(&amp;lock1);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Renderer.cpp
+void Renderer::Render(const Scene&amp; scene)
+&#123;
+    std::vector&lt;Vector3f&gt; framebuffer(scene.width * scene.height);
+
+    float scale &#x3D; tan(deg2rad(scene.fov * 0.5));
+    float imageAspectRatio &#x3D; scene.width &#x2F; (float)scene.height;
+    Vector3f eye_pos(278, 273, -800);
+    int m &#x3D; 0;
+
+    int thread_num &#x3D; 32;
+    int thread_step &#x3D; scene.height &#x2F; thread_num;
+    std::vector&lt;std::thread&gt; rays;
+
+    &#x2F;&#x2F; change the spp value to change sample ammount
+    int spp &#x3D; 16;
+    std::cout &lt;&lt; &quot;SPP: &quot; &lt;&lt; spp &lt;&lt; &quot;\n&quot;;
+
+    &#x2F;&#x2F; for (uint32_t j &#x3D; 0; j &lt; scene.height; ++j) &#123;
+    &#x2F;&#x2F;     for (uint32_t i &#x3D; 0; i &lt; scene.width; ++i) &#123;
+    &#x2F;&#x2F;         &#x2F;&#x2F; generate primary ray direction
+    &#x2F;&#x2F;         float x &#x3D; (2 * (i + 0.5) &#x2F; (float)scene.width - 1) *
+    &#x2F;&#x2F;                   imageAspectRatio * scale;
+    &#x2F;&#x2F;         float y &#x3D; (1 - 2 * (j + 0.5) &#x2F; (float)scene.height) * scale;
+
+    &#x2F;&#x2F;         Vector3f dir &#x3D; normalize(Vector3f(-x, y, 1));
+    &#x2F;&#x2F;         for (int k &#x3D; 0; k &lt; spp; k++)&#123;
+    &#x2F;&#x2F;             framebuffer[m] +&#x3D; scene.castRay(Ray(eye_pos, dir), 0) &#x2F; spp;  
+    &#x2F;&#x2F;         &#125;
+    &#x2F;&#x2F;         m++;
+    &#x2F;&#x2F;     &#125;
+    &#x2F;&#x2F;     UpdateProgress(j &#x2F; (float)scene.height);
+    &#x2F;&#x2F; &#125;
+    #pragma omp parallel for
+        for (int i &#x3D; 0; i &lt; thread_num; i++) 
+            para(eye_pos, std::ref(framebuffer), std::ref(scene), spp, 
+                    imageAspectRatio, scale, i * thread_step, (i + 1) * thread_step);
+    UpdateProgress(1.f);
+
+    &#x2F;&#x2F; save framebuffer to file
+    FILE* fp &#x3D; fopen(&quot;binary.ppm&quot;, &quot;wb&quot;);
+    (void)fprintf(fp, &quot;P6\n%d %d\n255\n&quot;, scene.width, scene.height);
+    for (auto i &#x3D; 0; i &lt; scene.height * scene.width; ++i) &#123;
+        static unsigned char color[3];
+        color[0] &#x3D; (unsigned char)(255 * std::pow(clamp(0, 1, framebuffer[i].x), 0.6f));
+        color[1] &#x3D; (unsigned char)(255 * std::pow(clamp(0, 1, framebuffer[i].y), 0.6f));
+        color[2] &#x3D; (unsigned char)(255 * std::pow(clamp(0, 1, framebuffer[i].z), 0.6f));
+        fwrite(color, 1, 3, fp);
+    &#125;
+    fclose(fp);    
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>结果</strong><br>
+SPP = 16<br>
+渲染结果与上面一致<br>
+<img src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/SPP16.png" alt="SPP16" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/SPP16.png" class="lozad post-image"><br>
+渲染时间显著缩短<br>
+<img src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/time_SPP16.png" alt="time_SPP16" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/time_SPP16.png" class="lozad post-image"></p>
+<p>SPP = 128<br>
+噪点减少<br>
+<img src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/SPP128.png" alt="SPP128" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/SPP128.png" class="lozad post-image"><br>
+<img src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/time_SPP128.png" alt="time_SPP128" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/time_SPP128.png" class="lozad post-image"></p>
+<p>若要去除白色噪点，需要对castRay函数进行修改，防止pdf过小，作为除数导致最后像素值趋于最大，即白色。因此加上判断pdf &gt; EPSILON</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">float pdf &#x3D; interNextP.m-&gt;pdf(ray.direction, p2nextpDir, interObj.normal);
+if(pdf &gt; EPSILON)&#123;
+    L_indir &#x3D; castRay(p2nextpRay, depth + 1)
+        * interObj.m-&gt;eval(ray.direction, p2nextpDir, interObj.normal)
+        * dotProduct(p2nextpDir, interObj.normal) &#x2F; pdf &#x2F; RussianRoulette;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>结果</strong><br>
+SPP = 128<br>
+<img src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/SPP128_optimised.png" alt="SPP128_optimised" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/SPP128_optimised.png" class="lozad post-image"></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/">
+            https://suikasan111.github.io/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2023/02/27/GAMES101%E4%BD%9C%E4%B8%9A6%EF%BC%9A%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">GAMES101作业6：加速结构 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E8%BF%81%E7%A7%BB"><span class="toc-text"> 函数迁移</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 函数实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#path-tracing%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="toc-text"> Path Tracing伪代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86"><span class="toc-text"> 问题处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-text"> 多线程</span></a></li></ol></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E8%BF%81%E7%A7%BB"><span class="toc-text"> 函数迁移</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 函数实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#path-tracing%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="toc-text"> Path Tracing伪代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86"><span class="toc-text"> 问题处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-text"> 多线程</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-03-20</div>
+        <a href="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101作业7：路径追踪</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-02-27</div>
+        <a href="/2023/02/27/GAMES101%E4%BD%9C%E4%B8%9A6%EF%BC%9A%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84/"><div class="recent-posts-item-content">GAMES101作业6：加速结构</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-31</div>
+        <a href="/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/"><div class="recent-posts-item-content">GAMES101作业5：光线与三角形相交</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-01-26</div>
+        <a href="/2023/01/26/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101知识梳理：光线追踪</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2023
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+  </body>
+</html>
