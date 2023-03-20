@@ -45,7 +45,7 @@
         content="2023-01-26">
       <meta 
         property="og:article:modified_time" 
-        content="2023-03-05">
+        content="2023-03-20">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -399,17 +399,17 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/CPP/">
-        <div class="categories-list-item">
-          CPP
-          <span class="categories-list-item-badge">1</span>
-        </div>
-      </a>
-    
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
           <span class="categories-list-item-badge">12</span>
+        </div>
+      </a>
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
         </div>
       </a>
     
@@ -441,15 +441,9 @@
       </a>
     
       <a 
-        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
-        title="GAMES101知识梳理">
-        <div class="tags-list-item">GAMES101知识梳理</div>
-      </a>
-    
-      <a 
-        href="/tags/Markdown/" 
-        title="Markdown">
-        <div class="tags-list-item">Markdown</div>
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
       </a>
     
       <a 
@@ -459,9 +453,15 @@
       </a>
     
       <a 
-        href="/tags/CPP/" 
-        title="CPP">
-        <div class="tags-list-item">CPP</div>
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
       </a>
     
   </div>
@@ -1097,7 +1097,7 @@ Irradiance和Radiance的差别就在于方向性，Radiance具有方向性。</p
     Else If ray r hit an object at q
       Lo +&#x3D; (1 &#x2F; N) * shade(q, -wi) * f_r * cosine &#x2F; pdf(wi)
   Return Lo<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>显然，至此问题还未解决，因为上述递归计算的过程没有跳出条件，因为一个点的接收很多个来自之前反射点的Radiance，这样以来Path Tracing过程的光线数量会爆炸。<br>
+<p>显然，至此问题还未解决，因为上述递归计算的过程没有跳出条件，因为一个点的接收很多个来自之前反射点的Radiance，这样一来Path Tracing过程的光线数量会爆炸。<br>
 <img src="/2023/01/26/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/RaysExplosion.PNG" alt="RaysExplosion" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/26/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/RaysExplosion.PNG" class="lozad post-image"><br>
 如图所示，光线数量与每次反射新产生光线数量N是指数关系，但是如果每次反射只产生一条光线，就不会产生指数爆炸的问题。<br>
 再次修改伪代码：</p>
@@ -1166,7 +1166,7 @@ Irradiance和Radiance的差别就在于方向性，Radiance具有方向性。</p
   Uniformly sample the light at x&#39; (pdf_light &#x3D; 1 &#x2F; A)
   Shoot a ray from p to x&#39;
   If the ray is not blocked in the middle
-  L_dir &#x3D; L_i * f_r * cosθ * cosθ &#x2F; |x&#39; - p|^2 &#x2F; pdf_light
+  L_dir &#x3D; L_i * f_r * cosθ * cosθ&#39; &#x2F; |x&#39; - p|^2 &#x2F; pdf_light
 
   # Contribution from other reflectors
   L_indir &#x3D; 0.0
