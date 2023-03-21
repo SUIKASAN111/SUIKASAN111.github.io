@@ -45,7 +45,7 @@
         content="2022-12-05">
       <meta 
         property="og:article:modified_time" 
-        content="2023-01-18">
+        content="2023-03-21">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -403,17 +403,17 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/GAMES101/">
-        <div class="categories-list-item">
-          GAMES101
-          <span class="categories-list-item-badge">12</span>
-        </div>
-      </a>
-    
       <a href="/categories/CPP/">
         <div class="categories-list-item">
           CPP
           <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">12</span>
         </div>
       </a>
     
@@ -445,18 +445,6 @@
       </a>
     
       <a 
-        href="/tags/CPP/" 
-        title="CPP">
-        <div class="tags-list-item">CPP</div>
-      </a>
-    
-      <a 
-        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
-        title="底层原理">
-        <div class="tags-list-item">底层原理</div>
-      </a>
-    
-      <a 
         href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
         title="GAMES101知识梳理">
         <div class="tags-list-item">GAMES101知识梳理</div>
@@ -466,6 +454,18 @@
         href="/tags/Markdown/" 
         title="Markdown">
         <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
+        title="底层原理">
+        <div class="tags-list-item">底层原理</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
       </a>
     
   </div>
@@ -571,7 +571,7 @@
 首先它预处理我们的代码，所有预处理语句都会在此时被评估，之后又会进行Tokenizing（标记解释）, Parsing（解析）…</p>
 <p>总之就是把C++文本转化成编译器能懂能处理的语言，基本上就是以抽象语法树(Abstract Syntax Tree)的形式表达我们的代码。说到底，编译器的工作就是把代码转化成数据(Constant Data)或者指令(Instruction)。创建完抽象语法树后，就可以开始产生真正在cpu执行的机器码。</p>
 <p><strong>注意</strong><br>
-C<ins>中，文件的概念其实并不存在，比如所谓的.cpp文件其实只是我们用来装代码的东西，我们只是用它给编译器提供源代码而已。也就是说，我们完全可以建一个其他并不存在的后缀的文件让编译器编译，只要能让编译器把它也当成.cpp文件来编译就行，我们依然会得到一个正确的obj。In a word, in C</ins>, <strong>Files Have No Meaning</strong>.</p>
+C++中，文件的概念其实并不存在，比如所谓的.cpp文件其实只是我们用来装代码的东西，我们只是用它给编译器提供源代码而已。也就是说，我们完全可以建一个其他并不存在的后缀的文件让编译器编译，只要能让编译器把它也当成.cpp文件来编译就行，我们依然会得到一个正确的obj。In a word, in C++, <strong>Files Have No Meaning</strong>.</p>
 <p>编译器把文件当成一个个翻译单元(Translation Unit)单独进行编译，然后生成一个个对应的obj。<br>
 一个翻译单元由其实现文件(.cpp)和其直接或间接包含的所有标头(.h, .hpp etc.)组成。如果在cpp文件中include其他cpp，则在编译时候它们也会被当成一个Translation Unit。<br>
 简而言之，如果所有cpp都不互相include，每个cpp文件都是一个Translation Unit。</p>
