@@ -45,7 +45,7 @@
         content="2023-03-03">
       <meta 
         property="og:article:modified_time" 
-        content="2023-03-21">
+        content="2023-03-22">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -333,7 +333,7 @@
   <a 
     class="author-posts-count" 
     href="/archives">
-    <span>15</span>
+    <span>16</span>
     <span>Posts</span>
   </a>
   <a 
@@ -384,7 +384,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#brdf-material"><span class="toc-text"> BRDF &#x3D;&#x3D; Material</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#diffuselambertian-material"><span class="toc-text"> Diffuse&#x2F;Lambertian Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#glossy-material"><span class="toc-text"> Glossy Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ideal-reflectiverefractive-material"><span class="toc-text"> Ideal Reflective&#x2F;Refractive Material</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#perfect-specular-reflection-%E5%AE%8C%E5%85%A8%E9%95%9C%E9%9D%A2%E5%8F%8D%E5%B0%84"><span class="toc-text"> Perfect Specular Reflection-完全镜面反射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#specular-refraction-%E9%95%9C%E9%9D%A2%E6%8A%98%E5%B0%84"><span class="toc-text"> Specular Refraction-镜面折射</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#snells-law"><span class="toc-text"> Snell’s Law</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fresnel-reflectionterm-%E8%8F%B2%E6%B6%85%E8%80%B3%E9%A1%B9"><span class="toc-text"> Fresnel Reflection&#x2F;Term-菲涅耳项</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#microfacet-material-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E6%9D%90%E8%B4%A8"><span class="toc-text"> Microfacet Material-微表面材质</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-theory-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E7%90%86%E8%AE%BA"><span class="toc-text"> Microfacet Theory-微表面理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-brdf"><span class="toc-text"> Microfacet BRDF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isotropicanisotropic-materials-%E5%90%84%E5%90%91%E5%90%8C%E6%80%A7%E5%90%84%E5%90%91%E5%BC%82%E6%80%A7%E6%9D%90%E8%B4%A8"><span class="toc-text"> Isotropic&#x2F;Anisotropic Materials-各向同性&#x2F;各向异性材质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#properties-of-brdfs-brdf%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text"> Properties of BRDFs-BRDF的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#measuring-brdfs"><span class="toc-text"> Measuring BRDFs</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#brdf-material"><span class="toc-text"> BRDF &#x3D;&#x3D; Material</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#diffuselambertian-material"><span class="toc-text"> Diffuse&#x2F;Lambertian Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#glossy-material"><span class="toc-text"> Glossy Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ideal-reflectiverefractive-material"><span class="toc-text"> Ideal Reflective&#x2F;Refractive Material</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#perfect-specular-reflection-%E5%AE%8C%E5%85%A8%E9%95%9C%E9%9D%A2%E5%8F%8D%E5%B0%84"><span class="toc-text"> Perfect Specular Reflection-完全镜面反射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#specular-refraction-%E9%95%9C%E9%9D%A2%E6%8A%98%E5%B0%84"><span class="toc-text"> Specular Refraction-镜面折射</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#snells-law"><span class="toc-text"> Snell’s Law</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fresnel-reflectionterm-%E8%8F%B2%E6%B6%85%E8%80%B3%E9%A1%B9"><span class="toc-text"> Fresnel Reflection&#x2F;Term-菲涅耳项</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#microfacet-material-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E6%9D%90%E8%B4%A8"><span class="toc-text"> Microfacet Material-微表面材质</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-theory-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E7%90%86%E8%AE%BA"><span class="toc-text"> Microfacet Theory-微表面理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-brdf"><span class="toc-text"> Microfacet BRDF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isotropicanisotropic-materials-%E5%90%84%E5%90%91%E5%90%8C%E6%80%A7%E5%90%84%E5%90%91%E5%BC%82%E6%80%A7%E6%9D%90%E8%B4%A8"><span class="toc-text"> Isotropic&#x2F;Anisotropic Materials-各向同性&#x2F;各向异性材质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#properties-of-brdfs-brdf%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text"> Properties of BRDFs-BRDF的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#measuring-brdfs"><span class="toc-text"> Measuring BRDFs</span></a></li></ol>
       </div>
     </article>
   
@@ -409,7 +409,7 @@
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
-          <span class="categories-list-item-badge">13</span>
+          <span class="categories-list-item-badge">14</span>
         </div>
       </a>
     
@@ -435,15 +435,15 @@
   <div class="tags-list">
     
       <a 
-        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
-        title="GAMES101作业">
-        <div class="tags-list-item">GAMES101作业</div>
-      </a>
-    
-      <a 
         href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
         title="GAMES101知识梳理">
         <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
       </a>
     
       <a 
@@ -499,7 +499,7 @@
     
     
       <span class="dot"></span>
-      <span>1k words</span>
+      <span>924 words</span>
     
   </div>
   
@@ -526,10 +526,7 @@
   <div 
     id="section" 
     class="post-content">
-    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
-<p><a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>为学习<a target="_blank" rel="noopener" href="https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html">GAMES101课程</a>后的简要知识梳理，用于复习与总结，不包含细致的推导过程。<br>
-本系列将根据课程顺序，分为变换、光栅化、着色、几何、光线追踪、动画与模拟等部分内容分别整理。</p>
-<h2 id="brdf-material"><a class="markdownIt-Anchor" href="#brdf-material"></a> BRDF == Material</h2>
+    <h2 id="brdf-material"><a class="markdownIt-Anchor" href="#brdf-material"></a> BRDF == Material</h2>
 <h3 id="diffuselambertian-material"><a class="markdownIt-Anchor" href="#diffuselambertian-material"></a> <strong>Diffuse/Lambertian Material</strong></h3>
 <p><img src="/2023/03/03/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E6%9D%90%E8%B4%A8%E4%B8%8E%E5%A4%96%E8%A7%82/DiffuseLambertian.PNG" alt="DiffuseLambertian" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/03/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E6%9D%90%E8%B4%A8%E4%B8%8E%E5%A4%96%E8%A7%82/DiffuseLambertian.PNG" class="lozad post-image"><br>
 <img src="/2023/03/03/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E6%9D%90%E8%B4%A8%E4%B8%8E%E5%A4%96%E8%A7%82/DiffuseLambertianMaterial.PNG" alt="DiffuseLambertianMaterial" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/03/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E6%9D%90%E8%B4%A8%E4%B8%8E%E5%A4%96%E8%A7%82/DiffuseLambertianMaterial.PNG" class="lozad post-image"><br>
@@ -744,7 +741,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#brdf-material"><span class="toc-text"> BRDF &#x3D;&#x3D; Material</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#diffuselambertian-material"><span class="toc-text"> Diffuse&#x2F;Lambertian Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#glossy-material"><span class="toc-text"> Glossy Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ideal-reflectiverefractive-material"><span class="toc-text"> Ideal Reflective&#x2F;Refractive Material</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#perfect-specular-reflection-%E5%AE%8C%E5%85%A8%E9%95%9C%E9%9D%A2%E5%8F%8D%E5%B0%84"><span class="toc-text"> Perfect Specular Reflection-完全镜面反射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#specular-refraction-%E9%95%9C%E9%9D%A2%E6%8A%98%E5%B0%84"><span class="toc-text"> Specular Refraction-镜面折射</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#snells-law"><span class="toc-text"> Snell’s Law</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fresnel-reflectionterm-%E8%8F%B2%E6%B6%85%E8%80%B3%E9%A1%B9"><span class="toc-text"> Fresnel Reflection&#x2F;Term-菲涅耳项</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#microfacet-material-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E6%9D%90%E8%B4%A8"><span class="toc-text"> Microfacet Material-微表面材质</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-theory-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E7%90%86%E8%AE%BA"><span class="toc-text"> Microfacet Theory-微表面理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-brdf"><span class="toc-text"> Microfacet BRDF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isotropicanisotropic-materials-%E5%90%84%E5%90%91%E5%90%8C%E6%80%A7%E5%90%84%E5%90%91%E5%BC%82%E6%80%A7%E6%9D%90%E8%B4%A8"><span class="toc-text"> Isotropic&#x2F;Anisotropic Materials-各向同性&#x2F;各向异性材质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#properties-of-brdfs-brdf%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text"> Properties of BRDFs-BRDF的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#measuring-brdfs"><span class="toc-text"> Measuring BRDFs</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#brdf-material"><span class="toc-text"> BRDF &#x3D;&#x3D; Material</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#diffuselambertian-material"><span class="toc-text"> Diffuse&#x2F;Lambertian Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#glossy-material"><span class="toc-text"> Glossy Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ideal-reflectiverefractive-material"><span class="toc-text"> Ideal Reflective&#x2F;Refractive Material</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#perfect-specular-reflection-%E5%AE%8C%E5%85%A8%E9%95%9C%E9%9D%A2%E5%8F%8D%E5%B0%84"><span class="toc-text"> Perfect Specular Reflection-完全镜面反射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#specular-refraction-%E9%95%9C%E9%9D%A2%E6%8A%98%E5%B0%84"><span class="toc-text"> Specular Refraction-镜面折射</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#snells-law"><span class="toc-text"> Snell’s Law</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fresnel-reflectionterm-%E8%8F%B2%E6%B6%85%E8%80%B3%E9%A1%B9"><span class="toc-text"> Fresnel Reflection&#x2F;Term-菲涅耳项</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#microfacet-material-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E6%9D%90%E8%B4%A8"><span class="toc-text"> Microfacet Material-微表面材质</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-theory-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E7%90%86%E8%AE%BA"><span class="toc-text"> Microfacet Theory-微表面理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-brdf"><span class="toc-text"> Microfacet BRDF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isotropicanisotropic-materials-%E5%90%84%E5%90%91%E5%90%8C%E6%80%A7%E5%90%84%E5%90%91%E5%BC%82%E6%80%A7%E6%9D%90%E8%B4%A8"><span class="toc-text"> Isotropic&#x2F;Anisotropic Materials-各向同性&#x2F;各向异性材质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#properties-of-brdfs-brdf%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text"> Properties of BRDFs-BRDF的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#measuring-brdfs"><span class="toc-text"> Measuring BRDFs</span></a></li></ol>
 </div>
             </main>
             <aside class="right-column">
@@ -758,7 +755,7 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#brdf-material"><span class="toc-text"> BRDF &#x3D;&#x3D; Material</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#diffuselambertian-material"><span class="toc-text"> Diffuse&#x2F;Lambertian Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#glossy-material"><span class="toc-text"> Glossy Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ideal-reflectiverefractive-material"><span class="toc-text"> Ideal Reflective&#x2F;Refractive Material</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#perfect-specular-reflection-%E5%AE%8C%E5%85%A8%E9%95%9C%E9%9D%A2%E5%8F%8D%E5%B0%84"><span class="toc-text"> Perfect Specular Reflection-完全镜面反射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#specular-refraction-%E9%95%9C%E9%9D%A2%E6%8A%98%E5%B0%84"><span class="toc-text"> Specular Refraction-镜面折射</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#snells-law"><span class="toc-text"> Snell’s Law</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fresnel-reflectionterm-%E8%8F%B2%E6%B6%85%E8%80%B3%E9%A1%B9"><span class="toc-text"> Fresnel Reflection&#x2F;Term-菲涅耳项</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#microfacet-material-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E6%9D%90%E8%B4%A8"><span class="toc-text"> Microfacet Material-微表面材质</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-theory-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E7%90%86%E8%AE%BA"><span class="toc-text"> Microfacet Theory-微表面理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-brdf"><span class="toc-text"> Microfacet BRDF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isotropicanisotropic-materials-%E5%90%84%E5%90%91%E5%90%8C%E6%80%A7%E5%90%84%E5%90%91%E5%BC%82%E6%80%A7%E6%9D%90%E8%B4%A8"><span class="toc-text"> Isotropic&#x2F;Anisotropic Materials-各向同性&#x2F;各向异性材质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#properties-of-brdfs-brdf%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text"> Properties of BRDFs-BRDF的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#measuring-brdfs"><span class="toc-text"> Measuring BRDFs</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#brdf-material"><span class="toc-text"> BRDF &#x3D;&#x3D; Material</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#diffuselambertian-material"><span class="toc-text"> Diffuse&#x2F;Lambertian Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#glossy-material"><span class="toc-text"> Glossy Material</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ideal-reflectiverefractive-material"><span class="toc-text"> Ideal Reflective&#x2F;Refractive Material</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#perfect-specular-reflection-%E5%AE%8C%E5%85%A8%E9%95%9C%E9%9D%A2%E5%8F%8D%E5%B0%84"><span class="toc-text"> Perfect Specular Reflection-完全镜面反射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#specular-refraction-%E9%95%9C%E9%9D%A2%E6%8A%98%E5%B0%84"><span class="toc-text"> Specular Refraction-镜面折射</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#snells-law"><span class="toc-text"> Snell’s Law</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fresnel-reflectionterm-%E8%8F%B2%E6%B6%85%E8%80%B3%E9%A1%B9"><span class="toc-text"> Fresnel Reflection&#x2F;Term-菲涅耳项</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#microfacet-material-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E6%9D%90%E8%B4%A8"><span class="toc-text"> Microfacet Material-微表面材质</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-theory-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E7%90%86%E8%AE%BA"><span class="toc-text"> Microfacet Theory-微表面理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#microfacet-brdf"><span class="toc-text"> Microfacet BRDF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isotropicanisotropic-materials-%E5%90%84%E5%90%91%E5%90%8C%E6%80%A7%E5%90%84%E5%90%91%E5%BC%82%E6%80%A7%E6%9D%90%E8%B4%A8"><span class="toc-text"> Isotropic&#x2F;Anisotropic Materials-各向同性&#x2F;各向异性材质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#properties-of-brdfs-brdf%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text"> Properties of BRDFs-BRDF的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#measuring-brdfs"><span class="toc-text"> Measuring BRDFs</span></a></li></ol>
     </article>
   
   
@@ -773,6 +770,11 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   <div class="recent-posts-list">
     
       <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-03-22</div>
+        <a href="/2023/03/22/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E9%AB%98%E7%BA%A7%E5%85%89%E7%BA%BF%E4%BC%A0%E6%92%AD%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%A4%96%E8%A7%82%E5%BB%BA%E6%A8%A1/"><div class="recent-posts-item-content">GAMES101知识梳理：高级光线传播与复杂外观建模</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-03-20</div>
         <a href="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101作业7：路径追踪</div></a>
       </div>
@@ -785,11 +787,6 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2023-02-27</div>
         <a href="/2023/02/27/GAMES101%E4%BD%9C%E4%B8%9A6%EF%BC%9A%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84/"><div class="recent-posts-item-content">GAMES101作业6：加速结构</div></a>
-      </div>
-    
-      <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2023-01-31</div>
-        <a href="/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/"><div class="recent-posts-item-content">GAMES101作业5：光线与三角形相交</div></a>
       </div>
     
   </div>
