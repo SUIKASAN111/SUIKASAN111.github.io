@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>GAMES101知识梳理：相机与透镜</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="GAMES101知识梳理：相机与透镜">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2023-03-25">
+      <meta 
+        property="og:article:modified_time" 
+        content="2023-03-26">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="GAMES101知识梳理">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Pizza, Coke, PC, Dedication</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>18</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>3</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>5</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#camera"><span class="toc-text"> Camera</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pinhole-image-formation-%E9%92%88%E5%AD%94%E6%88%90%E5%83%8F"><span class="toc-text"> Pinhole Image Formation-针孔成像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#field-of-viewfov-%E8%A7%86%E5%9C%BA"><span class="toc-text"> Field of View(FOV)-视场</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#exposure-%E6%9B%9D%E5%85%89"><span class="toc-text"> Exposure-曝光</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fast-and-slow-photography"><span class="toc-text"> Fast and Slow Photography</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#thin-lens-approximation-%E8%96%84%E9%80%8F%E9%95%9C%E8%BF%91%E4%BC%BC"><span class="toc-text"> Thin Lens Approximation-薄透镜近似</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#defocus-blur"><span class="toc-text"> Defocus Blur</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ray-tracing-ideal-thin-lenses"><span class="toc-text"> Ray Tracing Ideal Thin Lenses</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#depth-of-field"><span class="toc-text"> Depth of Field</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">16</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
+        title="底层原理">
+        <div class="tags-list-item">底层原理</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      GAMES101知识梳理：相机与透镜
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2023-03-25T13:28:03.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2023-03-25</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/GAMES101/" 
+          class="post-meta-link">
+          GAMES101
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>968 words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+            class="post-meta-link">
+            GAMES101知识梳理
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="camera"><a class="markdownIt-Anchor" href="#camera"></a> Camera</h2>
+<p>Image = Synthesis + Capture<br>
+相机可以使用针孔或透镜在传感器上成像。传统意义上，传感器记录的是Irradiance而不是Radiance</p>
+<h3 id="pinhole-image-formation-针孔成像"><a class="markdownIt-Anchor" href="#pinhole-image-formation-针孔成像"></a> <strong>Pinhole Image Formation-针孔成像</strong></h3>
+<p>有关针孔成像的研究最早可追溯到公元前四五世纪，如墨子、亚里士多德都曾研究过这个现象。<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/PinholeCameraHistory.PNG" alt="PinholeCameraHistory" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/PinholeCameraHistory.PNG" class="lozad post-image"></p>
+<p>如今利用针孔进行成像得到照片也是完全没有问题的<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/LargestPinholePhotograph_1.PNG" alt="LargestPinholePhotograph_1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/LargestPinholePhotograph_1.PNG" class="lozad post-image"><br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/LargestPinholePhotograph_2.PNG" alt="LargestPinholePhotograph_2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/LargestPinholePhotograph_2.PNG" class="lozad post-image"></p>
+<h3 id="field-of-viewfov-视场"><a class="markdownIt-Anchor" href="#field-of-viewfov-视场"></a> <strong>Field of View(FOV)-视场</strong></h3>
+<p>视场决定了我们能在照片中看到的范围</p>
+<p><strong>焦距对视场的影响</strong><br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/FocalLengthOnFOV.PNG" alt="FocalLengthOnFOV" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/FocalLengthOnFOV.PNG" class="lozad post-image"><br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/FocalLengthOnFOVFormula.PNG" alt="FocalLengthOnFOVFormula" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/FocalLengthOnFOVFormula.PNG" class="lozad post-image"></p>
+<p>定义视场时，通常以35mm(36$\times$24mm)大小的传感器为基准，以焦距来描述。比如在基准传感器上，焦距17mm为广角(104°)，焦距50mm为普通镜头(47°)，焦距200mm为长焦(12°)。如今我们手机的焦距是经过等效的，手机没有这么厚，也没有这么大的传感器。<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/FOVphone.PNG" alt="FOVphone" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/FOVphone.PNG" class="lozad post-image"></p>
+<p><strong>传感器大小对视场的影响</strong><br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/SensorSizeOnFOV.PNG" alt="SensorSizeOnFOV" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/SensorSizeOnFOV.PNG" class="lozad post-image"></p>
+<h3 id="exposure-曝光"><a class="markdownIt-Anchor" href="#exposure-曝光"></a> <strong>Exposure-曝光</strong></h3>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.24999999999999992em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mi>H</mi><mo>=</mo><mi>T</mi><mo>×</mo><mi>E</mi></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mi>E</mi><mi>x</mi><mi>p</mi><mi>o</mi><mi>s</mi><mi>u</mi><mi>r</mi><mi>e</mi><mo>=</mo><mi>t</mi><mi>i</mi><mi>m</mi><mi>e</mi><mo>×</mo><mi>i</mi><mi>r</mi><mi>r</mi><mi>a</mi><mi>d</mi><mi>i</mi><mi>a</mi><mi>n</mi><mi>c</mi><mi>e</mi></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
+    &amp;H = T \times E \\
+    &amp;Exposure = time \times irradiance
+\end{aligned}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.0000000000000004em;vertical-align:-1.2500000000000002em;"></span><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7500000000000002em;"><span style="top:-3.75em;"><span class="pstrut" style="height:2.84em;"></span><span class="mord"></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:2.84em;"></span><span class="mord"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2500000000000002em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7500000000000002em;"><span style="top:-3.91em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mord mathnormal">x</span><span class="mord mathnormal">p</span><span class="mord mathnormal">o</span><span class="mord mathnormal">s</span><span class="mord mathnormal">u</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">e</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal">d</span><span class="mord mathnormal">i</span><span class="mord mathnormal">a</span><span class="mord mathnormal">n</span><span class="mord mathnormal">c</span><span class="mord mathnormal">e</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2500000000000002em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>其中曝光时间由快门控制，而Irradiance受光圈和焦距影响。</p>
+<p>曝光三要素：光圈、快门、ISO</p>
+<p>光圈用F数(F-Number, F-Stop)表示，F数越小光圈越大。其具体定义为焦距/光圈直径。</p>
+<p>在快门打开的时间内，如果物体已经产生运动，则会产生运动模糊。<br>
+机械快门无法做到所有位置在同一时间同时打开。高速运动的物体会因此产生Rolling Shutter问题，如飞机高速转动螺旋桨会产生扭曲。</p>
+<p>下图中每一列的光圈与快门组合获得的曝光度基本上是等效的。注意，这并不意味着获得的照片是一样的，因为两者会分别各自影响景深和运动模糊。<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/FStopAndShutter.PNG" alt="FStopAndShutter" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/FStopAndShutter.PNG" class="lozad post-image"></p>
+<h3 id="fast-and-slow-photography"><a class="markdownIt-Anchor" href="#fast-and-slow-photography"></a> <strong>Fast and Slow Photography</strong></h3>
+<p>高速摄影<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/High-SpeedPhotography.PNG" alt="High-SpeedPhotography" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/High-SpeedPhotography.PNG" class="lozad post-image"></p>
+<p>长曝光<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/Long-ExposurePhotography.PNG" alt="Long-ExposurePhotography" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/Long-ExposurePhotography.PNG" class="lozad post-image"></p>
+<h3 id="thin-lens-approximation-薄透镜近似"><a class="markdownIt-Anchor" href="#thin-lens-approximation-薄透镜近似"></a> <strong>Thin Lens Approximation-薄透镜近似</strong></h3>
+<p>通常手机、相机的镜头不会使用单个透镜，一般都会使用十分复杂的透镜组。</p>
+<p>平凸透镜无法将光汇聚到一个点上<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/Plano-ConvexLens.PNG" alt="Plano-ConvexLens" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/Plano-ConvexLens.PNG" class="lozad post-image"></p>
+<p>在图形学中，对理想薄透镜有如下假设：</p>
+<ol>
+<li>所有进入薄透镜的平行光都会经过焦点；</li>
+<li>所有经过焦点而进入薄透镜的光在穿过透镜后都会变成平行光；</li>
+<li>薄透镜的焦距可被任意改变。<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/IdealThinLens.PNG" alt="IdealThinLens" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/IdealThinLens.PNG" class="lozad post-image"></li>
+</ol>
+<p>对于理想薄透镜有如下等式：<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/ThinLensEquation.PNG" alt="ThinLensEquation" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/ThinLensEquation.PNG" class="lozad post-image"><br>
+<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">z_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.04398em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>为物距，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">z_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.04398em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>为像距，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span>为焦距</p>
+<p>可由如下方法计算<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/Gauss%E2%80%99sRayTracingConstruction.PNG" alt="Gauss’sRayTracingConstruction" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/Gauss%E2%80%99sRayTracingConstruction.PNG" class="lozad post-image"></p>
+<h3 id="defocus-blur"><a class="markdownIt-Anchor" href="#defocus-blur"></a> <strong>Defocus Blur</strong></h3>
+<p>当成像平面不在焦距位置时，光线继续传播，原本一个点的像被成像在了一个面上，这个面是个圆形平面，被称为Circle of Confusion(CoC)<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/CoC.PNG" alt="CoC" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/CoC.PNG" class="lozad post-image"><br>
+CoC计算公式如下<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/CoCCalc.PNG" alt="CoCCalc" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/CoCCalc.PNG" class="lozad post-image"><br>
+CoC大小取决于光圈大小</p>
+<h3 id="ray-tracing-ideal-thin-lenses"><a class="markdownIt-Anchor" href="#ray-tracing-ideal-thin-lenses"></a> <strong>Ray Tracing Ideal Thin Lenses</strong></h3>
+<p>光线追踪方法也可以实现真实情况下透镜的景深效果</p>
+<p><img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/RayTracingForDefocusBlur.PNG" alt="RayTracingForDefocusBlur" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/RayTracingForDefocusBlur.PNG" class="lozad post-image"><br>
+在这种方法中，需要先设定传感器大小、焦距、光圈大小，然后设定物距<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>o</mi></msub></mrow><annotation encoding="application/x-tex">z_o</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.04398em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">o</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，根据透镜公式计算像距<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">z_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.04398em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></p>
+<p>具体渲染：<br>
+对于传感器上的每个像素<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup></mrow><annotation encoding="application/x-tex">x&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span>，在透镜平面随机采样一个点<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup></mrow><annotation encoding="application/x-tex">x&#x27;&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span>，根据光线<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo>→</mo><msup><mi>x</mi><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup></mrow><annotation encoding="application/x-tex">x&#x27; \rightarrow x&#x27;&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span>以及薄透镜等式可以求得光线<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup><mo>→</mo><msup><mi>x</mi><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup></mrow><annotation encoding="application/x-tex">x&#x27;&#x27; \rightarrow x&#x27;&#x27;&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span>，其中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup></mrow><annotation encoding="application/x-tex">x&#x27;&#x27;&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span>为物体所在平面的点，光线<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup><mo>→</mo><msup><mi>x</mi><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup></mrow><annotation encoding="application/x-tex">x&#x27;&#x27; \rightarrow x&#x27;&#x27;&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span>上带有的Radiance会最终记录在点<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup></mrow><annotation encoding="application/x-tex">x&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<h3 id="depth-of-field"><a class="markdownIt-Anchor" href="#depth-of-field"></a> <strong>Depth of Field</strong></h3>
+<p>光圈大小会影响景深模糊的范围</p>
+<p>实际场景中有一段深度内的物体在经过透镜后，会在成像平面附近形成一段区域，它们的CoC也被认为是足够小而能够清晰成像的。<br>
+<img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/DepthOfFocus.PNG" alt="DepthOfFocus" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/DepthOfFocus.PNG" class="lozad post-image"></p>
+<p><img src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/DepthOfField(FYI).PNG" alt="DepthOfField(FYI)" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/DepthOfField(FYI).PNG" class="lozad post-image"></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/">
+            https://suikasan111.github.io/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2023/03/26/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E5%9C%BA%E3%80%81%E9%A2%9C%E8%89%B2%E4%B8%8E%E6%84%9F%E7%9F%A5/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">GAMES101知识梳理：光场、颜色与感知 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2023/03/22/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E9%AB%98%E7%BA%A7%E5%85%89%E7%BA%BF%E4%BC%A0%E6%92%AD%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%A4%96%E8%A7%82%E5%BB%BA%E6%A8%A1/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">GAMES101知识梳理：高级光线传播与复杂外观建模 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#camera"><span class="toc-text"> Camera</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pinhole-image-formation-%E9%92%88%E5%AD%94%E6%88%90%E5%83%8F"><span class="toc-text"> Pinhole Image Formation-针孔成像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#field-of-viewfov-%E8%A7%86%E5%9C%BA"><span class="toc-text"> Field of View(FOV)-视场</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#exposure-%E6%9B%9D%E5%85%89"><span class="toc-text"> Exposure-曝光</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fast-and-slow-photography"><span class="toc-text"> Fast and Slow Photography</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#thin-lens-approximation-%E8%96%84%E9%80%8F%E9%95%9C%E8%BF%91%E4%BC%BC"><span class="toc-text"> Thin Lens Approximation-薄透镜近似</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#defocus-blur"><span class="toc-text"> Defocus Blur</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ray-tracing-ideal-thin-lenses"><span class="toc-text"> Ray Tracing Ideal Thin Lenses</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#depth-of-field"><span class="toc-text"> Depth of Field</span></a></li></ol></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#camera"><span class="toc-text"> Camera</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pinhole-image-formation-%E9%92%88%E5%AD%94%E6%88%90%E5%83%8F"><span class="toc-text"> Pinhole Image Formation-针孔成像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#field-of-viewfov-%E8%A7%86%E5%9C%BA"><span class="toc-text"> Field of View(FOV)-视场</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#exposure-%E6%9B%9D%E5%85%89"><span class="toc-text"> Exposure-曝光</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fast-and-slow-photography"><span class="toc-text"> Fast and Slow Photography</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#thin-lens-approximation-%E8%96%84%E9%80%8F%E9%95%9C%E8%BF%91%E4%BC%BC"><span class="toc-text"> Thin Lens Approximation-薄透镜近似</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#defocus-blur"><span class="toc-text"> Defocus Blur</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ray-tracing-ideal-thin-lenses"><span class="toc-text"> Ray Tracing Ideal Thin Lenses</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#depth-of-field"><span class="toc-text"> Depth of Field</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-03-26</div>
+        <a href="/2023/03/26/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E5%9C%BA%E3%80%81%E9%A2%9C%E8%89%B2%E4%B8%8E%E6%84%9F%E7%9F%A5/"><div class="recent-posts-item-content">GAMES101知识梳理：光场、颜色与感知</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-03-25</div>
+        <a href="/2023/03/25/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9B%B8%E6%9C%BA%E4%B8%8E%E9%80%8F%E9%95%9C/"><div class="recent-posts-item-content">GAMES101知识梳理：相机与透镜</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-03-22</div>
+        <a href="/2023/03/22/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E9%AB%98%E7%BA%A7%E5%85%89%E7%BA%BF%E4%BC%A0%E6%92%AD%E4%B8%8E%E5%A4%8D%E6%9D%82%E5%A4%96%E8%A7%82%E5%BB%BA%E6%A8%A1/"><div class="recent-posts-item-content">GAMES101知识梳理：高级光线传播与复杂外观建模</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2023-03-20</div>
+        <a href="/2023/03/20/GAMES101%E4%BD%9C%E4%B8%9A7%EF%BC%9A%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/"><div class="recent-posts-item-content">GAMES101作业7：路径追踪</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2023
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+  </body>
+</html>
