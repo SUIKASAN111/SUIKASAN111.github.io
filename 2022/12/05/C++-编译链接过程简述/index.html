@@ -45,7 +45,7 @@
         content="2022-12-05">
       <meta 
         property="og:article:modified_time" 
-        content="2023-03-21">
+        content="2023-04-14">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -388,7 +388,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-works"><span class="toc-text"> How C++ Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%98%B6%E6%AE%B5"><span class="toc-text"> 编译阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tips"><span class="toc-text"> tips</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E9%98%B6%E6%AE%B5"><span class="toc-text"> 链接阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-compiler-works"><span class="toc-text"> How C++ the Compiler Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA"><span class="toc-text"> 一些演示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-linker-works"><span class="toc-text"> How C++ the Linker Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA-2"><span class="toc-text"> 一些演示</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#preface"><span class="toc-text"> Preface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-works"><span class="toc-text"> How C++ Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%98%B6%E6%AE%B5"><span class="toc-text"> 编译阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tips"><span class="toc-text"> tips</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E9%98%B6%E6%AE%B5"><span class="toc-text"> 链接阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-compiler-works"><span class="toc-text"> How C++ the Compiler Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA"><span class="toc-text"> 一些演示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-linker-works"><span class="toc-text"> How C++ the Linker Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA-2"><span class="toc-text"> 一些演示</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -439,15 +439,9 @@
   <div class="tags-list">
     
       <a 
-        href="/tags/CPP/" 
-        title="CPP">
-        <div class="tags-list-item">CPP</div>
-      </a>
-    
-      <a 
-        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
-        title="底层原理">
-        <div class="tags-list-item">底层原理</div>
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
       </a>
     
       <a 
@@ -457,15 +451,21 @@
       </a>
     
       <a 
-        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
-        title="GAMES101知识梳理">
-        <div class="tags-list-item">GAMES101知识梳理</div>
-      </a>
-    
-      <a 
         href="/tags/Markdown/" 
         title="Markdown">
         <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" 
+        title="底层原理">
+        <div class="tags-list-item">底层原理</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
       </a>
     
   </div>
@@ -539,7 +539,9 @@
   <div 
     id="section" 
     class="post-content">
-    <h2 id="how-c-works"><a class="markdownIt-Anchor" href="#how-c-works"></a> How C++ Works</h2>
+    <h2 id="preface"><a class="markdownIt-Anchor" href="#preface"></a> Preface</h2>
+<p>本文为The Cherno的C<ins>系列教程中关于C</ins>编译链接机制的几节内容的总结。</p>
+<h2 id="how-c-works"><a class="markdownIt-Anchor" href="#how-c-works"></a> How C++ Works</h2>
 <p>简而言之，源文件（文本）通过编译器转化为二进制文件，这个二进制文件可以是可执行文件，也可以是某种库(Library)。</p>
 <p>任何<code>#</code>开头的语句都是预处理语句(Preprocessor Statement)，顾名思义，它们在编译之前进行。<br>
 以<code>#include&lt;iostream&gt;</code>为例，它做的就是找到叫&quot;iostream&quot;的文件，将其中所有内容复制粘贴到目前这个文件中。（还真是复制粘贴，具体看后面）</p>
@@ -722,7 +724,7 @@ int main() &#123;
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-works"><span class="toc-text"> How C++ Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%98%B6%E6%AE%B5"><span class="toc-text"> 编译阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tips"><span class="toc-text"> tips</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E9%98%B6%E6%AE%B5"><span class="toc-text"> 链接阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-compiler-works"><span class="toc-text"> How C++ the Compiler Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA"><span class="toc-text"> 一些演示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-linker-works"><span class="toc-text"> How C++ the Linker Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA-2"><span class="toc-text"> 一些演示</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#preface"><span class="toc-text"> Preface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-works"><span class="toc-text"> How C++ Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%98%B6%E6%AE%B5"><span class="toc-text"> 编译阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tips"><span class="toc-text"> tips</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E9%98%B6%E6%AE%B5"><span class="toc-text"> 链接阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-compiler-works"><span class="toc-text"> How C++ the Compiler Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA"><span class="toc-text"> 一些演示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-linker-works"><span class="toc-text"> How C++ the Linker Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA-2"><span class="toc-text"> 一些演示</span></a></li></ol></li></ol>
 </div>
             </main>
             <aside class="right-column">
@@ -736,7 +738,7 @@ int main() &#123;
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-works"><span class="toc-text"> How C++ Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%98%B6%E6%AE%B5"><span class="toc-text"> 编译阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tips"><span class="toc-text"> tips</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E9%98%B6%E6%AE%B5"><span class="toc-text"> 链接阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-compiler-works"><span class="toc-text"> How C++ the Compiler Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA"><span class="toc-text"> 一些演示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-linker-works"><span class="toc-text"> How C++ the Linker Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA-2"><span class="toc-text"> 一些演示</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#preface"><span class="toc-text"> Preface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-works"><span class="toc-text"> How C++ Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%98%B6%E6%AE%B5"><span class="toc-text"> 编译阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tips"><span class="toc-text"> tips</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E9%98%B6%E6%AE%B5"><span class="toc-text"> 链接阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-compiler-works"><span class="toc-text"> How C++ the Compiler Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA"><span class="toc-text"> 一些演示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-c-the-linker-works"><span class="toc-text"> How C++ the Linker Works</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%BC%94%E7%A4%BA-2"><span class="toc-text"> 一些演示</span></a></li></ol></li></ol>
     </article>
   
   
