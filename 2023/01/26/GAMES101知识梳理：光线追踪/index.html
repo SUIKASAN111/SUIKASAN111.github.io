@@ -45,7 +45,7 @@
         content="2023-01-26">
       <meta 
         property="og:article:modified_time" 
-        content="2023-04-14">
+        content="2023-06-09">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -399,17 +399,17 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/CPP/">
-        <div class="categories-list-item">
-          CPP
-          <span class="categories-list-item-badge">1</span>
-        </div>
-      </a>
-    
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
           <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
         </div>
       </a>
     
@@ -1121,7 +1121,7 @@ Irradiance和Radiance的差别就在于方向性，Radiance具有方向性。</p
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">L</span><span class="mord mathnormal">o</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal">o</span></span></span></span></span></p>
 <p>也就是说，只要经由像素发射的光路足够多，最终计算结果与真实情况就会足够接近。<br>
 这也是为什么说Path Tracing是一种无偏的计算全局光照的方法。<br>
-<em>补：通过定义的概率P我们也能求出弹射次数的期望为P/(1_P)^2</em></p>
+<em>补：通过定义的概率P我们也能求出弹射次数的期望为P/(1-P)</em></p>
 <p>由此我们得到最终的shade伪代码：</p>
 <pre class="line-numbers language-none"><code class="language-none">shade(p, wo)
   Manually specify a probability P_RR
