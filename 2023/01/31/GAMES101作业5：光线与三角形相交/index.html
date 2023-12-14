@@ -33,7 +33,7 @@
     
       <meta 
         property="og:img" 
-        content="/img/logo.jpg">
+        content="/2023/01/31/GAMES101作业5：光线与三角形相交/banner.png">
     
     
     
@@ -45,7 +45,7 @@
         content="2023-01-31">
       <meta 
         property="og:article:modified_time" 
-        content="2023-02-21">
+        content="2023-12-14">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -390,7 +390,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer-2"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#castray"><span class="toc-text"> castRay</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#renderer"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#renderer-2"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#castray"><span class="toc-text"> castRay</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -492,6 +492,15 @@
             </aside>
             <main class="main-column">
               
+  <div class="image-wrapper">
+    <img 
+      src="/2023/01/31/GAMES101作业5：光线与三角形相交/banner.png" 
+      data-src="/2023/01/31/GAMES101作业5：光线与三角形相交/banner.png"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="GAMES101作业5：光线与三角形相交 thumbnail">
+  </div>
+
 <article class="card card-content">
   <header>
     <h1 class="post-title">
@@ -545,19 +554,19 @@
   <div 
     id="section" 
     class="post-content">
-    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+    <h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
 <p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。<br>
 已完成的代码可在我的GitHub<a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111/GAMES101-Assignments">GAMES101作业代码仓库</a>获取。</p>
 <p>GAMES101课程相关基础知识可参看本博客<a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>。</p>
-<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
+<h1 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h1>
 <p>本次作业的任务是完成光线追踪中光线的生成和光线与三角形求交的算法。<br>
 主要工作如下：</p>
 <ul>
 <li>Render() in Renderer.cpp：为每个像素生成一条对应的光线，然后调用函数castRay()来得到颜色，最后将颜色存储在帧缓冲区的相应像素中。</li>
 <li>rayTriangleIntersect() in Triangle.hpp：实现Moller-Trumbore算法。</li>
 </ul>
-<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
-<h3 id="renderer"><a class="markdownIt-Anchor" href="#renderer"></a> <strong>Renderer</strong></h3>
+<h1 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h1>
+<h2 id="renderer"><a class="markdownIt-Anchor" href="#renderer"></a> Renderer</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Renderer.cpp
 void Renderer::Render(const Scene&amp; scene)
 &#123;
@@ -609,7 +618,7 @@ void Renderer::Render(const Scene&amp; scene)
 <li>像素从左上到右下横向遍历，屏幕中在z轴上，计算x,y时记得进行半个屏幕宽高的平移；</li>
 <li>计算出的dir(x,y,-1)就相当于从相机到屏幕像素的连线，而光线方向则需要对dir再进行归一化；</li>
 </ol>
-<h3 id="triangle"><a class="markdownIt-Anchor" href="#triangle"></a> <strong>Triangle</strong></h3>
+<h2 id="triangle"><a class="markdownIt-Anchor" href="#triangle"></a> Triangle</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">bool rayTriangleIntersect(const Vector3f&amp; v0, const Vector3f&amp; v1, const Vector3f&amp; v2, const Vector3f&amp; orig,
                           const Vector3f&amp; dir, float&amp; tnear, float&amp; u, float&amp; v)
 &#123;
@@ -635,9 +644,9 @@ void Renderer::Render(const Scene&amp; scene)
     return false;
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这部分其实没什么可说的，就是套Möller Trumbore公式。需要注意的就是，最后记得判断一下有效性，首先tnear必须大于0，这样保证三角形是在光线前方，再者必须保证u,v(对应课程中公式里重心坐标表示的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>b</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">b_1,b_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)在0-1之间，保证交点在三角形内。</p>
-<h3 id="效果"><a class="markdownIt-Anchor" href="#效果"></a> <strong>效果</strong></h3>
+<h2 id="效果"><a class="markdownIt-Anchor" href="#效果"></a> 效果</h2>
 <p><img src="/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/binary.png" alt="Result" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/31/GAMES101%E4%BD%9C%E4%B8%9A5%EF%BC%9A%E5%85%89%E7%BA%BF%E4%B8%8E%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9B%B8%E4%BA%A4/binary.png" class="lozad post-image"></p>
-<h2 id="代码框架说明"><a class="markdownIt-Anchor" href="#代码框架说明"></a> 代码框架说明</h2>
+<h1 id="代码框架说明"><a class="markdownIt-Anchor" href="#代码框架说明"></a> 代码框架说明</h1>
 <p>本次作业的说明文档给出了不少框架的说明，对于完成作业来说已经基本上足够，这里仅做简要补充。</p>
 <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; in Document
 global.hpp：包含了整个框架中会使用的基本函数和变量。
@@ -645,9 +654,9 @@ Vector.hpp: 由于我们不再使用 Eigen 库，因此我们在此处提供了�
 Object.hpp: 渲染物体的父类。Triangle 和 Sphere 类都是从该类继承的。
 Scene.hpp: 定义要渲染的场景。包括设置参数，物体以及灯光。
 Renderer.hpp: 渲染器类，它实现了所有光线追踪的操作。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="renderer-2"><a class="markdownIt-Anchor" href="#renderer-2"></a> <strong>Renderer</strong></h3>
+<h2 id="renderer-2"><a class="markdownIt-Anchor" href="#renderer-2"></a> Renderer</h2>
 <p>渲染器类中的Render成员函数控制整个光线追踪渲染的流程，根据Scene类中定义的屏幕信息逐像素生成光线，然后调用castRay函数完成光线追踪与着色，将结果存入帧缓冲区，绘制出图像。</p>
-<h3 id="castray"><a class="markdownIt-Anchor" href="#castray"></a> <strong>castRay</strong></h3>
+<h2 id="castray"><a class="markdownIt-Anchor" href="#castray"></a> castRay</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">Vector3f castRay(
         const Vector3f &amp;orig, const Vector3f &amp;dir, const Scene&amp; scene,
         int depth)
@@ -869,7 +878,7 @@ REFLECTION_AND_REFRACTION情况下，其最终着色结果实际上是对各次�
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer-2"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#castray"><span class="toc-text"> castRay</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#renderer"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#renderer-2"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#castray"><span class="toc-text"> castRay</span></a></li></ol></li></ol>
 </div>
             </main>
             <aside class="right-column">
@@ -883,7 +892,7 @@ REFLECTION_AND_REFRACTION情况下，其最终着色结果实际上是对各次�
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#renderer-2"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#castray"><span class="toc-text"> castRay</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#renderer"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#renderer-2"><span class="toc-text"> Renderer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#castray"><span class="toc-text"> castRay</span></a></li></ol></li></ol>
     </article>
   
   

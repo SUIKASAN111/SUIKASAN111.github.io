@@ -33,7 +33,7 @@
     
       <meta 
         property="og:img" 
-        content="/img/logo.jpg">
+        content="/2023/01/20/GAMES101作业4：Bezier曲线/banner.png">
     
     
     
@@ -45,7 +45,7 @@
         content="2023-01-20">
       <meta 
         property="og:article:modified_time" 
-        content="2023-01-31">
+        content="2023-12-14">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -390,7 +390,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AF%B4%E6%98%8E"><span class="toc-text"> 更改说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#recursive_bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> recursive_bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E5%8E%9F%E7%90%86%E8%A7%A3%E9%87%8A%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 反走样原理解释与实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C-2"><span class="toc-text"> 效果</span></a></li></ol></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AF%B4%E6%98%8E"><span class="toc-text"> 更改说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#recursive_bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> recursive_bezier函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> bezier函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E5%8E%9F%E7%90%86%E8%A7%A3%E9%87%8A%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 反走样原理解释与实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C-2"><span class="toc-text"> 效果</span></a></li></ol></li></ol></li></ol>
       </div>
     </article>
   
@@ -492,6 +492,15 @@
             </aside>
             <main class="main-column">
               
+  <div class="image-wrapper">
+    <img 
+      src="/2023/01/20/GAMES101作业4：Bezier曲线/banner.png" 
+      data-src="/2023/01/20/GAMES101作业4：Bezier曲线/banner.png"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="GAMES101作业4：Bézier曲线 thumbnail">
+  </div>
+
 <article class="card card-content">
   <header>
     <h1 class="post-title">
@@ -545,12 +554,12 @@
   <div 
     id="section" 
     class="post-content">
-    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+    <h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
 <p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。<br>
 已完成的代码可在我的GitHub<a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111/GAMES101-Assignments">GAMES101作业代码仓库</a>获取。</p>
 <p>GAMES101课程相关基础知识可参看本博客<a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>。</p>
-<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
-<h3 id="任务说明"><a class="markdownIt-Anchor" href="#任务说明"></a> <strong>任务说明</strong></h3>
+<h1 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h1>
+<h2 id="任务说明"><a class="markdownIt-Anchor" href="#任务说明"></a> <strong>任务说明</strong></h2>
 <p>本次作业的任务是实现使用控制点绘制出贝塞尔曲线。<br>
 主要工作如下：</p>
 <ul>
@@ -558,12 +567,12 @@
 <li>完成bezier函数：实现Bézier曲线的绘制</li>
 <li>提高：实现Bézier曲线的反走样</li>
 </ul>
-<h3 id="重点提要"><a class="markdownIt-Anchor" href="#重点提要"></a> <strong>重点提要</strong></h3>
+<h2 id="重点提要"><a class="markdownIt-Anchor" href="#重点提要"></a> 重点提要</h2>
 <p>主要是对De Casteljau算法的理解，利用其逐阶插值的特点进行代码实现。</p>
-<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
+<h1 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h1>
 <p>本次作业中，我将给定的框架进行了少量修改，直接实现对任意控制点数绘制贝塞尔曲线而不是仅仅四个点。<br>
 对框架中给出的naive_bezier函数，并未修改成任意控制点数实现。该函数直接用公式表示贝塞尔曲线上的点，用于验证我们实现的De Casteljau算法的正确性，如要将其也改为实现任意控制点数绘制则需要在其中表示出Bernstein多项式。</p>
-<h3 id="更改说明"><a class="markdownIt-Anchor" href="#更改说明"></a> <strong>更改说明</strong></h3>
+<h2 id="更改说明"><a class="markdownIt-Anchor" href="#更改说明"></a> 更改说明</h2>
 <p>实现对任意控制点数的绘制，需要对给定的代码框架进行一些修改，说明如下</p>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">void mouse_handler(int event, int x, int y, int flags, void *userdata) 
 &#123;
@@ -608,8 +617,8 @@
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>main函数中while循环中贝塞尔曲线的绘制部分代码放入if语句中，条件是(key==13)，即当键入Enter时，再进行曲线的绘制。<br>
 如此修改后实现的效果是先用鼠标在窗口中按顺序定义出控制点，键入Enter表示定义控制点完成，然后程序根据已定义的控制点进行绘制。</p>
-<h3 id="基础"><a class="markdownIt-Anchor" href="#基础"></a> <strong>基础</strong></h3>
-<h4 id="recursive_bezier函数"><a class="markdownIt-Anchor" href="#recursive_bezier函数"></a> <strong>recursive_bezier函数</strong></h4>
+<h2 id="基础"><a class="markdownIt-Anchor" href="#基础"></a> 基础</h2>
+<h3 id="recursive_bezier函数"><a class="markdownIt-Anchor" href="#recursive_bezier函数"></a> recursive_bezier函数</h3>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">cv::Point2f recursive_bezier(const std::vector&lt;cv::Point2f&gt; &amp;control_points, float t) 
 &#123;
     &#x2F;&#x2F; TODO: Implement de Casteljau&#39;s algorithm
@@ -634,7 +643,7 @@
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里是直接实现了对任意点数插值的de Casteljau算法，如果只是完成四个控制点的绘制可以不用循环。<br>
 其中，points保存每一趟循环需要插值的点的序列，ret保存插值结果，一趟插值完毕后ret的结果赋值给point，ret清零，也就是说一趟插值的结果即为下一趟需要插值的点。直到某次插值后ret中仅有一个点，该点就是当前t值对应的贝塞尔曲线上的点。</p>
-<h4 id="bezier函数"><a class="markdownIt-Anchor" href="#bezier函数"></a> <strong>bezier函数</strong></h4>
+<h3 id="bezier函数"><a class="markdownIt-Anchor" href="#bezier函数"></a> bezier函数</h3>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">void bezier(const std::vector&lt;cv::Point2f&gt; &amp;control_points, cv::Mat &amp;window) 
 &#123;
     &#x2F;&#x2F; TODO: Iterate through all t &#x3D; 0 to t &#x3D; 1 with small steps, and call de Casteljau&#39;s 
@@ -646,7 +655,7 @@
     &#125;
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>bezier函数就是执行绘制的流程，以0.001为步长绘制t从0到1对应的点形成贝塞尔曲线。</p>
-<h4 id="效果"><a class="markdownIt-Anchor" href="#效果"></a> <strong>效果</strong></h4>
+<h3 id="效果"><a class="markdownIt-Anchor" href="#效果"></a> 效果</h3>
 <p><strong>de Casteljau算法绘制结果</strong><br>
 <img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/4points.png" alt="4points" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/4points.png" class="lozad post-image"></p>
 <p><strong>结果验证</strong><br>
@@ -655,9 +664,9 @@
 <p><strong>不同数量的控制点</strong><br>
 <img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/3points.png" alt="3points" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/3points.png" class="lozad post-image"><br>
 <img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/6points.png" alt="6points" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/6points.png" class="lozad post-image"></p>
-<h3 id="提高"><a class="markdownIt-Anchor" href="#提高"></a> <strong>提高</strong></h3>
+<h2 id="提高"><a class="markdownIt-Anchor" href="#提高"></a> 提高</h2>
 <p>贝塞尔曲线反走样的实现思路参考了csdn大佬<a target="_blank" rel="noopener" href="https://blog.csdn.net/ycrsw?type=blog">ycr的帐号</a>的<a target="_blank" rel="noopener" href="https://blog.csdn.net/ycrsw/article/details/124117190?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167422752416800222852115%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=167422752416800222852115&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-124117190-null-null.142%5Ev71%5Ejs_top,201%5Ev4%5Eadd_ask&amp;utm_term=games101%E4%BD%9C%E4%B8%9A4&amp;spm=1018.2226.3001.4187">【GAMES101】作业4（提高）含Bazier曲线的反走样处理</a>文章中的处理思路。</p>
-<h4 id="反走样原理解释与实现"><a class="markdownIt-Anchor" href="#反走样原理解释与实现"></a> <strong>反走样原理解释与实现</strong></h4>
+<h3 id="反走样原理解释与实现"><a class="markdownIt-Anchor" href="#反走样原理解释与实现"></a> 反走样原理解释与实现</h3>
 <p>这里使用Excel单元格表示像素来解释走样的形成和反走样思路。<br>
 我们原来仅绘制计算出的点所在的像素点，像这样<br>
 <img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/1.PNG" alt="1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/1.PNG" class="lozad post-image"><br>
@@ -722,7 +731,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         &#125;
     &#125;
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="效果-2"><a class="markdownIt-Anchor" href="#效果-2"></a> <strong>效果</strong></h4>
+<h3 id="效果-2"><a class="markdownIt-Anchor" href="#效果-2"></a> 效果</h3>
 <p><strong>反走样</strong><br>
 <img src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/antialiasing.png" alt="antialiasing" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/20/GAMES101%E4%BD%9C%E4%B8%9A4%EF%BC%9ABezier%E6%9B%B2%E7%BA%BF/antialiasing.png" class="lozad post-image"><br>
 <strong>前后对比</strong><br>
@@ -798,7 +807,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AF%B4%E6%98%8E"><span class="toc-text"> 更改说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#recursive_bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> recursive_bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E5%8E%9F%E7%90%86%E8%A7%A3%E9%87%8A%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 反走样原理解释与实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C-2"><span class="toc-text"> 效果</span></a></li></ol></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AF%B4%E6%98%8E"><span class="toc-text"> 更改说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#recursive_bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> recursive_bezier函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> bezier函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E5%8E%9F%E7%90%86%E8%A7%A3%E9%87%8A%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 反走样原理解释与实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C-2"><span class="toc-text"> 效果</span></a></li></ol></li></ol></li></ol>
 </div>
             </main>
             <aside class="right-column">
@@ -812,7 +821,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AF%B4%E6%98%8E"><span class="toc-text"> 更改说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#recursive_bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> recursive_bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> bezier函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E5%8E%9F%E7%90%86%E8%A7%A3%E9%87%8A%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 反走样原理解释与实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%88%E6%9E%9C-2"><span class="toc-text"> 效果</span></a></li></ol></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%AF%B4%E6%98%8E"><span class="toc-text"> 更改说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#recursive_bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> recursive_bezier函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bezier%E5%87%BD%E6%95%B0"><span class="toc-text"> bezier函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E5%8E%9F%E7%90%86%E8%A7%A3%E9%87%8A%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 反走样原理解释与实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E6%9E%9C-2"><span class="toc-text"> 效果</span></a></li></ol></li></ol></li></ol>
     </article>
   
   

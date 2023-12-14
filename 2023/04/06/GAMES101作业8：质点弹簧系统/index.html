@@ -33,7 +33,7 @@
     
       <meta 
         property="og:img" 
-        content="/img/logo.jpg">
+        content="/2023/04/06/GAMES101作业8：质点弹簧系统/banner.PNG">
     
     
     
@@ -45,7 +45,7 @@
         content="2023-04-06">
       <meta 
         property="og:article:modified_time" 
-        content="2023-04-07">
+        content="2023-12-15">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -390,7 +390,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#segmentation-fault-core-dumped%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95"><span class="toc-text"> Segmentation Fault (Core dumped)问题解决记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#roperope"><span class="toc-text"> Rope::Rope</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateeuler"><span class="toc-text"> Rope::simulateEuler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateverlet"><span class="toc-text"> Rope::simulateVerlet</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#segmentation-fault-core-dumped%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95"><span class="toc-text"> Segmentation Fault (Core dumped)问题解决记录</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#roperope"><span class="toc-text"> Rope::Rope</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ropesimulateeuler"><span class="toc-text"> Rope::simulateEuler</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ropesimulateverlet"><span class="toc-text"> Rope::simulateVerlet</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -492,6 +492,15 @@
             </aside>
             <main class="main-column">
               
+  <div class="image-wrapper">
+    <img 
+      src="/2023/04/06/GAMES101作业8：质点弹簧系统/banner.PNG" 
+      data-src="/2023/04/06/GAMES101作业8：质点弹簧系统/banner.PNG"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="GAMES101作业8：质点弹簧系统 thumbnail">
+  </div>
+
 <article class="card card-content">
   <header>
     <h1 class="post-title">
@@ -545,7 +554,7 @@
   <div 
     id="section" 
     class="post-content">
-    <h2 id="segmentation-fault-core-dumped问题解决记录"><a class="markdownIt-Anchor" href="#segmentation-fault-core-dumped问题解决记录"></a> Segmentation Fault (Core dumped)问题解决记录</h2>
+    <h1 id="segmentation-fault-core-dumped问题解决记录"><a class="markdownIt-Anchor" href="#segmentation-fault-core-dumped问题解决记录"></a> Segmentation Fault (Core dumped)问题解决记录</h1>
 <p>我遇到的Segmentation Fault (Core dumped)问题不同于课程BBS上有朋友提出的那种，我不是写了代码后因为代码问题导致出错的，而是直接编译运行作业8的框架就报了这个错误，说明并非代码问题。我始终没有找到与我遇到相同问题的朋友，因此解决这个问题花了我不少时间，因此这篇文章特意保留了我搜索解决这个问题的简单记录，希望能帮助到遇到同样问题的朋友们。</p>
 <p>------------------------------------------------------4.6 分界线---------------------------------------------------------<br>
 作业8一直出现segmentation fault的问题，即便是直接使用作业框架运行也是如此，问题可能不是出在作业的代码上。</p>
@@ -563,7 +572,7 @@
 <img src="/2023/04/06/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/repaired.png" alt="repaired" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/repaired.png" class="lozad post-image"></p>
 <p>如果你也遇到了直接编译运行作业8代码框架也会出现Segmentation Fault (Core dumped)的问题，或许也是因为Ubuntu系统的问题，不妨试一下这个方法。<br>
 <strong>注：完成作业过程中，我某次开机重启后，发现再次出现Segmentation Fault (Core dumped)问题，不过重新使用一次上述的第二种方法后又成功解决了。</strong></p>
-<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
+<h1 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h1>
 <p>本次作业将实现弹簧质点系统</p>
 <p>主要工作如下：</p>
 <ol>
@@ -572,8 +581,8 @@
 <li>Rope::simulateVerlet in rope.cpp: 实现显式Verlet方法；</li>
 <li>Rope::simulateVerlet in rope.cpp: 向显式Verlet方法积分的胡克定律中加入阻尼。</li>
 </ol>
-<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
-<h3 id="roperope"><a class="markdownIt-Anchor" href="#roperope"></a> <strong>Rope::Rope</strong></h3>
+<h1 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h1>
+<h2 id="roperope"><a class="markdownIt-Anchor" href="#roperope"></a> Rope::Rope</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rope.cpp
 Rope::Rope(Vector2D start, Vector2D end, int num_nodes, float node_mass, float k, vector&lt;int&gt; pinned_nodes)
 &#123;
@@ -597,7 +606,7 @@ Rope::Rope(Vector2D start, Vector2D end, int num_nodes, float node_mass, float k
 <p>根据传入的起始与终止位置以及质点数量构造质点，step为质点间的间距，在相邻两质点间构造弹簧，弹簧系数为k.最后的for循环根据传入的pinned_nodes将对应质点设为固定的。</p>
 <p>编译运行<br>
 <img src="/2023/04/06/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/rope.png" alt="rope" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/rope.png" class="lozad post-image"></p>
-<h3 id="ropesimulateeuler"><a class="markdownIt-Anchor" href="#ropesimulateeuler"></a> <strong>Rope::simulateEuler</strong></h3>
+<h2 id="ropesimulateeuler"><a class="markdownIt-Anchor" href="#ropesimulateeuler"></a> Rope::simulateEuler</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rope.cpp
 void Rope::simulateEuler(float delta_t, Vector2D gravity)
 &#123;
@@ -737,7 +746,7 @@ void Rope::simulateEuler(float delta_t, Vector2D gravity)
     &#125;
 &#125;
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="ropesimulateverlet"><a class="markdownIt-Anchor" href="#ropesimulateverlet"></a> <strong>Rope::simulateVerlet</strong></h3>
+<h2 id="ropesimulateverlet"><a class="markdownIt-Anchor" href="#ropesimulateverlet"></a> Rope::simulateVerlet</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rope.cpp
 void Rope::simulateVerlet(float delta_t, Vector2D gravity)
 &#123;
@@ -843,7 +852,7 @@ void Rope::simulateVerlet(float delta_t, Vector2D gravity)
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#segmentation-fault-core-dumped%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95"><span class="toc-text"> Segmentation Fault (Core dumped)问题解决记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#roperope"><span class="toc-text"> Rope::Rope</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateeuler"><span class="toc-text"> Rope::simulateEuler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateverlet"><span class="toc-text"> Rope::simulateVerlet</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#segmentation-fault-core-dumped%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95"><span class="toc-text"> Segmentation Fault (Core dumped)问题解决记录</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#roperope"><span class="toc-text"> Rope::Rope</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ropesimulateeuler"><span class="toc-text"> Rope::simulateEuler</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ropesimulateverlet"><span class="toc-text"> Rope::simulateVerlet</span></a></li></ol></li></ol>
 </div>
             </main>
             <aside class="right-column">
@@ -857,7 +866,7 @@ void Rope::simulateVerlet(float delta_t, Vector2D gravity)
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#segmentation-fault-core-dumped%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95"><span class="toc-text"> Segmentation Fault (Core dumped)问题解决记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#roperope"><span class="toc-text"> Rope::Rope</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateeuler"><span class="toc-text"> Rope::simulateEuler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateverlet"><span class="toc-text"> Rope::simulateVerlet</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#segmentation-fault-core-dumped%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95"><span class="toc-text"> Segmentation Fault (Core dumped)问题解决记录</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#roperope"><span class="toc-text"> Rope::Rope</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ropesimulateeuler"><span class="toc-text"> Rope::simulateEuler</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ropesimulateverlet"><span class="toc-text"> Rope::simulateVerlet</span></a></li></ol></li></ol>
     </article>
   
   

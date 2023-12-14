@@ -33,7 +33,7 @@
     
       <meta 
         property="og:img" 
-        content="/img/logo.jpg">
+        content="/2023/02/27/GAMES101作业6：加速结构/banner.png">
     
     
     
@@ -45,7 +45,7 @@
         content="2023-02-27">
       <meta 
         property="og:article:modified_time" 
-        content="2023-03-03">
+        content="2023-12-14">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -390,7 +390,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#render"><span class="toc-text"> Render</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#trianglegetintersection"><span class="toc-text"> Triangle::getIntersection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#intersectp"><span class="toc-text"> IntersectP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getintersection"><span class="toc-text"> getIntersection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sah%E6%8F%90%E9%AB%98"><span class="toc-text"> SAH(提高)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bounds"><span class="toc-text"> Bounds</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bvh"><span class="toc-text"> BVH</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#render"><span class="toc-text"> Render</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#trianglegetintersection"><span class="toc-text"> Triangle::getIntersection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#intersectp"><span class="toc-text"> IntersectP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getintersection"><span class="toc-text"> getIntersection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sah%E6%8F%90%E9%AB%98"><span class="toc-text"> SAH(提高)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#bounds"><span class="toc-text"> Bounds</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bvh"><span class="toc-text"> BVH</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -492,6 +492,15 @@
             </aside>
             <main class="main-column">
               
+  <div class="image-wrapper">
+    <img 
+      src="/2023/02/27/GAMES101作业6：加速结构/banner.png" 
+      data-src="/2023/02/27/GAMES101作业6：加速结构/banner.png"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="GAMES101作业6：加速结构 thumbnail">
+  </div>
+
 <article class="card card-content">
   <header>
     <h1 class="post-title">
@@ -545,11 +554,11 @@
   <div 
     id="section" 
     class="post-content">
-    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+    <h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
 <p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。<br>
 已完成的代码可在我的GitHub<a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111/GAMES101-Assignments">GAMES101作业代码仓库</a>获取。</p>
 <p>GAMES101课程相关基础知识可参看本博客<a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>。</p>
-<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
+<h1 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h1>
 <p>本次作业重点关注物体划分算法Bounding Volume Hierarchy(BVH)，在作业5的基础上实现Ray-Bounding Volume求交与BVH查找。<br>
 主要工作如下：</p>
 <ol>
@@ -566,8 +575,8 @@
 </ul>
 </li>
 </ol>
-<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
-<h3 id="render"><a class="markdownIt-Anchor" href="#render"></a> <strong>Render</strong></h3>
+<h1 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h1>
+<h2 id="render"><a class="markdownIt-Anchor" href="#render"></a> Render</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Renderer.cpp
 void Renderer::Render(const Scene&amp; scene)
 &#123;
@@ -612,7 +621,7 @@ void Renderer::Render(const Scene&amp; scene)
     fclose(fp);    
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这次需要使用新增加的Ray类，用eye_pos和dir构造，传入castRay即可。</p>
-<h3 id="trianglegetintersection"><a class="markdownIt-Anchor" href="#trianglegetintersection"></a> <strong>Triangle::getIntersection</strong></h3>
+<h2 id="trianglegetintersection"><a class="markdownIt-Anchor" href="#trianglegetintersection"></a> Triangle::getIntersection</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Triangle.hpp
 inline Intersection Triangle::getIntersection(Ray ray)
 &#123;
@@ -648,7 +657,7 @@ inline Intersection Triangle::getIntersection(Ray ray)
     return inter;
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>光线和三角形求交代码框架中其实已经实现，我们需要做的就是正确地将相交信息赋值给inter。</p>
-<h3 id="intersectp"><a class="markdownIt-Anchor" href="#intersectp"></a> <strong>IntersectP</strong></h3>
+<h2 id="intersectp"><a class="markdownIt-Anchor" href="#intersectp"></a> IntersectP</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Bounds3.hpp
 inline bool Bounds3::IntersectP(const Ray&amp; ray, const Vector3f&amp; invDir,
                                 const std::array&lt;int, 3&gt;&amp; dirIsNeg) const
@@ -678,7 +687,7 @@ inline bool Bounds3::IntersectP(const Ray&amp; ray, const Vector3f&amp; invDir,
 <li>invDir是光线坐标的倒数，用于计算相交时间，因为乘法比除法快，所以提前计算好倒数；</li>
 <li>dirIsNeg用于判断光线是否为反向，由于我们默认光线为正向进行计算，所以如果是反方向就需要将对应坐标上的相交时间对换。dirIsNeg的三个值分别表示光线在x,y,z上是否为反向，1表示反向，0表示正向，使用该函数前要注意其参数的构造。</li>
 </ol>
-<h3 id="getintersection"><a class="markdownIt-Anchor" href="#getintersection"></a> <strong>getIntersection</strong></h3>
+<h2 id="getintersection"><a class="markdownIt-Anchor" href="#getintersection"></a> getIntersection</h2>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in BVH.cpp
 Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray&amp; ray) const
 &#123;
@@ -713,7 +722,7 @@ Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray&amp; ray) c
 </ol>
 <p><strong>效果</strong><br>
 <img src="/2023/02/27/GAMES101%E4%BD%9C%E4%B8%9A6%EF%BC%9A%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84/NAIVE.png" alt="NAIVE" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/02/27/GAMES101%E4%BD%9C%E4%B8%9A6%EF%BC%9A%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84/NAIVE.png" class="lozad post-image"></p>
-<h3 id="sah提高"><a class="markdownIt-Anchor" href="#sah提高"></a> <strong>SAH(提高)</strong></h3>
+<h2 id="sah提高"><a class="markdownIt-Anchor" href="#sah提高"></a> SAH(提高)</h2>
 <p>注：提高部分参考了csdn作者<a target="_blank" rel="noopener" href="https://blog.csdn.net/ycrsw?type=blog">ycr的帐号</a>的文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/ycrsw/article/details/124331686?spm=1001.2101.3001.6650.3&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-124331686-blog-124054123.pc_relevant_3mothn_strategy_and_data_recovery&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-124331686-blog-124054123.pc_relevant_3mothn_strategy_and_data_recovery&amp;utm_relevant_index=6">【GAMES101】作业6（提高）含BVH与SAH加速查找算法（SVH）和快速排序算法</a></p>
 <p>根据作业文档给出的链接，我们可以得到表面积启发式算法(Surface Area Heuristic, SAH)的公式：</p>
 <p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.24999999999999992em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mi>C</mi><mo>=</mo><msub><mi>C</mi><mrow><mi>t</mi><mi>r</mi><mi>a</mi><mi>v</mi></mrow></msub><mo>+</mo><msub><mi>P</mi><mi>A</mi></msub><mo>∗</mo><msub><mi>N</mi><mi>A</mi></msub><msub><mi>C</mi><mrow><mi>i</mi><mi>s</mi><mi>e</mi><mi>c</mi><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>P</mi><mi>B</mi></msub><msub><mi>N</mi><mi>B</mi></msub><msub><mi>C</mi><mrow><mi>i</mi><mi>s</mi><mi>e</mi><mi>c</mi><mi>t</mi></mrow></msub></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><msub><mi>P</mi><mi>A</mi></msub><mo>=</mo><msub><mi>S</mi><mi>A</mi></msub><mi mathvariant="normal">/</mi><mi>S</mi></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><msub><mi>P</mi><mi>B</mi></msub><mo>=</mo><msub><mi>S</mi><mi>B</mi></msub><mi mathvariant="normal">/</mi><mi>S</mi></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
@@ -860,7 +869,7 @@ BVHAccel(std::vector&lt;Object*&gt; p, int maxPrimsInNode &#x3D; 1, SplitMethod 
 SAH方法<br>
 <img src="/2023/02/27/GAMES101%E4%BD%9C%E4%B8%9A6%EF%BC%9A%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84/SAHtime.png" alt="SAHtime" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/02/27/GAMES101%E4%BD%9C%E4%B8%9A6%EF%BC%9A%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84/SAHtime.png" class="lozad post-image"></p>
 <p>不知道是因为三角面元数量不够多还是什么原因，SAH方法相较于普通中分法构建BVH的提升在本机上面看不出来，我查阅了其他文章发现结果也是大同小异，不太明显。</p>
-<h2 id="代码框架说明"><a class="markdownIt-Anchor" href="#代码框架说明"></a> 代码框架说明</h2>
+<h1 id="代码框架说明"><a class="markdownIt-Anchor" href="#代码框架说明"></a> 代码框架说明</h1>
 <p>本次作业代码框架由作业5更新修改而来，除了新增BVH类、Bounds类以外，其他大同小异。原先的部分函数被拆分到其他类中，比如原先Renderer类中的castRay和fresnel到了Scene类中。</p>
 <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; in document
 • Material.hpp: 我们从将材质参数拆分到了一个单独的类中，现在每个物体实
@@ -872,9 +881,9 @@ SAH方法<br>
 与材质一样，场景中的每个物体实例都有自己的包围盒。
 • BVH.hpp: BVH 加速类。场景 scene 拥有一个 BVHAccel 实例。从根节点开
 始，我们可以递归地从物体列表构造场景的 BVH.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="bounds"><a class="markdownIt-Anchor" href="#bounds"></a> <strong>Bounds</strong></h3>
+<h2 id="bounds"><a class="markdownIt-Anchor" href="#bounds"></a> Bounds</h2>
 <p>包围盒类中定义了其各种构造函数，还有与光线的求交的函数，判断点是否在其中的函数，包围盒覆盖、合并函数，求表面积函数等等，总体较简单故不具体展开说明，注意其中函数的重载即可。</p>
-<h3 id="bvh"><a class="markdownIt-Anchor" href="#bvh"></a> <strong>BVH</strong></h3>
+<h2 id="bvh"><a class="markdownIt-Anchor" href="#bvh"></a> BVH</h2>
 <p>理解BVH类的递归构建过程十分重要，下面进行简要说明。</p>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">BVHBuildNode* BVHAccel::recursiveBuild(std::vector&lt;Object*&gt; objects)
 &#123;
@@ -1023,7 +1032,7 @@ SAH方法<br>
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#render"><span class="toc-text"> Render</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#trianglegetintersection"><span class="toc-text"> Triangle::getIntersection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#intersectp"><span class="toc-text"> IntersectP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getintersection"><span class="toc-text"> getIntersection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sah%E6%8F%90%E9%AB%98"><span class="toc-text"> SAH(提高)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bounds"><span class="toc-text"> Bounds</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bvh"><span class="toc-text"> BVH</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#render"><span class="toc-text"> Render</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#trianglegetintersection"><span class="toc-text"> Triangle::getIntersection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#intersectp"><span class="toc-text"> IntersectP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getintersection"><span class="toc-text"> getIntersection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sah%E6%8F%90%E9%AB%98"><span class="toc-text"> SAH(提高)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#bounds"><span class="toc-text"> Bounds</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bvh"><span class="toc-text"> BVH</span></a></li></ol></li></ol>
 </div>
             </main>
             <aside class="right-column">
@@ -1037,7 +1046,7 @@ SAH方法<br>
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#render"><span class="toc-text"> Render</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#trianglegetintersection"><span class="toc-text"> Triangle::getIntersection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#intersectp"><span class="toc-text"> IntersectP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getintersection"><span class="toc-text"> getIntersection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sah%E6%8F%90%E9%AB%98"><span class="toc-text"> SAH(提高)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bounds"><span class="toc-text"> Bounds</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bvh"><span class="toc-text"> BVH</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#render"><span class="toc-text"> Render</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#trianglegetintersection"><span class="toc-text"> Triangle::getIntersection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#intersectp"><span class="toc-text"> IntersectP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getintersection"><span class="toc-text"> getIntersection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sah%E6%8F%90%E9%AB%98"><span class="toc-text"> SAH(提高)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#bounds"><span class="toc-text"> Bounds</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bvh"><span class="toc-text"> BVH</span></a></li></ol></li></ol>
     </article>
   
   
