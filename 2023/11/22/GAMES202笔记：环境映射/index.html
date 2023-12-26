@@ -45,7 +45,7 @@
         content="2023-11-22">
       <meta 
         property="og:article:modified_time" 
-        content="2023-12-22">
+        content="2023-12-27">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -405,17 +405,17 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/CPP/">
-        <div class="categories-list-item">
-          CPP
-          <span class="categories-list-item-badge">2</span>
-        </div>
-      </a>
-    
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
           <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">2</span>
         </div>
       </a>
     
@@ -521,7 +521,7 @@
     
     
       <span class="dot"></span>
-      <span>3.8k words</span>
+      <span>3.9k words</span>
     
   </div>
   
@@ -599,7 +599,8 @@ BRDF可以拆分成Fresnel项、自遮挡项和微表面法线分布项(NDF)，�
 于是左边积分对于基础反射率<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">R_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>的依赖被消除，对该积分的预计算被降成二维(Roughness和入射角)<br>
 预计算的二维结果可以直接写成一张Texture<br>
 <img src="/2023/11/22/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E7%8E%AF%E5%A2%83%E6%98%A0%E5%B0%84/SplitSum2Tex.PNG" alt="SplitSum2Tex" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/11/22/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E7%8E%AF%E5%A2%83%E6%98%A0%E5%B0%84/SplitSum2Tex.PNG" class="lozad post-image"></p>
-<p><strong>The Split Sum Approximation</strong><br>
+<p>将积分写成求和形式如下，通常在RTR领域较少用积分表示，更多习惯于使用求和的写法，这也是为什么这个方法会叫做&quot;The Split Sum&quot;，而不是&quot;The Split Integeral&quot;<br>
+<strong>The Split Sum Approximation</strong><br>
 <img src="/2023/11/22/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E7%8E%AF%E5%A2%83%E6%98%A0%E5%B0%84/TheSplitSumApproximation.PNG" alt="TheSplitSumApproximation" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/11/22/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E7%8E%AF%E5%A2%83%E6%98%A0%E5%B0%84/TheSplitSumApproximation.PNG" class="lozad post-image"></p>
 <h2 id="shadow-form-environment-lighting"><a class="markdownIt-Anchor" href="#shadow-form-environment-lighting"></a> Shadow Form Environment Lighting</h2>
 <p>目前，没有很好的方法从环境光贴图中生成阴影。首先，如果将从环境光贴图生成阴影看成是一个多光源问题，则需要生成很多Shadow Map；如果将其看成是一个采样问题，则很难获得渲染方程中的Visibility项，并且其很可能不符合渲染方程近似方法的两个适用条件。</p>

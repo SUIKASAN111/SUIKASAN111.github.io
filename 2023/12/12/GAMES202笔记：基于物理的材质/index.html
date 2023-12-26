@@ -45,7 +45,7 @@
         content="2023-12-12">
       <meta 
         property="og:article:modified_time" 
-        content="2023-12-22">
+        content="2023-12-27">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -405,17 +405,17 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/CPP/">
-        <div class="categories-list-item">
-          CPP
-          <span class="categories-list-item-badge">2</span>
-        </div>
-      </a>
-    
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
           <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">2</span>
         </div>
       </a>
     
@@ -697,7 +697,7 @@ F_{avg}&amp;\in[0, 1]
 <img src="/2023/12/12/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%89%A9%E7%90%86%E7%9A%84%E6%9D%90%E8%B4%A8/Kulla-Conty_result2.PNG" alt="Kulla-Conty_result2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/12/12/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%89%A9%E7%90%86%E7%9A%84%E6%9D%90%E8%B4%A8/Kulla-Conty_result2.PNG" class="lozad post-image"></p>
 <p>这部分的最后，闫令琪老师指出了当今常见的一种用来补全微表面模型反射损失能量的错误方法，即将Microfacet BRDF与一个Diffuse Lobe组合<br>
 这种方法是使用一个Diffuse部分来补全损失的能量，解决Microfacet BRDF渲染结果偏暗的问题，但是这是完全错误的<br>
-首先，我们使用Microfacet BRDF就是描述了其微表面分布，也就是说这个分布我们是清除的，那么这个加入的Diffuse是从何而来呢？一个表面怎么可能既是Microfacet BRDF描述的分布，同时又是Diffuse分布呢？<br>
+首先，我们使用Microfacet BRDF就是描述了其微表面分布，也就是说这个分布我们是清楚的，那么这个加入的Diffuse是从何而来呢？一个表面怎么可能既是Microfacet BRDF描述的分布，同时又是Diffuse分布呢？<br>
 这么做虽然有时候看起来没问题，但是完全没有保证能量守恒，当加入全局光照等其他因素后，可能会出现材质本身发光的情况<br>
 <img src="/2023/12/12/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%89%A9%E7%90%86%E7%9A%84%E6%9D%90%E8%B4%A8/AnUndesirabelHack.PNG" alt="AnUndesirabelHack" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/12/12/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%89%A9%E7%90%86%E7%9A%84%E6%9D%90%E8%B4%A8/AnUndesirabelHack.PNG" class="lozad post-image"></p>
 <h3 id="shading-microfacet-models-using-linearly-transformed-cosine-ltc"><a class="markdownIt-Anchor" href="#shading-microfacet-models-using-linearly-transformed-cosine-ltc"></a> Shading Microfacet Models using Linearly Transformed Cosine (LTC)</h3>
