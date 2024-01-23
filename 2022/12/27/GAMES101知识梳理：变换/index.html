@@ -45,7 +45,7 @@
         content="2022-12-27">
       <meta 
         property="og:article:modified_time" 
-        content="2023-12-22">
+        content="2024-01-24">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -405,17 +405,17 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/GAMES101/">
-        <div class="categories-list-item">
-          GAMES101
-          <span class="categories-list-item-badge">18</span>
-        </div>
-      </a>
-    
       <a href="/categories/CPP/">
         <div class="categories-list-item">
           CPP
           <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
         </div>
       </a>
     
@@ -550,7 +550,7 @@
     class="post-content">
     <h1 id="本节说明"><a class="markdownIt-Anchor" href="#本节说明"></a> 本节说明</h1>
 <p>GAMES101以及虎书(<strong>Fundamentals of Computer Graphics, Fourth Edition</strong>)中使用的是列向量，使用的坐标系为右手系。本系列文章遵循课程的习惯，以避免不必要的混乱。</p>
-<p>图形学应用中左右手系都很常用，比如OpenGL使用右手系而Direct3D使用左手系，常见游戏引擎如UE和Unity中使用左手系。但是其本质是完全一样的，无非是使用列向量与行向量、矩阵转置、矩阵右乘左乘的差别，左手系的具体论述可参考Further Readinga中的<strong>3D Math Primer for Graphics and Game Development</strong>。</p>
+<p>图形学应用中左右手系都很常用，比如OpenGL使用右手系而Direct3D使用左手系，常见游戏引擎如UE和Unity中使用左手系。但是其本质是完全一样的，无非是使用列向量与行向量、矩阵转置、矩阵右乘左乘的差别，左手系的具体论述可参考<a href="https://suikasan111.github.io/2022/12/27/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8F%98%E6%8D%A2/#further-reading">Further Reading</a>中的<strong>3D Math Primer for Graphics and Game Development</strong>。</p>
 <h1 id="modeling-transformation-模型变换"><a class="markdownIt-Anchor" href="#modeling-transformation-模型变换"></a> Modeling Transformation-模型变换</h1>
 <h2 id="homogeneous-coordinates-齐次坐标"><a class="markdownIt-Anchor" href="#homogeneous-coordinates-齐次坐标"></a> Homogeneous Coordinates-齐次坐标</h2>
 <p>通常我们可以使用二维矩阵表示二维线性变换，但是如平移变换这样的变换无法使用二维矩阵表示为线性形式</p>
