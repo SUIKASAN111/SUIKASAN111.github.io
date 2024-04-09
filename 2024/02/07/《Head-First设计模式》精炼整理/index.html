@@ -45,7 +45,7 @@
         content="2024-02-07">
       <meta 
         property="og:article:modified_time" 
-        content="2024-03-14">
+        content="2024-04-09">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -405,17 +405,17 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/CPP/">
-        <div class="categories-list-item">
-          CPP
-          <span class="categories-list-item-badge">1</span>
-        </div>
-      </a>
-    
       <a href="/categories/GAMES101/">
         <div class="categories-list-item">
           GAMES101
           <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
         </div>
       </a>
     
@@ -574,7 +574,7 @@
 <h2 id="原则ii针对接口编程"><a class="markdownIt-Anchor" href="#原则ii针对接口编程"></a> 原则II：针对接口编程</h2>
 <p>针对接口编程，而不是针对实现编程</p>
 <p>“针对接口编程”的真正含义是“针对超类(基类)编程”，或者说，变量所声明的类型应该是基类，通常为<strong>抽象类或接口</strong>，这样，分配给这些变量的对象可以是基类的任何具体实现，这意味着类声明时不必知道实际的对象类型，使得我们能够<strong>在运行时分配具体的实现对象</strong></p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/Polymorphism.png" alt="Polymorphism" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/Polymorphism.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/polymorphism.png" alt="Polymorphism" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/polymorphism.png" class="lozad post-image"></p>
 <p>具体而言，可将类的一些行为放在分离的类中，实现特定行为接口的类。这样，进行那些行为的类不需要知道行为的任何实现细节。</p>
 <p><em>注：这一点通常依赖于OOP的多态特性，比如使用虚继承、用基类指针指向派生类对象</em></p>
 <h2 id="原则iii组合优于继承"><a class="markdownIt-Anchor" href="#原则iii组合优于继承"></a> 原则III：组合优于继承</h2>
