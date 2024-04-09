@@ -405,17 +405,17 @@
   </div>
   <div class="categories-list">
     
-      <a href="/categories/GAMES101/">
-        <div class="categories-list-item">
-          GAMES101
-          <span class="categories-list-item-badge">18</span>
-        </div>
-      </a>
-    
       <a href="/categories/CPP/">
         <div class="categories-list-item">
           CPP
           <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
         </div>
       </a>
     
@@ -886,7 +886,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>除此之外，每个具体的命令类中还需记录上一个状态，在execute方法中，执行对应家电的操作前，先将执行操作前的状态记录下来。如Light的命令对象调用execute方法，执行具体操作前需要记录执行操作前亮度；CeilingFan的命令对象需要记录执行操作前的风扇挡位，以便对应的undo操作恢复上一步的状态。</p>
 <p>RemoteControlWithUndo类定义遥控器，其中用两个Command类型的数组分别维护七个on按键和七个off按键。undoCommand维护上一个执行的操作，也就是当按下undo时需要撤销的操作。</p>
 <p>setCommand方法可以传入具体Command类型，将该命令绑定到一组按键上。onButtonWasPushed和offButtonWasPushed方法接受一个int型参数，表示按下对应槽位(0-6)的on或off按键，方法中调用其对应命令对象的execute方法，并将undoCommand设为该命令，以便undoButtonWasPushed方法调用时撤销对应的操作。</p>
-<p><em>注：C<ins>在运行时获取基类指针指向的对象的动态类型比较麻烦，我使用C</ins>的实现中为了方便遥控器类RemoteControl获取按键绑定的命令信息，为Command接口增加了一个抽象的getCommandType方法，具体命令类中实现该方法以获取对应的类名</em></p>
+<p><em>注：C++在运行时获取基类指针指向的对象的动态类型比较麻烦，我使用C++的实现中为了方便遥控器类RemoteControl获取按键绑定的命令信息，为Command接口增加了一个抽象的getCommandType方法，具体命令类中实现该方法以获取对应的类名</em></p>
 <p>该案例的类图如下，其中省略了一些具体家电类，以及遥控器类的undo方法，但是其结构是一致的<br>
 <img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_control_class_diagram.png" alt="remote_control_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_control_class_diagram.png" class="lozad post-image"></p>
 <p><em>注：可以另外定义宏命令，一次性调用多个命令，其undo方法则是以相反的顺序调用其中命令的undo</em></p>
