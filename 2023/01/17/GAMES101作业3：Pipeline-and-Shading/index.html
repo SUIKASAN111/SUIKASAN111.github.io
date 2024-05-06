@@ -45,7 +45,7 @@
         content="2023-01-17">
       <meta 
         property="og:article:modified_time" 
-        content="2023-12-14">
+        content="2024-05-06">
       <meta 
         property="og:article:author" 
         content="Yi &#34;suikasan&#34; Xu">
@@ -390,7 +390,7 @@
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#rasterize_triangle%E5%87%BD%E6%95%B0"><span class="toc-text"> rasterize_triangle函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#fragment_shaders"><span class="toc-text"> Fragment_shaders</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phong_fragment_shader"><span class="toc-text"> phong_fragment_shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#texture_fragment_shader"><span class="toc-text"> texture_fragment_shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bump_fragment_shader"><span class="toc-text"> bump_fragment_shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#displacement_fragment_shader"><span class="toc-text"> displacement_fragment_shader</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC"><span class="toc-text"> 双线性插值</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B0%E5%A2%9Etexture%E7%B1%BB"><span class="toc-text"> 新增Texture类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rasterizer"><span class="toc-text"> rasterizer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shaderhpp"><span class="toc-text"> Shader.hpp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#obj_loaderh"><span class="toc-text"> OBJ_Loader.h</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rasterize_triangle%E5%87%BD%E6%95%B0"><span class="toc-text"> rasterize_triangle函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fragment_shaders"><span class="toc-text"> Fragment_shaders</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#phong_fragment_shader"><span class="toc-text"> phong_fragment_shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#texture_fragment_shader"><span class="toc-text"> texture_fragment_shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bump_fragment_shader"><span class="toc-text"> bump_fragment_shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#displacement_fragment_shader"><span class="toc-text"> displacement_fragment_shader</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC"><span class="toc-text"> 双线性插值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9Etexture%E7%B1%BB"><span class="toc-text"> 新增Texture类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rasterizer"><span class="toc-text"> rasterizer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shaderhpp"><span class="toc-text"> Shader.hpp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#obj_loaderh"><span class="toc-text"> OBJ_Loader.h</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -455,9 +455,9 @@
   <div class="tags-list">
     
       <a 
-        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
-        title="GAMES101知识梳理">
-        <div class="tags-list-item">GAMES101知识梳理</div>
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
       </a>
     
       <a 
@@ -467,15 +467,15 @@
       </a>
     
       <a 
-        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
-        title="GAMES202笔记">
-        <div class="tags-list-item">GAMES202笔记</div>
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
       </a>
     
       <a 
-        href="/tags/Head-First-Design-Patterns/" 
-        title="Head First Design Patterns">
-        <div class="tags-list-item">Head First Design Patterns</div>
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
       </a>
     
       <a 
@@ -485,9 +485,9 @@
       </a>
     
       <a 
-        href="/tags/CPP/" 
-        title="CPP">
-        <div class="tags-list-item">CPP</div>
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
       </a>
     
   </div>
@@ -561,12 +561,13 @@
   <div 
     id="section" 
     class="post-content">
-    <h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
+    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
 <p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。<br>
 已完成的代码可在我的GitHub<a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111/GAMES101-Assignments">GAMES101作业代码仓库</a>获取。</p>
 <p>GAMES101课程相关基础知识可参看本博客<a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>。</p>
-<h1 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h1>
-<h2 id="任务说明"><a class="markdownIt-Anchor" href="#任务说明"></a> 任务说明</h2>
+<hr>
+<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
+<h3 id="任务说明"><a class="markdownIt-Anchor" href="#任务说明"></a> 任务说明</h3>
 <p>本次作业主要是在前两次作业的基础上更进一步，完成整个模型的光栅化与着色。<br>
 主要工作如下：</p>
 <ul>
@@ -578,13 +579,14 @@
 <li>完成函数displacement_fragment_shader() in main.cpp，在凹凸贴图基础上实现位移贴图</li>
 <li><em>提高：使用双线性插值进行纹理采样，(本次作业我未做换其他模型的提高内容，懒…)</em></li>
 </ul>
-<h2 id="重点提要"><a class="markdownIt-Anchor" href="#重点提要"></a> 重点提要</h2>
+<h3 id="重点提要"><a class="markdownIt-Anchor" href="#重点提要"></a> 重点提要</h3>
 <p>Blinn-Phong模型、插值、Bump/Normal Mapping、Displacement mapping…</p>
 <p>相关基础知识梳理可参看本博客<a href="https://suikasan111.github.io/2023/01/10/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/">GAMES101知识梳理：着色</a>。</p>
-<h1 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h1>
+<hr>
+<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
 <p>get_projection_matrix()直接复制前两次的即可。注意Z值正负问题。</p>
 <p><strong>注</strong>：代码框架部分使用了一些C++17的新特性，如std::optional。完成作业时候记得将编译器版本改为C++17，或自行用更早C++版本重新实现那些内容。</p>
-<h2 id="rasterize_triangle函数"><a class="markdownIt-Anchor" href="#rasterize_triangle函数"></a> rasterize_triangle函数</h2>
+<h3 id="rasterize_triangle函数"><a class="markdownIt-Anchor" href="#rasterize_triangle函数"></a> rasterize_triangle函数</h3>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rasterizer.cpp
 void rst::rasterizer::rasterize_triangle(const Triangle&amp; t, const std::array&lt;Eigen::Vector3f, 3&gt;&amp; view_pos) 
 &#123;
@@ -633,14 +635,14 @@ void rst::rasterizer::rasterize_triangle(const Triangle&amp; t, const std::array
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>rasterize_triangle函数中的包围盒计算以及深度测试与作业2完全相同，直接复制过来即可(这里我并未使用MSAA)。修改的部分就是像素颜色的计算，作业2是直接使用了顶点颜色常数值，但作业3按照Barycentric Coordinates对法向量、颜色、纹理坐标等进行插值。计算出的[alpha, beta, gamma]就是顶点权重，像深度插值一样将其应用在其他参数的插值上即可。使用插值计算出的结果设置fragment shader payload，传入Fragment Shader计算得到颜色值，将该颜色写入framebuffer。</p>
 <p><strong>注</strong>：法向量记得要normalized()</p>
-<h2 id="fragment_shaders"><a class="markdownIt-Anchor" href="#fragment_shaders"></a> Fragment_shaders</h2>
+<h3 id="fragment_shaders"><a class="markdownIt-Anchor" href="#fragment_shaders"></a> Fragment_shaders</h3>
 <p>在main.cpp中完成各fragment_shader的定义。<br>
 这部分实际上就是在定义不同fragment_shader如何处理输入的Payload，从而计算得到不同的像素颜色值。</p>
 <p>代码框架中给出了normal_fragment_shader，这个fragment_shader实际上是将每个像素的法向量的坐标计算成颜色值。<br>
 完成上述rasterize_triangle函数后可以用其测试。</p>
 <p><strong>效果</strong><br>
 <img src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/normal.png" alt="normal" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/normal.png" class="lozad post-image"></p>
-<h3 id="phong_fragment_shader"><a class="markdownIt-Anchor" href="#phong_fragment_shader"></a> phong_fragment_shader</h3>
+<h4 id="phong_fragment_shader"><a class="markdownIt-Anchor" href="#phong_fragment_shader"></a> phong_fragment_shader</h4>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in main.cpp
 Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload&amp; payload)
 &#123;
@@ -687,7 +689,7 @@ Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload&amp; payload
 我认为也是可以的，但是这样写环境光项应该要乘以点光源个数，而不是像上面代码那样。环境光主要是其他物体反射的光，但是这些光归根到底来自光源，因此光源数量越多环境光项显然应该越大，所以环境光项应该对每个点光源都加，如果最终一次性加上也应该考虑所有光源。</p>
 <p><strong>效果</strong><br>
 <img src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/phong.png" alt="phong" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/phong.png" class="lozad post-image"></p>
-<h3 id="texture_fragment_shader"><a class="markdownIt-Anchor" href="#texture_fragment_shader"></a> texture_fragment_shader</h3>
+<h4 id="texture_fragment_shader"><a class="markdownIt-Anchor" href="#texture_fragment_shader"></a> texture_fragment_shader</h4>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in main.cpp
 Eigen::Vector3f texture_fragment_shader(const fragment_shader_payload&amp; payload)
 &#123;
@@ -742,7 +744,7 @@ Eigen::Vector3f texture_fragment_shader(const fragment_shader_payload&amp; paylo
 <p>与blinn-phong模型实现方法一致，只不过将纹理颜色作为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mi>d</mi></msub></mrow><annotation encoding="application/x-tex">k_d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">d</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。</p>
 <p><strong>效果</strong><br>
 <img src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/texture.png" alt="texture" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/texture.png" class="lozad post-image"></p>
-<h3 id="bump_fragment_shader"><a class="markdownIt-Anchor" href="#bump_fragment_shader"></a> bump_fragment_shader</h3>
+<h4 id="bump_fragment_shader"><a class="markdownIt-Anchor" href="#bump_fragment_shader"></a> bump_fragment_shader</h4>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in main.cpp
 Eigen::Vector3f bump_fragment_shader(const fragment_shader_payload&amp; payload)
 &#123;
@@ -827,7 +829,7 @@ Eigen::Vector3f getColor(float u, float v)
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><strong>效果</strong><br>
 <img src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/bump.png" alt="bump" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/bump.png" class="lozad post-image"></p>
-<h3 id="displacement_fragment_shader"><a class="markdownIt-Anchor" href="#displacement_fragment_shader"></a> displacement_fragment_shader</h3>
+<h4 id="displacement_fragment_shader"><a class="markdownIt-Anchor" href="#displacement_fragment_shader"></a> displacement_fragment_shader</h4>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in main.cpp
 Eigen::Vector3f displacement_fragment_shader(const fragment_shader_payload&amp; payload)
 &#123;
@@ -911,7 +913,7 @@ Eigen::Vector3f displacement_fragment_shader(const fragment_shader_payload&amp; 
 其余部分基本上就是前面blinn-phong模型和bump贴图的结合。</p>
 <p><strong>效果</strong><br>
 <img src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/displacement.png" alt="displacement" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/displacement.png" class="lozad post-image"></p>
-<h2 id="双线性插值"><a class="markdownIt-Anchor" href="#双线性插值"></a> 双线性插值</h2>
+<h3 id="双线性插值"><a class="markdownIt-Anchor" href="#双线性插值"></a> 双线性插值</h3>
 <pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in Texture.hpp
 Eigen::Vector3f getColorBilinearInterpolation(float u, float v)
 &#123;
@@ -939,14 +941,15 @@ Eigen::Vector3f getColorBilinearInterpolation(float u, float v)
 <p>在bump_fragment_shader中替换原纹理采样函数getColor，结果对比如下<br>
 <img src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/Bilinear.png" alt="Bilinear" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/17/GAMES101%E4%BD%9C%E4%B8%9A3%EF%BC%9APipeline-and-Shading/Bilinear.png" class="lozad post-image"><br>
 可见双线性插值采样的纹理要更加平滑、连续一些。</p>
-<h1 id="代码框架说明"><a class="markdownIt-Anchor" href="#代码框架说明"></a> 代码框架说明</h1>
+<hr>
+<h2 id="代码框架说明"><a class="markdownIt-Anchor" href="#代码框架说明"></a> 代码框架说明</h2>
 <p>本次的框架是在作业1、作业2的基础上进一步扩充的，只要先前作业中明白框架大致做了些什么，大体理解本次作业框架应该没有太大问题。<br>
 作业的说明文档中对框架变化讲解已经较为详细，其实看文档已经完全足矣。这里为了便于后续快速复习做简要总结。</p>
 <p><em>关于代码框架整体更加详细的说明可以参看<a href="https://suikasan111.github.io/2022/12/30/GAMES101%E4%BD%9C%E4%B8%9A1%EF%BC%9A%E6%97%8B%E8%BD%AC%E4%B8%8E%E6%8A%95%E5%BD%B1/">GAMES101作业1：旋转与投影</a>。理解作业1代码框架的内容后，只需稍微补充理解后两次作业新增内容就可以快速上手作业框架。</em></p>
-<h2 id="新增texture类"><a class="markdownIt-Anchor" href="#新增texture类"></a> 新增Texture类</h2>
+<h3 id="新增texture类"><a class="markdownIt-Anchor" href="#新增texture类"></a> 新增Texture类</h3>
 <p>从图片中读入纹理。成员函数Vector3f getColor(float u, float v)用于查找纹理、纹理采样，输入(u,v)坐标，返回颜色值(三维)。<br>
 提高部分的双线性插值实际上就是新增一个查找纹理的成员函数代替getColor。</p>
-<h2 id="rasterizer"><a class="markdownIt-Anchor" href="#rasterizer"></a> rasterizer</h2>
+<h3 id="rasterizer"><a class="markdownIt-Anchor" href="#rasterizer"></a> rasterizer</h3>
 <ul>
 <li>
 <p><strong>增加插值函数interpolate in rasterizer.cpp</strong><br>
@@ -960,10 +963,10 @@ Eigen::Vector3f getColorBilinearInterpolation(float u, float v)
 </ol>
 </li>
 </ul>
-<h2 id="shaderhpp"><a class="markdownIt-Anchor" href="#shaderhpp"></a> Shader.hpp</h2>
+<h3 id="shaderhpp"><a class="markdownIt-Anchor" href="#shaderhpp"></a> Shader.hpp</h3>
 <p>定义了fragment_shader_payload，其中包括了Fragment Shader可能用到的参数。<br>
 main.cpp中有三个Fragment Shader，其中normal_fragment_shader是按照法向量上色的样例Shader，其余Shader为作业实现内容。</p>
-<h2 id="obj_loaderh"><a class="markdownIt-Anchor" href="#obj_loaderh"></a> OBJ_Loader.h</h2>
+<h3 id="obj_loaderh"><a class="markdownIt-Anchor" href="#obj_loaderh"></a> OBJ_Loader.h</h3>
 <p>第三方.obj文件加载库，用于读取更加复杂的模型文件。无需详细理解其工作原理，只需知道这个库将会传递给我们一个被命名被TriangleList的Vector，其中每个三角形都有对应的点法向量与纹理坐标。此外，与模型相关的纹理也将被一同加载。</p>
 
   </div>
@@ -1035,7 +1038,7 @@ main.cpp中有三个Fragment Shader，其中normal_fragment_shader是按照法�
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#rasterize_triangle%E5%87%BD%E6%95%B0"><span class="toc-text"> rasterize_triangle函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#fragment_shaders"><span class="toc-text"> Fragment_shaders</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phong_fragment_shader"><span class="toc-text"> phong_fragment_shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#texture_fragment_shader"><span class="toc-text"> texture_fragment_shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bump_fragment_shader"><span class="toc-text"> bump_fragment_shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#displacement_fragment_shader"><span class="toc-text"> displacement_fragment_shader</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC"><span class="toc-text"> 双线性插值</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B0%E5%A2%9Etexture%E7%B1%BB"><span class="toc-text"> 新增Texture类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rasterizer"><span class="toc-text"> rasterizer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shaderhpp"><span class="toc-text"> Shader.hpp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#obj_loaderh"><span class="toc-text"> OBJ_Loader.h</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rasterize_triangle%E5%87%BD%E6%95%B0"><span class="toc-text"> rasterize_triangle函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fragment_shaders"><span class="toc-text"> Fragment_shaders</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#phong_fragment_shader"><span class="toc-text"> phong_fragment_shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#texture_fragment_shader"><span class="toc-text"> texture_fragment_shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bump_fragment_shader"><span class="toc-text"> bump_fragment_shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#displacement_fragment_shader"><span class="toc-text"> displacement_fragment_shader</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC"><span class="toc-text"> 双线性插值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9Etexture%E7%B1%BB"><span class="toc-text"> 新增Texture类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rasterizer"><span class="toc-text"> rasterizer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shaderhpp"><span class="toc-text"> Shader.hpp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#obj_loaderh"><span class="toc-text"> OBJ_Loader.h</span></a></li></ol></li></ol>
 </div>
             </main>
             <aside class="right-column">
@@ -1049,7 +1052,7 @@ main.cpp中有三个Fragment Shader，其中normal_fragment_shader是按照法�
     style="padding-right: 2px;">
   </i>TOC
 </div>
-<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#rasterize_triangle%E5%87%BD%E6%95%B0"><span class="toc-text"> rasterize_triangle函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#fragment_shaders"><span class="toc-text"> Fragment_shaders</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phong_fragment_shader"><span class="toc-text"> phong_fragment_shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#texture_fragment_shader"><span class="toc-text"> texture_fragment_shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bump_fragment_shader"><span class="toc-text"> bump_fragment_shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#displacement_fragment_shader"><span class="toc-text"> displacement_fragment_shader</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC"><span class="toc-text"> 双线性插值</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B0%E5%A2%9Etexture%E7%B1%BB"><span class="toc-text"> 新增Texture类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rasterizer"><span class="toc-text"> rasterizer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shaderhpp"><span class="toc-text"> Shader.hpp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#obj_loaderh"><span class="toc-text"> OBJ_Loader.h</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rasterize_triangle%E5%87%BD%E6%95%B0"><span class="toc-text"> rasterize_triangle函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fragment_shaders"><span class="toc-text"> Fragment_shaders</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#phong_fragment_shader"><span class="toc-text"> phong_fragment_shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#texture_fragment_shader"><span class="toc-text"> texture_fragment_shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bump_fragment_shader"><span class="toc-text"> bump_fragment_shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#displacement_fragment_shader"><span class="toc-text"> displacement_fragment_shader</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC"><span class="toc-text"> 双线性插值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9Etexture%E7%B1%BB"><span class="toc-text"> 新增Texture类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rasterizer"><span class="toc-text"> rasterizer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shaderhpp"><span class="toc-text"> Shader.hpp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#obj_loaderh"><span class="toc-text"> OBJ_Loader.h</span></a></li></ol></li></ol>
     </article>
   
   
