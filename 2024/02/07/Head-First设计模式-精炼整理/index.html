@@ -18,22 +18,22 @@
   <link 
     rel="icon" 
     href="/img/logo.jpg">
-  <title>《Head First设计模式》精炼整理（正在建设中...(～￣▽￣)～</title>
+  <title>Head First设计模式-精炼整理</title>
   
     
       <meta 
         property="og:title" 
-        content="《Head First设计模式》精炼整理（正在建设中...(～￣▽￣)～">
+        content="Head First设计模式-精炼整理">
     
     
       <meta 
         property="og:url" 
-        content="https://suikasan111.github.io/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/index.html">
+        content="https://suikasan111.github.io/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/index.html">
     
     
       <meta 
         property="og:img" 
-        content="/img/logo.jpg">
+        content="/2024/02/07/Head-First设计模式-精炼整理/banner.PNG">
     
     
     
@@ -499,10 +499,19 @@
             </aside>
             <main class="main-column">
               
+  <div class="image-wrapper">
+    <img 
+      src="/2024/02/07/Head-First设计模式-精炼整理/banner.PNG" 
+      data-src="/2024/02/07/Head-First设计模式-精炼整理/banner.PNG"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="Head First设计模式-精炼整理 thumbnail">
+  </div>
+
 <article class="card card-content">
   <header>
     <h1 class="post-title">
-      《Head First设计模式》精炼整理（正在建设中...(～￣▽￣)～
+      Head First设计模式-精炼整理
     </h1>
   </header>
   <div class="post-meta post-show-meta">
@@ -574,7 +583,7 @@
 <h3 id="interface-oriented-programming-面向接口编程"><a class="markdownIt-Anchor" href="#interface-oriented-programming-面向接口编程"></a> Interface Oriented Programming - 面向接口编程</h3>
 <p>针对接口编程，而不是针对实现编程</p>
 <p>“针对接口编程”的真正含义是“针对超类(基类)编程”，或者说，变量所声明的类型应该是基类，通常为<strong>抽象类或接口</strong>，这样，分配给这些变量的对象可以是基类的任何具体实现，这意味着类声明时不必知道实际的对象类型，使得我们能够<strong>在运行时分配具体的实现对象</strong></p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/polymorphism.png" alt="Polymorphism" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/polymorphism.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/polymorphism.png" alt="Polymorphism" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/polymorphism.png" class="lozad post-image"></p>
 <p>具体而言，可将类的一些行为放在分离的类中，实现特定行为接口的类。这样，进行那些行为的类不需要知道行为的任何实现细节。</p>
 <p><em>注：这一点通常依赖于OOP的多态特性，比如使用虚继承、用基类指针指向派生类对象</em></p>
 <h3 id="composite-reuse-principle-组合复用原则组合优于继承"><a class="markdownIt-Anchor" href="#composite-reuse-principle-组合复用原则组合优于继承"></a> Composite Reuse Principle - 组合复用原则（组合优于继承）</h3>
@@ -637,7 +646,7 @@
 而诸如FlyWithWings, FlyNoWay的类继承前述的抽象类并具体实现其接口，它们是具体策略。<br>
 Duck类作为上下文维护着指向FlyBehavior和QuackBehavior类型的指针，通过使指针指向具体策略类来替换Duck的行为，而无需改变自身的设计。</p>
 <p>完整的UML如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simuduck_class_diagram.png" alt="simuduck_encapsulated" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simuduck_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simuduck_class_diagram.png" alt="simuduck_encapsulated" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simuduck_class_diagram.png" class="lozad post-image"></p>
 <h4 id="pros-cons"><a class="markdownIt-Anchor" href="#pros-cons"></a> Pros &amp; Cons</h4>
 <p><strong>Pros:</strong></p>
 <ul>
@@ -653,19 +662,19 @@ Duck类作为上下文维护着指向FlyBehavior和QuackBehavior类型的指针�
 <h3 id="observer-pattern-观察者模式"><a class="markdownIt-Anchor" href="#observer-pattern-观察者模式"></a> Observer Pattern - 观察者模式</h3>
 <h4 id="定义-2"><a class="markdownIt-Anchor" href="#定义-2"></a> 定义</h4>
 <p>观察者模式是一种<strong>行为型设计模式</strong>，它定义了对象之间的一对多依赖。当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern.png" alt="observer_pattern" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern.png" alt="observer_pattern" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern.png" class="lozad post-image"></p>
 <p>观察者模式中，被订阅的对象称为<strong>主题(Subject)</strong>，它是具有状态的对象，并维护者一个**观察者(Observer)**列表。<br>
 观察者是订阅主题的对象，是接受主题通知的对象，观察者需要实现一个更新(Update)方法，当收到主题的通知时候，调用更新方法进行响应。</p>
 <p><strong>具体主题(Concrete Subject)</strong> 是主题接口的具体实现类，维护者观察者列表，并在状态发生变化时通知观察者。</p>
 <p><strong>具体观察者(Concrete Observer)</strong> 是观察者接口的具体实现类，实现了更新方法，并在收到具体主题通知时调用自己的更新方法进行响应。</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern_class_diagram.png" alt="observer_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern_class_diagram.png" alt="observer_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern_class_diagram.png" class="lozad post-image"></p>
 <p><em>注：通常不应该期望主题的通知按照一定次序到达观察者</em></p>
 <h4 id="案例-2"><a class="markdownIt-Anchor" href="#案例-2"></a> 案例</h4>
 <p>以书中WeatherStation案例为例，其中的Subject为抽象主题。而WeatherData类是对抽象主题接口的实现，是具体主题。<br>
 Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, StatisticDisplay等)是对抽象观察者接口的实现，是具体观察者。<br>
 当WeatherData有新数据时(即状态发生改变)，则依次通知其维护的Observer List中的所有观察者，收到通知的观察者调用各自实现的Update方法进行更新。</p>
 <p>观察者对象通常维护着对主题对象的引用，这为将来可能发生的观察者取消订阅提供便利。</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/weather_station_class_diagram.png" alt="weather_station_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/weather_station_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/weather_station_class_diagram.png" alt="weather_station_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/weather_station_class_diagram.png" class="lozad post-image"></p>
 <p><em>注：个人认为本例中可以设计为DisplayElement为继承Observer接口的接口，在此基础上加入抽象display方法，这样DisplayElement便成为了所有Display类型的接口。而所有具体的Display类都直接继承自DisplayElement，具体实现各自的update和display方法。这样类关系可能更加整洁一些</em></p>
 <h4 id="pros-cons-2"><a class="markdownIt-Anchor" href="#pros-cons-2"></a> Pros &amp; Cons</h4>
 <p><strong>Pros:</strong></p>
@@ -695,7 +704,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>装饰器模式属于<strong>结构型模式</strong>。</p>
 <p>装饰器模式通过将对象包装在装饰器类中，以便动态地修改其行为，添加新的功能，同时不改变其结构。这种模式创建了一个装饰类，用来包装原有的类，并在保持类方法签名完整性的前提下，提供了额外的功能。</p>
 <p>装饰器模式通过嵌套包装多个装饰器对象，可以实现多层次的功能增强。每个具体装饰器类都可以选择性地增加新的功能，同时保持对象接口的一致性。</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/decorator_pattern_class_diagram.png" alt="decorator_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/decorator_pattern_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/decorator_pattern_class_diagram.png" alt="decorator_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/decorator_pattern_class_diagram.png" class="lozad post-image"></p>
 <p><strong>组件(Component)</strong> 定义原始对象的公共接口或抽象类。</p>
 <p><strong>具体组件(Concrete Component)</strong> 是被装饰的原始对象，定义了需要添加新功能的对象。</p>
 <p><strong>装饰器(Decorator)</strong> 继承自抽象组件，并通过组合的方式包含抽象组件对象(可以是具体组件、也可以是其他装饰器)。其定义了与抽象组件相同的接口，因此装饰器中也可以持有其他装饰器对象。</p>
@@ -709,12 +718,12 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>但是，如果调料价格改变或添加新的可选调料，都会迫使我们改变cost方法；而且，不是所有饮料都能够添加所有调料(总不会在茶里打奶泡吧)；再者，如果有新饮料加入…我不想再说下去了…</p>
 <p>总之，通过上面的叙述，想必已经非常明了，那显然是针对实现编程的设计，与我们追求的设计原则相悖。</p>
 <p>于是，引入装饰器模式。其类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_class_diagram.png" alt="starbuzz_decorator_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_class_diagram.png" alt="starbuzz_decorator_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_class_diagram.png" class="lozad post-image"></p>
 <p>其中，定义抽象饮料类Beverage就是装饰器模式中的<strong>组件</strong>。各种基础饮料(HouseBlend, DarkRoast, etc.)继承自Beverage，它们是<strong>具体组件</strong>，也就是需要被调料装饰的原始对象。调料装饰器类CondimentDecorator是<strong>装饰器</strong>，而各类调料(Milk, Mocha, etc.)继承自CondimentDecorator，它们就是<strong>具体装饰器</strong>。</p>
 <p>Beverage中包含decription成员，也就是品名，同时包含virtual的cost方法获取价格。基础饮料通过继承获得其属性，而其中的cost方法获取其各自的基础饮料价格。</p>
 <p>CondimentDecorator继承自Beverage，同时通过组合持有一个Beverage对象，也就是要被该调料装饰的饮料。而继承自CondimentDecorator的具体调料装饰器则具体实现的各自的cost方法，(递归)获得其要装饰的饮料的价格并且加上该调料的价格。</p>
 <p>于是一杯DarkRoast加摩卡加奶泡，其获取价格的过程可表示如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_structure.png" alt="starbuzz_decorator_structure" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_structure.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_structure.png" alt="starbuzz_decorator_structure" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_structure.png" class="lozad post-image"></p>
 <h4 id="pros-cons-3"><a class="markdownIt-Anchor" href="#pros-cons-3"></a> Pros &amp; Cons</h4>
 <p><strong>Pros:</strong></p>
 <ul>
@@ -757,7 +766,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>通常，对于披萨店来说，披萨的准备、烘焙、切片和装盒是固定操作，对于任何披萨都是如此。而披萨对象的创建，是披萨店对象所不关心的。试想一下，我们开一家披萨店，并不关心那些配料是怎么做出来的，我们只想要它们被送到我们店里，然后我们用既有的固定制作方法为顾客完成披萨的制作。</p>
 <p>于是，我们的PizzaStore类作为Pizza类的用户，不需要包含披萨“创建”的方法。因此将这些部分提取出来封装成一个只关心如何创建披萨的对象，这个对象就是简单工厂(SimplePizzaFactory)，披萨的创建由其中的createPizza方法完成。</p>
 <p>案例的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simple_pizza_factory_class_diagram.png" alt="simple_pizza_factory_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simple_pizza_factory_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simple_pizza_factory_class_diagram.png" alt="simple_pizza_factory_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simple_pizza_factory_class_diagram.png" class="lozad post-image"></p>
 <p>可见，PizzaStore将披萨的创建<strong>委托</strong>给了SimplePizzaFactory，而其自身则无需关心创建披萨的具体细节。</p>
 <h5 id="pros-cons-4"><a class="markdownIt-Anchor" href="#pros-cons-4"></a> Pros &amp; Cons</h5>
 <p><strong>Pros:</strong></p>
@@ -776,7 +785,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>工厂方法模式相当于在简单工厂的基础上又加入了一层抽象。简单工厂只有一个具体工厂类负责对象的创建，而工厂方法模式则在其上加入了抽象工厂类，定义不同的具体工厂类分别负责生产不同的产品。当有新的产品加入时，简单工厂必须在其唯一的具体工厂类中加入新的if-else语句，来适应新对象的创建，这是进行<strong>修改</strong>；而工厂方法模式则可以从抽象工厂派生出新的专门负责生产新产品的具体工厂类，这样就不需要改变原有的类的设计，这是进行<strong>扩展</strong>。</p>
 <p><em>注：这里所说的由子类决定实例化哪个类，并非真的由子类决定，而是该模式允许用户根据需要来决定使用哪个子类来创建其对应的产品。</em></p>
 <p>工厂方法模式的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_class_diagram.png" alt="factory_method_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_class_diagram.png" alt="factory_method_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_class_diagram.png" class="lozad post-image"></p>
 <p><strong>抽象产品(Abstract Product，上图Product)</strong> 定义了产品的共同接口或抽象类。它可以是具体产品类的父类或接口，规定了产品对象的共同方法。<br>
 <strong>具体产品(Concrete Product)</strong> 实现了抽象产品接口，定义了具体产品的特定行为和属性。<br>
 <strong>抽象工厂(Abstract Factory，上图Creator)</strong> 声明了创建产品的抽象方法，可以是接口或抽象类。它可以有多个方法用于创建不同类型的产品。<br>
@@ -786,7 +795,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>首先我们检查一下，如果使用先前的简单工厂模式应该怎么做。显然，我们需要在SimplePizzaFactory中加入更多if-else语句，分别创建诸如NYCheesePizza, ChicagoCheesePizza等新的具体对象。也就是说我们不得不更改原有的工厂类的代码。</p>
 <p>而使用工厂方法模式则是这样实现的：将原先的PizzaStore更改为抽象类作为其中的<strong>抽象工厂</strong>，并由其派生出NYStylePizzaStore, ChicagoStylePizzaStore两个<strong>具体工厂</strong>。这两个具体工厂分别负责创建各自对应的具体对象。</p>
 <p>类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_pizza_class_diagram.png" alt="factory_method_pizza_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_pizza_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_pizza_class_diagram.png" alt="factory_method_pizza_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_pizza_class_diagram.png" class="lozad post-image"></p>
 <h5 id="a-deeper-look"><a class="markdownIt-Anchor" href="#a-deeper-look"></a> A Deeper Look</h5>
 <p><em>注：这部分是我学习工厂模式时的一点困惑和相应的思考。</em></p>
 <p>原书本案例的代码设计中，在两个具体工厂中依然使用if-else语句判断创建何种具体对象。这似乎和前面所述的由简单工厂转向工厂方法模式的目的相悖。</p>
@@ -816,7 +825,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>使用工厂方法模式时，需要为每一种产品扩展一个新的具体工厂类，当产品种类众多时，具体类的数量会成倍增长。而抽象工厂模式使用分组的思想，每一个分组中包括一整套产品家族，而每一个具体工厂负责生产对应的一整套产品。</p>
 <p>抽象工厂模式常可用于每一类大产品中包括一些子产品的情况，这些大产品就是前面所说的分组，其中的子产品或相同或不同，每个具体工厂负责生产一组产品中所有的子产品。</p>
 <p>抽象工厂模式的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_class_diagram.png" alt="abstract_factory_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_class_diagram.png" alt="abstract_factory_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_class_diagram.png" class="lozad post-image"></p>
 <p>工厂方法模式常常潜伏在抽象工厂模式中，抽象工厂模式定义了一个接口，这个接口创建一组产品，接口中的每一个方法对应创建组内的一个具体产品。抽象工厂的子类即具体工厂负责实现接口中的各个方法，使用工厂方法实现这些方法是自然而然的。</p>
 <h5 id="案例-6"><a class="markdownIt-Anchor" href="#案例-6"></a> 案例</h5>
 <p>书中的案例进一步提出这样的情形：我们需要为连锁加盟披萨店统一原料以保证披萨的质量。一旦引入了各类原料，我们生产的最小单位便不再是各类披萨，而是其中的各类原料，由这些原料以不同的方式组合构成各类披萨。</p>
@@ -826,7 +835,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>然后，我们将对应地区的具体原料工厂传给该地区的每个具体披萨，当创建这些披萨时，这些具体披萨类从它们对应的具体原料工厂获得该披萨所需的原料，完成披萨的创建。</p>
 <p>通过这样的方式，我们依然保持了一个地区的加盟店对应一个具体工厂，只不过该具体工厂内生产的是该地区披萨对应的一整个原料家族，而非单个披萨对象。</p>
 <p>使用抽象工厂模式实现PizzaStore的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_pizza_store_class_diagram.png" alt="abstract_factory_pizza_store_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_pizza_store_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_pizza_store_class_diagram.png" alt="abstract_factory_pizza_store_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_pizza_store_class_diagram.png" class="lozad post-image"></p>
 <h5 id="pros-cons-6"><a class="markdownIt-Anchor" href="#pros-cons-6"></a> Pros &amp; Cons</h5>
 <p><strong>Pros:</strong></p>
 <ul>
@@ -851,7 +860,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>单例模式涉及一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。</p>
 <p>单例模式属于<strong>创建型模式</strong>。</p>
 <p>单例模式类图非常简单：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/singleton_class_diagram.png" alt="singleton_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/singleton_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/singleton_class_diagram.png" alt="singleton_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/singleton_class_diagram.png" class="lozad post-image"></p>
 <h4 id="案例-7"><a class="markdownIt-Anchor" href="#案例-7"></a> 案例</h4>
 <p>书中案例以巧克力锅炉为例，用单例模式简单模拟单个锅炉的工作流程。</p>
 <p>ChocolateBoiler类中将其构造函数设为私有，该类持有一个静态的实例对象的引用(uniqueInstance)，并提供一个静态的获取实例的方法(getInstance)。用户代码中通过类名调用getInstance，而不需要具体对象。getInstance方法首先检查该类中uniqueInstance是否为空，若为空则调用其构造函数初始化该实例，最后将其返回给用户。</p>
@@ -885,7 +894,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>命令模式是一种数据驱动的设计模式，属于<strong>行为型模式</strong>。</p>
 <p>命令模式把请求封装为对象，以便用不同的请求、队列或者日志请求来参数化其他对象，并支持可撤销的操作。请求以命令的形式包裹在对象中，并传给调用对象。调用对象寻找可以处理该命令的合适的对象，并把该命令传给相应的对象，该对象执行命令。</p>
 <p>命令模式的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/command_pattern_class_diagram.png" alt="command_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/command_pattern_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/command_pattern_class_diagram.png" alt="command_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/command_pattern_class_diagram.png" class="lozad post-image"></p>
 <p>命令模式中的主要角色如下：</p>
 <p><strong>命令(Command)</strong> 定义了命令接口，通常包含一个execute 方法，用于调用具体的操作。<br>
 <strong>具体命令(ConcreteCommand)</strong> 实现命令接口，负责执行具体的操作。它通常包含了对接收者的引用，通过调用接收者的方法来完成请求的处理。<br>
@@ -901,7 +910,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>setCommand方法可以传入具体Command类型，将该命令绑定到一组按键上。onButtonWasPushed和offButtonWasPushed方法接受一个int型参数，表示按下对应槽位(0-6)的on或off按键，方法中调用其对应命令对象的execute方法，并将undoCommand设为该命令，以便undoButtonWasPushed方法调用时撤销对应的操作。</p>
 <p><em>注：C++在运行时获取基类指针指向的对象的动态类型比较麻烦，我使用C++的实现中为了方便遥控器类RemoteControl获取按键绑定的命令信息，为Command接口增加了一个抽象的getCommandType方法，具体命令类中实现该方法以获取对应的类名</em></p>
 <p>该案例的类图如下，其中省略了一些具体家电类，以及遥控器类的undo方法，但是其结构是一致的</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_control_class_diagram.png" alt="remote_control_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_control_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_control_class_diagram.png" alt="remote_control_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_control_class_diagram.png" class="lozad post-image"></p>
 <p><em>注：可以另外定义宏命令，一次性调用多个命令，其undo方法则是以相反的顺序调用其中命令的undo</em></p>
 <h4 id="pros-cons-8"><a class="markdownIt-Anchor" href="#pros-cons-8"></a> Pros &amp; Cons</h4>
 <p><strong>Pros:</strong></p>
@@ -929,10 +938,10 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>适配器模式将一个类接口转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作。</p>
 <p>适配器模式属于<strong>结构型模式</strong></p>
 <p>对象适配器类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/object_adapter_class_diagram.png" alt="object_adapter_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/object_adapter_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/object_adapter_class_diagram.png" alt="object_adapter_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/object_adapter_class_diagram.png" class="lozad post-image"></p>
 <p>其中，适配器将被适配的对象的接口转换成客户的目标接口。</p>
 <p>除了对象适配器，适配器模式还有一种实现方式——类适配器（只有编程语言支持多继承才能实现），其类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/class_adapter_class_diagram.png" alt="class_adapter_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/class_adapter_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/class_adapter_class_diagram.png" alt="class_adapter_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/class_adapter_class_diagram.png" class="lozad post-image"></p>
 <p>类适配器同时继承自目标接口和被适配的类。</p>
 <p>对象适配器 vs. 类适配器：</p>
 <ul>
@@ -966,7 +975,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>外观模式为子系统中的一组接口提供了一个统一的接口。外观定义了一个更高级别的接口，使得子系统更容易使用。</p>
 <p>外观模式属于<strong>结构型模式</strong>，它向现有的系统添加一个接口，来隐藏系统的复杂性。</p>
 <p>类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/facade_pattern_class_diagram.png" alt="facade_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/facade_pattern_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/facade_pattern_class_diagram.png" alt="facade_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/facade_pattern_class_diagram.png" class="lozad post-image"></p>
 <h4 id="案例-10"><a class="markdownIt-Anchor" href="#案例-10"></a> 案例</h4>
 <p>书中HomeTheater案例定义了外观类HomeTheaterFacade，其中维护了家庭影院所需的各类设备对象的引用。客户直接调用外观HomeTheaterFacade的方法实现观看电影、结束放映等操作，而HomeTheaterFacade将完成这些操作所需要依次完成的一系列操作委托给其对应的对象。使得客户调用的接口极大简化。</p>
 <p>案例较为简单，此处不再展开。</p>
@@ -989,7 +998,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <h4 id="定义-10"><a class="markdownIt-Anchor" href="#定义-10"></a> 定义</h4>
 <p><strong>模板方法模式</strong>在一个方法中定义一个算法的骨架（也就是模板），而把一些步骤延迟到子类。模板方法可以使得子类在不改变算法结构的情况下，重新定义算法中的某些步骤。</p>
 <p>模板方法模式属于<strong>行为型模式</strong>，主要为了避免子类重复实现通用的方法的情况，将这些通用方法抽象出来在抽象类实现，而子类则可以按需重写某些方法。</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/template_method_pattern_class_diagram.PNG" alt="template_method_pattern" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/template_method_pattern_class_diagram.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/template_method_pattern_class_diagram.PNG" alt="template_method_pattern" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/template_method_pattern_class_diagram.PNG" class="lozad post-image"></p>
 <h4 id="案例-11"><a class="markdownIt-Anchor" href="#案例-11"></a> 案例</h4>
 <p>以书中制作咖啡和茶为例。<br>
 其中制作咖啡的步骤为：</p>
@@ -1006,7 +1015,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 </ol>
 <p>可见两者的第1、3步骤是一样的，这两个步骤可以作为通用方法(boilWater, pourInCup)放入抽象类中，而剩下的两个不相同的步骤可以交由茶和咖啡的子类自己实现。在抽象类中将上述四个步骤包装成一整个方法(prepareRecipe)，这就是我们的模板方法。</p>
 <p>案例的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/caffeine_beverage_class_diagram.PNG" alt="caffeine_beverage_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/caffeine_beverage_class_diagram.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/caffeine_beverage_class_diagram.PNG" alt="caffeine_beverage_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/caffeine_beverage_class_diagram.PNG" class="lozad post-image"></p>
 <p>我们注意到，第4步加调料应交由客户进行选择而非必需的步骤，因此我们加入一个返回bool值的方法(customerWantsCondiments)用以表示客户选择是否加调料。这个方法并非一定需要子类实现，比如说我们有产品中必定加调料或必定不加，此时就不需要客户的选择，这种情况下就不需要子类重新实现。这种可选的方法，有个形象的名字叫做Hook</p>
 <h4 id="pros-cons-11"><a class="markdownIt-Anchor" href="#pros-cons-11"></a> Pros &amp; Cons</h4>
 <p>Pros:</p>
@@ -1031,7 +1040,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <h4 id="定义-11"><a class="markdownIt-Anchor" href="#定义-11"></a> 定义</h4>
 <p><strong>迭代器模式</strong>提供一种方法，可以访问一个聚合(Aggregate)对象中的元素而又不暴露其底层表示。</p>
 <p>迭代器模式属于<strong>行为型模式</strong>，主要用于应对不同聚合有不同的遍历方式的情况，相当于在聚合对象与使用它的用户间增加了一层抽象，也就是迭代器，将在元素间游走访问的责任交给迭代器，这样对于用户而言只需要对迭代器进行统一的操作，而无需知晓不同聚合对象的不同遍历方式。</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/iterator_pattern_class_diagram.PNG" alt="iterator_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/iterator_pattern_class_diagram.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/iterator_pattern_class_diagram.PNG" alt="iterator_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/iterator_pattern_class_diagram.PNG" class="lozad post-image"></p>
 <h4 id="案例-12"><a class="markdownIt-Anchor" href="#案例-12"></a> 案例</h4>
 <p>注：原书使用JAVA，这里我选择以我实现的C++版本的来说</p>
 <p>书中两个餐厅合并的案例，（方便起见，以餐厅A、B来代称），餐厅A的菜单使用vector记录各项目，餐厅B的菜单使用C风格的数组记录各项目，Waitress类则负责打印菜单。</p>
@@ -1039,7 +1048,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>根据迭代器模式，我们将菜单抽象成类（抽象聚合），餐厅A、B的菜单（具体聚合）分别继承自抽象菜单。创建一个抽象迭代器类，餐厅A、B分别有各自派生自抽象迭代器的具体迭代器类，这两个具体迭代器分别负责以对应的方式遍历对应的菜单。</p>
 <p>此时以对应方式遍历的职责交给了迭代器，而Waitress类只依赖于抽象菜单和抽象迭代器，其职责则是只剩下管理菜单，即Waitress只需要用一样的方式使用迭代器而不需要关系具体是以怎样的方式遍历，而当新的菜单加入，Waitress类只需加入新的菜单及其对应的迭代器即可。</p>
 <p>类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/diner_menu_merge_class_diagram.PNG" alt="diner_menu_merge_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/diner_menu_merge_class_diagram.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/diner_menu_merge_class_diagram.PNG" alt="diner_menu_merge_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/diner_menu_merge_class_diagram.PNG" class="lozad post-image"></p>
 <h4 id="pros-cons-12"><a class="markdownIt-Anchor" href="#pros-cons-12"></a> Pros &amp; Cons</h4>
 <p>Pros:</p>
 <ul>
@@ -1061,7 +1070,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p><strong>组合模式</strong>，又叫<strong>部分整体模式</strong>。它将对象组合成树形结构来表现部分——整体层次结构，使得用户可以统一处理单一对象和对象组合。</p>
 <p>组合模式属于<strong>结构型模式</strong>，主要用于应对用户希望模糊单一元素和组合元素的概念，用统一的方式处理它们的情况。</p>
 <p>组合模式类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" alt="composite_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" alt="composite_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" class="lozad post-image"></p>
 <p>其中主要有以下核心角色：<br>
 **组件(Component)**为所有对象的接口，声明了用于管理和访问子组件的方法，这些方法可以实现缺省的行为；<br>
 **叶子节点(Leaf)**实现了组件接口，它不含子节点，因此表示的是单一对象；<br>
@@ -1072,10 +1081,10 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>因此在本案例中，我们希望构建一个只用一次printMenu就可以打印全部菜单的结构，同时对于新增的菜单，我们希望将其当作该结构的子结构（即全部菜单下的子菜单）来对待，无论是一个菜单项，还是一个子菜单，都只需要一个统一的方法来完成打印。</p>
 <p>根据组合模式，我们设计一个MenuComponent作为MenuItem和Menu的接口，里面包含了诸如print, add等方法的缺省实现。MenuItem和Menu继承自MenuComponent，覆盖实现其对应需要的方法，尤其是print方法。</p>
 <p>该设计的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" alt="composite_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" alt="composite_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" class="lozad post-image"></p>
 <p>于是，我们构建出了树形结构的菜单，其中每个菜单项或子菜单都是一个节点，我们可以统一地print每一个节点，如果是叶子节点，则print出其菜单项信息；如果是复合节点，则（递归地）print该子菜单中的子节点。</p>
 <p>菜单的树形结构如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_menu_tree.PNG" alt="composite_menu_tree" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_menu_tree.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_menu_tree.PNG" alt="composite_menu_tree" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_menu_tree.PNG" class="lozad post-image"></p>
 <h4 id="pros-cons-13"><a class="markdownIt-Anchor" href="#pros-cons-13"></a> Pros &amp; Cons</h4>
 <p>Pros:</p>
 <ul>
@@ -1098,7 +1107,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p><strong>状态模式</strong>允许对象在内部状态改变时改变其行为，对象看起来好像改变了它的类。</p>
 <p>状态模式属于<strong>行为型模式</strong>，主要用于对象的行为取决于其状态的情况，在这种情况下，朴素的实现方法需要在类中包含大量的用于状态转移的条件语句，因此可以将状态对应的行为委托给状态类（类似策略模式）。</p>
 <p>状态模式的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_pattern_class_diagram.png" alt="state_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_pattern_class_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_pattern_class_diagram.png" alt="state_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_pattern_class_diagram.png" class="lozad post-image"></p>
 <h4 id="案例-14"><a class="markdownIt-Anchor" href="#案例-14"></a> 案例</h4>
 <p>书中的案例为一个设计一个糖果机程序，该糖果机有五个状态：未投币(NoQuarterState)、已投币(HasQuarterState)、已售出(SoldState)、胜利(WinnerState)、已售罄(SoldOutState)。上述五个状态都派生自基类State，分别重写其中的方法。</p>
 <p>糖果机中维护着五个状态对象的指针，而五个状态对象也维护着其所属糖果机对象的指针。</p>
@@ -1106,7 +1115,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p><em>注2：Context和State并非必须像该案例一样相互引用。本例是因为状态转移是在具体状态类中进行调用的，因为状态转移要视糖果机对象当前的糖果数量而定，是一个相对动态的状态转移；而当状态转移情况比较固定时，则可以将状态转移放在Context中进行调用，而这种情况下很多时候具体状态类可以不需要维护Context的引用，此时具体状态类可以在Context之外定义从而可以被多个Context共享。</em></p>
 <p>糖果机对象运行时调用insertQuarter, ejectQuarter, turnCrank等方法，并将其委托给当前的状态对象，当前的状态对象进行相应的方法调用，并根据糖果机对象剩余糖果数量完成状态转移。</p>
 <p>糖果机运行时状态转移的示例如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_transfer_diagram.png" alt="state_transfer_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_transfer_diagram.png" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_transfer_diagram.png" alt="state_transfer_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_transfer_diagram.png" class="lozad post-image"></p>
 <h4 id="pros-cons-14"><a class="markdownIt-Anchor" href="#pros-cons-14"></a> Pros &amp; Cons</h4>
 <p>Pros:</p>
 <ul>
@@ -1133,21 +1142,21 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
 <p>代理模式属于<strong>结构型模式</strong>，主要用于不希望用户直接访问对象的情况，比如，要访问的对象在远程的机器上。</p>
 <p>代理模式的种类很多，主要包括：远程代理、虚拟代理、Copy-on-Write 代理、保护（Protect or Access）代理、Cache代理、防火墙（Firewall）代理、同步化（Synchronization）代理、智能引用（Smart Reference）代理。</p>
 <p>代理模式的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/proxy_state_class_diagram.PNG" alt="proxy_state_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/proxy_state_class_diagram.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/proxy_state_class_diagram.PNG" alt="proxy_state_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/proxy_state_class_diagram.PNG" class="lozad post-image"></p>
 <h4 id="案例-15"><a class="markdownIt-Anchor" href="#案例-15"></a> 案例</h4>
 <h5 id="远程代理"><a class="markdownIt-Anchor" href="#远程代理"></a> 远程代理</h5>
 <p>书中远程代理的案例是为状态模式案例的糖果机设计监视器，使得我们可以在远程调用糖果机的方法并返回我们需要的信息。</p>
 <p>简而言之，我们在客户端创建了实际糖果机对象的代理，用户调用代理的方法，代理则通过网络将实际的调用转发至远程的对象，调用的结果也通过网络返回至代理，经由代理处理后展示给用户。用户仿佛直接与远程的对象进行交互。</p>
 <p>远程代理的方法调用流程示意图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_1.PNG" alt="remote_proxy_state_calling_diagram_1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_1.PNG" class="lozad post-image"></p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_2.PNG" alt="remote_proxy_state_calling_diagram_2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_2.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_1.PNG" alt="remote_proxy_state_calling_diagram_1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_1.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_2.PNG" alt="remote_proxy_state_calling_diagram_2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_2.PNG" class="lozad post-image"></p>
 <h5 id="虚拟代理"><a class="markdownIt-Anchor" href="#虚拟代理"></a> 虚拟代理</h5>
 <p>书中虚拟代理的案例是设计显示音乐专辑封面的应用。专辑封面的显示需要先通过网络获取图像，但是网络状况会影响读取的时间，为了在加载图像的过程中也能显示一些信息，我们使用虚拟代理在本地“扮演”图像，在加载完成之前调用虚拟代理的方法显示信息，而加载完成后虚拟代理则将相应的调用委托给加载完成的Icon。</p>
 <p>该案例的类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/virtual_proxy_state_class_diagram.PNG" alt="virtual_proxy_state_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/virtual_proxy_state_class_diagram.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/virtual_proxy_state_class_diagram.PNG" alt="virtual_proxy_state_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/virtual_proxy_state_class_diagram.PNG" class="lozad post-image"></p>
 <h5 id="保护代理"><a class="markdownIt-Anchor" href="#保护代理"></a> 保护代理</h5>
 <p>保护代理可以使代理只提供部分接口供客户调用，其类图如下：</p>
-<p><img src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/protection_proxy_state_class_diagram.PNG" alt="protection_proxy_state_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/protection_proxy_state_class_diagram.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/protection_proxy_state_class_diagram.PNG" alt="protection_proxy_state_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/protection_proxy_state_class_diagram.PNG" class="lozad post-image"></p>
 <h4 id="pros-cons-15"><a class="markdownIt-Anchor" href="#pros-cons-15"></a> Pros &amp; Cons</h4>
 <p>Pros:</p>
 <ul>
@@ -1217,8 +1226,8 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
           <span style="font-weight: bold;">文章链接：</span><a 
             target="_blank" 
             rel="nofollow noopener noreferrer" 
-            href="https://suikasan111.github.io/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/">
-            https://suikasan111.github.io/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/
+            href="https://suikasan111.github.io/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/">
+            https://suikasan111.github.io/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/
           </a>
         </p>
         <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
@@ -1284,7 +1293,7 @@ Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, St
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2024-02-07</div>
-        <a href="/2024/02/07/%E3%80%8AHead-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8B%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/"><div class="recent-posts-item-content">《Head First设计模式》精炼整理（正在建设中...(～￣▽￣)～</div></a>
+        <a href="/2024/02/07/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/"><div class="recent-posts-item-content">Head First设计模式-精炼整理</div></a>
       </div>
     
       <div class="recent-posts-item">
