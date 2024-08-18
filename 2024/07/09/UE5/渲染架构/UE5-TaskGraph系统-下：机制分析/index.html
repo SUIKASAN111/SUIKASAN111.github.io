@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>UE5-TaskGraph系统-下：机制分析</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="UE5-TaskGraph系统-下：机制分析">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/07/09/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8B%EF%BC%9A%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-07-09">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5源码">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5多线程">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>43</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>9</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>16</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97"><span class="toc-text"> 任务队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E7%BA%BF%E7%A8%8B"><span class="toc-text"> 任务线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA"><span class="toc-text"> 创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C"><span class="toc-text"> 执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#workerthreads%E7%9A%84%E7%BB%84%E7%BB%87%E5%BD%A2%E5%BC%8F"><span class="toc-text"> WorkerThreads的组织形式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%86%E5%8F%91"><span class="toc-text"> 任务的分发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%88%9B%E5%BB%BA"><span class="toc-text"> 任务创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%85%A5%E9%98%9F"><span class="toc-text"> 任务入队</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E5%BA%8F%E4%BB%BB%E5%8A%A1%E5%B7%B2%E5%AE%8C%E6%88%90%E7%AB%8B%E5%8D%B3%E5%85%A5%E9%98%9F"><span class="toc-text"> 前序任务已完成，立即入队</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E5%BA%8F%E4%BB%BB%E5%8A%A1%E6%9C%AA%E5%AE%8C%E6%88%90%E6%9A%82%E7%BC%93%E5%85%A5%E9%98%9F"><span class="toc-text"> 前序任务未完成，暂缓入队</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GDC/">
+        <div class="categories-list-item">
+          GDC
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">7</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+        <div class="categories-list-item">
+          UE5地形系统
+          <span class="categories-list-item-badge">4</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+        title="地形系统">
+        <div class="tags-list-item">地形系统</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+        title="UE5地形">
+        <div class="tags-list-item">UE5地形</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+        title="UE5多线程">
+        <div class="tags-list-item">UE5多线程</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-RDG/" 
+        title="UE5 RDG">
+        <div class="tags-list-item">UE5 RDG</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+        title="游戏引擎">
+        <div class="tags-list-item">游戏引擎</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      UE5-TaskGraph系统-下：机制分析
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-07-09T15:20:55.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-07-09</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+          class="post-meta-link">
+          UE5渲染架构
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.8k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/UE5/" 
+            class="post-meta-link">
+            UE5
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+            class="post-meta-link">
+            UE5源码
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+            class="post-meta-link">
+            UE5多线程
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="说明"><a class="markdownIt-Anchor" href="#说明"></a> 说明</h2>
+<p>本文为UE5 TaskGraph系统的下篇，主要对TaskGraph系统中数据组织形式、任务创建与分发的过程等进行简要剖析</p>
+<p>上篇中对TaskGraph中主要的基本类型进行了简要介绍，请移步<a href="TODO">UE5-TaskGraph系统-上：基本类型</a></p>
+<h2 id="任务队列"><a class="markdownIt-Anchor" href="#任务队列"></a> 任务队列</h2>
+<p>Task Graph的任务队列主要有两种：</p>
+<ul>
+<li>FNamedTaskThread拥有各自专属的任务队列Queues(FThreadTaskQueue类型数组)，而RHIThread、GameThread、ActualRenderingThread都是FNamedTaskThread；</li>
+<li>FTaskThreadAnyThread没有各自专属的任务队列，共用IncomingAnyThreadTasks队列(FStallingTaskQueue类型数组)</li>
+</ul>
+<p>上述Queues中包含两个(<code>ENamedThreads::NumQueues = 2</code>)FThreadTaskQueue类型实例，分别代表MainQueue和LocalQueue，FThreadTaskQueue中拥有一个FStallingTaskQueue。<br>
+而IncomingAnyThreadTasks实际上是包含三个FStallingTaskQueue的数组（<code>MAX_THREAD_PRIORITIES = 3</code>，三个分别对应三种优先级的FTaskThreadAnyThread）</p>
+<p>而其中FStallingTaskQueue类型的实例都包含两个LockFreeList，分别存储Normal, High两种优先级的任务。</p>
+<h2 id="任务线程"><a class="markdownIt-Anchor" href="#任务线程"></a> 任务线程</h2>
+<h3 id="创建"><a class="markdownIt-Anchor" href="#创建"></a> 创建</h3>
+<p>FTaskThreadAnyThread在FTaskGraphImplementation构造时就创建FRunnableThread</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">FTaskGraphImplementation::FTaskGraphImplementation(int32)
+&#123;
+    (...)
+
+    for (int32 ThreadIndex &#x3D; LastExternalThread + 1; ThreadIndex &lt; NumThreads; ThreadIndex++)
+    &#123;
+        (...)
+
+        if (FForkProcessHelper::IsForkedMultithreadInstance() &amp;&amp; GAllowTaskGraphForkMultithreading)
+        &#123;
+            WorkerThreads[ThreadIndex].RunnableThread &#x3D; FForkProcessHelper::CreateForkableThread(&amp;Thread(ThreadIndex), *Name, StackSize, ThreadPri, Affinity);
+        &#125;
+        else
+        &#123;
+            WorkerThreads[ThreadIndex].RunnableThread &#x3D; FRunnableThread::Create(&amp;Thread(ThreadIndex), *Name, StackSize, ThreadPri, Affinity); 
+        &#125;
+        
+        WorkerThreads[ThreadIndex].bAttached &#x3D; true;
+    &#125;
+    UE::Trace::ThreadGroupEnd();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>FNamedTaskThread不会在FTaskGraphImplementation构造时就创建FRunnableThread，它们真正执行Task的Thread由对应的模块创建，并各自调用FTaskGraphInterface::Get().AttachToThread(ENamedThreads::GameThread)和对应的Worker相关联。</p>
+<p>如Render模块会在调用StartRenderingThread函数时获得FRHIThread单例并调用其Start函数创建对应的FRunnableThread，而在使用FRHIThread::Run启动RHI线程时候，会调用FTaskGraphInterface::AttachToThread将其与WorkerThreads中的RHIThread关联。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Private\RenderingThread.cpp
+
+class FRHIThread : public FRunnable
+&#123;
+public:
+    FRunnableThread* Thread;
+
+    FRHIThread()
+        : Thread(nullptr)
+    &#123;
+        check(IsInGameThread());
+    &#125;
+
+    virtual bool Init(void) override
+    &#123;
+        PRAGMA_DISABLE_DEPRECATION_WARNINGS
+        GRHIThreadId &#x3D; FPlatformTLS::GetCurrentThreadId();
+        PRAGMA_ENABLE_DEPRECATION_WARNINGS
+        return true;
+    &#125;
+
+    virtual uint32 Run() override
+    &#123;
+        LLM_SCOPE(ELLMTag::RHIMisc);
+
+#if CSV_PROFILER
+        FCsvProfiler::Get()-&gt;SetRHIThreadId(FPlatformTLS::GetCurrentThreadId());
+#endif
+
+        FMemory::SetupTLSCachesOnCurrentThread();
+        &#123;
+            FTaskTagScope Scope(ETaskTag::ERhiThread);
+            FPlatformProcess::SetupRHIThread();
+            FTaskGraphInterface::Get().AttachToThread(ENamedThreads::RHIThread);
+            FTaskGraphInterface::Get().ProcessThreadUntilRequestReturn(ENamedThreads::RHIThread);
+        &#125;
+        FMemory::ClearAndDisableTLSCachesOnCurrentThread();
+        return 0;
+    &#125;
+
+    static FRHIThread&amp; Get()
+    &#123;
+        static FRHIThread Singleton;
+        return Singleton;
+    &#125;
+
+    void Start()
+    &#123;
+        UE::Trace::ThreadGroupBegin(TEXT(&quot;Render&quot;));
+        Thread &#x3D; FRunnableThread::Create(this, TEXT(&quot;RHIThread&quot;), 512 * 1024, FPlatformAffinity::GetRHIThreadPriority(),
+            FPlatformAffinity::GetRHIThreadMask(), FPlatformAffinity::GetRHIThreadFlags()
+            );
+        check(Thread);
+        UE::Trace::ThreadGroupEnd();
+    &#125;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="执行"><a class="markdownIt-Anchor" href="#执行"></a> 执行</h3>
+<p>FNamedTaskThread和FTaskThreadAnyThread在执行任务时，获取任务的方式有所不同。</p>
+<p>FNamedTaskThread::ProcessTasksNamedThread先根据传入的QueueIndex从该线程专属的任务队列选择MainQueue或LocalQueue，然后根据优先级从对应的队列获得任务并执行；</p>
+<p>而FTaskThreadAnyThread::ProcessTasks中需要调用FTaskGraphImplementation::FindWork，根据其线程索引计算出对应的优先级和任务索引，然后从IncomingAnyThreadTasks中获取任务。</p>
+<h2 id="workerthreads的组织形式"><a class="markdownIt-Anchor" href="#workerthreads的组织形式"></a> WorkerThreads的组织形式</h2>
+<p>WorkerThreads先保存了RHIThread, GameThread, ActualRenderingThread，随后将FTaskThreadAnyThread均分（每组线程数为NumTaskThreadsPerSet）为三个优先级（皆低于Normal），TaskGraph系统用到的所有线程对象，其分布如下：</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">                                            WorkerThreads
+|&lt;------------------------------------------- NumThreads -----------------------------------------------&gt;|
+|    0    |    1     |          2          |NumTaskThreadsPerSet|NumTaskThreadsPerSet|NumTaskThreadsPerSet|
+|RHIThread|GameThread|ActualRenderingThread|         NP         |         HP         |         BP        |
+                                           |     BelowNormal    | SlightlyBelowNormal|    TPri_Lowest    |
+                                                                 NumTaskThreadSets &#x3D; 3
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="任务的分发"><a class="markdownIt-Anchor" href="#任务的分发"></a> 任务的分发</h2>
+<p>UE中任务种类繁多，在构建TGraphTask时，通过模板类型推导得到typename TTask的具体任务类型。</p>
+<p>为了方便说明，不妨以FDeferredShadingSceneRenderer::Render中，从Dynamic MeshBatch生成MeshDrawCommand的过程为例，来分析其创建MeshDrawCommand任务是如何创建并分发入队的。</p>
+<blockquote>
+<p>Review:</p>
+<p>如UE Mesh Drawing Pipeline所述，创建并入队生成MeshDrawCommand的任务的调用过程如下：</p>
+<p>FVisibilityTaskData::FinishGatherDynamicMeshElements --&gt; FVisibilityTaskData::SetupMeshPasses --&gt; ComputeDynamicMeshRelevance<br>
+至此完成PassMask.Set。</p>
+<p>FVisibilityTaskData::SetupMeshPasses继续向下执行，会遍历每一个View，并调用FSceneRenderer::SetupMeshPass</p>
+<p>在FSceneRenderer::SetupMeshPass中，遍历每种MeshPass，创建对应的FMeshPassProcessor，而后获取指定Pass的FParallelMeshDrawCommandPass对象，使用FParallelMeshDrawCommandPass::DispatchPassSetup并行地处理Pass，创建此Pass的FMeshDrawCommand。</p>
+</blockquote>
+<p>而真正收集MeshDrawCommand的任务就是在FParallelMeshDrawCommandPass::DispatchPassSetup中完成创建并分发入队的。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MeshDrawCommands.cpp
+
+void FParallelMeshDrawCommandPass::DispatchPassSetup(
+    FScene* Scene,
+    const FViewInfo&amp; View,
+    FInstanceCullingContext&amp;&amp; InstanceCullingContext,
+    EMeshPass::Type PassType,
+    FExclusiveDepthStencil::Type BasePassDepthStencilAccess,
+    FMeshPassProcessor* MeshPassProcessor,
+    const TArray&lt;FMeshBatchAndRelevance, SceneRenderingAllocator&gt;&amp; DynamicMeshElements,
+    const TArray&lt;FMeshPassMask, SceneRenderingAllocator&gt;* DynamicMeshElementsPassRelevance,
+    int32 NumDynamicMeshElements,
+    TArray&lt;const FStaticMeshBatch*, SceneRenderingAllocator&gt;&amp; InOutDynamicMeshCommandBuildRequests,
+    TArray&lt;EMeshDrawCommandCullingPayloadFlags, SceneRenderingAllocator&gt; InOutDynamicMeshCommandBuildFlags,
+    int32 NumDynamicMeshCommandBuildRequestElements,
+    FMeshCommandOneFrameArray&amp; InOutMeshDrawCommands,
+    FMeshPassProcessor* MobileBasePassCSMMeshPassProcessor,
+    FMeshCommandOneFrameArray* InOutMobileBasePassCSMMeshDrawCommands
+)
+&#123;
+    (...)
+
+    if (MaxNumDraws &gt; 0)
+    &#123;
+        (...)
+
+        if (bExecuteInParallel)
+        &#123;
+            if (IsOnDemandShaderCreationEnabled())
+            &#123;
+                TaskEventRef &#x3D; TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask().ConstructAndDispatchWhenReady(TaskContext);
+            &#125;
+            else
+            &#123;
+                FGraphEventArray DependentGraphEvents;
+                DependentGraphEvents.Add(TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask().ConstructAndDispatchWhenReady(TaskContext));
+                TaskEventRef &#x3D; TGraphTask&lt;FMeshDrawCommandInitResourcesTask&gt;::CreateTask(&amp;DependentGraphEvents).ConstructAndDispatchWhenReady(TaskContext);
+            &#125;
+        &#125;
+        else
+        &#123;
+            (...)
+        &#125;
+
+        &#x2F;&#x2F; This work needs to be deferred until at least BuildRenderingCommands (to ensure the DynamicPrimitiveCollector is uploaded), so we use the async mechanism either way 
+        auto FinalizeInstanceCullingSetup &#x3D; [this, Scene](FInstanceCullingContext&amp; InstanceCullingContext)
+        &#123;
+            WaitForMeshPassSetupTask();
+
+#if DO_CHECK
+            for (const FVisibleMeshDrawCommand&amp; VisibleMeshDrawCommand : TaskContext.MeshDrawCommands)
+            &#123;
+                if (VisibleMeshDrawCommand.PrimitiveIdInfo.bIsDynamicPrimitive)
+                &#123;
+                    uint32 PrimitiveIndex &#x3D; VisibleMeshDrawCommand.PrimitiveIdInfo.DrawPrimitiveId &amp; ~GPrimIDDynamicFlag;
+                    TaskContext.View-&gt;DynamicPrimitiveCollector.CheckPrimitiveProcessed(PrimitiveIndex, Scene-&gt;GPUScene);
+                &#125;
+            &#125;
+#endif
+            InstanceCullingContext.SetDynamicPrimitiveInstanceOffsets(TaskContext.View-&gt;DynamicPrimitiveCollector.GetInstanceSceneDataOffset(), TaskContext.View-&gt;DynamicPrimitiveCollector.NumInstances());
+        &#125;;
+        TaskContext.InstanceCullingContext.BeginAsyncSetup(FinalizeInstanceCullingSetup);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中的关键在：</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">TaskEventRef &#x3D; TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask()
+                                                .ConstructAndDispatchWhenReady(TaskContext);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>下面逐步分析：</p>
+<h3 id="任务创建"><a class="markdownIt-Anchor" href="#任务创建"></a> 任务创建</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask()
+
+template&lt;typename TTask&gt;
+class TGraphTask final : public TConcurrentLinearObject&lt;TGraphTask&lt;TTask&gt;, FTaskGraphBlockAllocationTag&gt;, public FBaseGraphTask
+&#123;
+public:
+    (...)
+    static FConstructor CreateTask(const FGraphEventArray* Prerequisites &#x3D; NULL, ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread)
+    &#123;
+        FGraphEventRef GraphEvent &#x3D; TTask::GetSubsequentsMode() &#x3D;&#x3D; ESubsequentsMode::FireAndForget ? NULL : FGraphEvent::CreateGraphEvent();
+
+        int32 NumPrereq &#x3D; Prerequisites ? Prerequisites-&gt;Num() : 0;
+        return FConstructor(new TGraphTask(MoveTemp(GraphEvent), NumPrereq), Prerequisites, CurrentThreadIfKnown);
+    &#125;
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>首先，使用并行生成MeshDrawCommand的任务FMeshDrawCommandPassSetupTask，实例化TGraphTask模板，并调用<code>TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask</code>，其中会根据任务的SubsequentsMode来决定是否为其创建GraphEvent：如果任务的SubsequentsMode是<code>ESubsequentsMode::FireAndForget</code>，则没有后续任务依赖与当前任务，则无需处理后续任务，因此不需要GraphEvent；而如果是<code>ESubsequentsMode::TrackSubsequents</code>，则需要GraphEvent在该任务执行完毕后处理后续任务。</p>
+<p>最终，得到TGraphTask对应的工厂类FConstructor的实例。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask().ConstructAndDispatchWhenReady(TaskContext)
+
+template&lt;typename TTask&gt;
+class TGraphTask final : public TConcurrentLinearObject&lt;TGraphTask&lt;TTask&gt;, FTaskGraphBlockAllocationTag&gt;, public FBaseGraphTask
+&#123;
+public:
+    class FConstructor
+    &#123;
+    public:
+        &#x2F;** Passthrough internal task constructor and dispatch. Note! Generally speaking references will not pass through; use pointers *&#x2F;
+        template&lt;typename...T&gt;
+        FGraphEventRef ConstructAndDispatchWhenReady(T&amp;&amp;... Args)
+        &#123;
+            new ((void *)&amp;Owner-&gt;TaskStorage) TTask(Forward&lt;T&gt;(Args)...);
+            return Owner-&gt;Setup(Prerequisites, CurrentThreadIfKnown);
+        &#125;
+        (...)
+    &#125;
+    (...)
+    TAlignedBytes&lt;sizeof(TTask),alignof(TTask)&gt; TaskStorage;
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后调用FConstructor的实例的ConstructAndDispatchWhenReady函数，传入TaskContext，实例化其函数模板，使用placement new，调用FMeshDrawCommandPassSetupTask的构造函数完成任务实例的构造，并将其存入以1字节为元素大小的数组（以FMeshDrawCommandPassSetupTask的大小对齐）TaskStorage中，最后调用<code>TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::Setup</code>。</p>
+<p>注：FConstructor::ConstructAndDispatchWhenReady传入右值引用（万能引用）并进行完美转发，不过此例中TaskContext后续还另有他用，因此传入的TaskContext是左值引用。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">FGraphEventRef TGraphTask::Setup(const FGraphEventArray* Prerequisites &#x3D; NULL, ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread)
+&#123;
+    TaskTrace::Launched(GetTraceId(), nullptr, Subsequents.IsValid(), ((TTask*)&amp;TaskStorage)-&gt;GetDesiredThread(), sizeof(*this));
+
+    FGraphEventRef ReturnedEventRef &#x3D; Subsequents; &#x2F;&#x2F; very important so that this doesn&#39;t get destroyed before we return
+    SetupPrereqs(Prerequisites, CurrentThreadIfKnown, true);
+    return ReturnedEventRef;
+&#125;
+
+void TGraphTask::SetupPrereqs(const FGraphEventArray* Prerequisites, ENamedThreads::Type CurrentThreadIfKnown, bool bUnlock)
+&#123;
+    checkThreadGraph(!TaskConstructed);
+    TaskConstructed &#x3D; true;
+    TTask&amp; Task &#x3D; *(TTask*)&amp;TaskStorage;
+    SetThreadToExecuteOn(Task.GetDesiredThread());
+    int32 AlreadyCompletedPrerequisites &#x3D; 0;
+    if (Prerequisites)
+    &#123;
+        for (int32 Index &#x3D; 0; Index &lt; Prerequisites-&gt;Num(); Index++)
+        &#123;
+            FGraphEvent* Prerequisite &#x3D; (*Prerequisites)[Index];
+            if (Prerequisite &#x3D;&#x3D; nullptr || !Prerequisite-&gt;AddSubsequent(this))
+            &#123;
+                AlreadyCompletedPrerequisites++;
+            &#125;
+        &#125;
+    &#125;
+    PrerequisitesComplete(CurrentThreadIfKnown, AlreadyCompletedPrerequisites, bUnlock);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在<code>TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::Setup</code>中嵌套调用<code>TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::SetupPrereqs</code>，在其中对TaskConstructed赋值true后，当前任务才算创建完成。而后的操作则是检查其先序事件以及入队操作。</p>
+<p>注：TGraphTask并非在其构造函数中完成其真正的任务创建过程，其构造函数创建出的对象只是用来构造其内部工厂类，并设置代表其任务完成的FGraphEvent（如果该任务有后继的话）。而此时TaskStorage还未填入真正负责执行任务的TTask对象。实际上后续由TGraphTask内部工厂类的模板函数接受可变模板参数并完成实际的TTask对象的构造，并填入TaskStorage中。最后调用TGraphTask::Setup对TGraphTask进行设置，在其中嵌套调用TGraphTask::SetupPrereqs，当执行完 ‘TaskConstructed = true’ 才算真正完成了任务的创建过程。</p>
+<h3 id="任务入队"><a class="markdownIt-Anchor" href="#任务入队"></a> 任务入队</h3>
+<p>前面所述的TGraphTask::SetupPrereqs 继续执行，对先序任务事件进行遍历（如果有先序任务事件的话）。<br>
+对于每个事件，若该事件为空，或该事件所拥有的记录着依赖于该事件的后继任务的队列已经关闭（意味着后继任务已完成），则给已完成的前序事件数AlreadyCompletedPrerequisites +1，最后调用<code>TGraphTask::PrerequisitesComplete</code>，并传入已完成的前序事件数。</p>
+<p><code>TGraphTask::PrerequisitesComplete</code>中先计算要执行当前任务所需要等待完成的前序事件数</p>
+<p>注：<code>NumberOfPrerequistitesOutstanding.Subtract(NumToSub) == NumToSub</code> 这样进行判断是因为<code>FThreadSafeCounter::Subtract</code>底层调用的是<code>_InterlockedExchangeAdd</code>，这是个原子加操作，进行操作后，返回的是被操作数的原值。</p>
+<p>其中，<code>NumAlreadyFinishedPrequistes + (bUnlock ? 1 : 0)</code>; 是因为在FBaseGraphTask构造时会给前序事件数+1，以防止任务执行，如下所示：</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">FBaseGraphTask::FBaseGraphTask(int32 InNumberOfPrerequistitesOutstanding)
+    : ThreadToExecuteOn(ENamedThreads::AnyThread)
+    , NumberOfPrerequistitesOutstanding(InNumberOfPrerequistitesOutstanding + 1) &#x2F;&#x2F; + 1 is not a prerequisite, it is a lock to prevent it from executing while it is getting prerequisites, one it is safe to execute, call PrerequisitesComplete
+&#123;
+    checkThreadGraph(LifeStage.Increment() &#x3D;&#x3D; int32(LS_Contructed));
+    CaptureInheritedContext();
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="前序任务已完成立即入队"><a class="markdownIt-Anchor" href="#前序任务已完成立即入队"></a> 前序任务已完成，立即入队</h4>
+<p>上述 ‘NumberOfPrerequistitesOutstanding.Subtract(NumToSub) == NumToSub’ 结果为true，则意味着前序任务已全部完成，可将当前创建的任务入队。</p>
+<p>最后，FBaseGraphTask::QueueTask内调用FTaskGraphCompatibilityImplementation::QueueTask，根据传入的InThreadToExecuteOn决定将任务加入AnyThread或NamedThread中。</p>
+<p>如果加入AnyThread，则需要根据InThreadToExecuteOn获得其线程优先级和任务优先级，并加入对应的队列；<br>
+如果加入NamedThread中，则需要根据InThreadToExecuteOn判断应该加入MainQueue还是LocalQueue，并进一步分为从本线程入队和从其他线程入队两种情况，并在其中获得任务优先级，加入相应的队列。</p>
+<h4 id="前序任务未完成暂缓入队"><a class="markdownIt-Anchor" href="#前序任务未完成暂缓入队"></a> 前序任务未完成，暂缓入队</h4>
+<p>对于某些有前序任务的任务，上述 ‘NumberOfPrerequistitesOutstanding.Subtract(NumToSub) == NumToSub’ 结果可能为false，意味着前序任务未全部完成，则当前创建的任务并不会被加入队列，那么该任务又是何时会再次尝试入队呢？</p>
+<p>在前面TGraphTask::SetupPrereqs遍历统计先序任务事件时，会尝试将当前创建的任务加入先序任务事件的后继任务队列中。<br>
+而后，那些先序任务事件会在特定阶段调用FGraphEvent::DispatchSubsequents函数推动其先序任务执行，或当其先序任务已全部执行完毕时（即当前任务事件完成）尝试将其后继任务入队。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Private\Async\TaskGraph.cpp
+
+void FGraphEvent::DispatchSubsequents(ENamedThreads::Type CurrentThreadIfKnown)
+&#123;
+    TArray&lt;FBaseGraphTask*&gt; NewTasks;
+    DispatchSubsequents(NewTasks, CurrentThreadIfKnown);
+&#125;
+
+void FGraphEvent::DispatchSubsequents(TArray&lt;FBaseGraphTask*&gt;&amp; NewTasks, ENamedThreads::Type CurrentThreadIfKnown, bool bInternal&#x2F;* &#x3D; false *&#x2F;)
+&#123;
+    (...)
+
+    bool bWakeUpWorker &#x3D; false;
+    TArray&lt;FBaseGraphTask*&gt; PoppedTasks;
+    SubsequentList.PopAllAndClose(PoppedTasks);
+    for (FBaseGraphTask* NewTask : ReverseIterate(PoppedTasks)) &#x2F;&#x2F; reverse the order since PopAll is implicitly backwards
+    &#123;
+        checkThreadGraph(NewTask);
+        NewTask-&gt;ConditionalQueueTask(CurrentThreadIfKnown, bWakeUpWorker);
+    &#125;
+
+    (...)
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Core\Public\Async\TaskGraphInterfaces.h
+
+void FBaseGraphTask::ConditionalQueueTask(ENamedThreads::Type CurrentThread, bool&amp; bWakeUpWorker)
+&#123;
+    if (NumberOfPrerequistitesOutstanding.Decrement()&#x3D;&#x3D;0)
+    &#123;
+        QueueTask(CurrentThread, bWakeUpWorker);
+        bWakeUpWorker &#x3D; true;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在FBaseGraphTask::ConditionalQueueTask会先将对应的任务的待执行前序任务事件计数NumberOfPrerequistitesOutstanding -1，并判断其是否为0。若为0，则可以将当前任务入队；若不为0，则意味着还有其他前序任务事件未完成，继续暂缓入队，当那些未完成的事件完成后，又会进行上述的流程尝试将该任务加入队列。</p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-systems-in-unreal-engine">Unreal Engine Documentation: Tasks System</a></p>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/task-graph-insights-in-unreal-engine-5">Unreal Engine Documentation: Task Graph Insights</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/14327537.html#2424-taskgraph">剖析虚幻渲染体系（02）- 多线程渲染</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/kekec/p/13915313.html">UE4之TaskGraph系统</a></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/07/09/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8B%EF%BC%9A%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90/">
+            https://suikasan111.github.io/2024/07/09/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8B%EF%BC%9A%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">UE5-地形系统-1：整体分析 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/07/08/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8A%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">UE5-TaskGraph系统-上：基本类型 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97"><span class="toc-text"> 任务队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E7%BA%BF%E7%A8%8B"><span class="toc-text"> 任务线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA"><span class="toc-text"> 创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C"><span class="toc-text"> 执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#workerthreads%E7%9A%84%E7%BB%84%E7%BB%87%E5%BD%A2%E5%BC%8F"><span class="toc-text"> WorkerThreads的组织形式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%86%E5%8F%91"><span class="toc-text"> 任务的分发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%88%9B%E5%BB%BA"><span class="toc-text"> 任务创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%85%A5%E9%98%9F"><span class="toc-text"> 任务入队</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E5%BA%8F%E4%BB%BB%E5%8A%A1%E5%B7%B2%E5%AE%8C%E6%88%90%E7%AB%8B%E5%8D%B3%E5%85%A5%E9%98%9F"><span class="toc-text"> 前序任务已完成，立即入队</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E5%BA%8F%E4%BB%BB%E5%8A%A1%E6%9C%AA%E5%AE%8C%E6%88%90%E6%9A%82%E7%BC%93%E5%85%A5%E9%98%9F"><span class="toc-text"> 前序任务未完成，暂缓入队</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97"><span class="toc-text"> 任务队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E7%BA%BF%E7%A8%8B"><span class="toc-text"> 任务线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA"><span class="toc-text"> 创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C"><span class="toc-text"> 执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#workerthreads%E7%9A%84%E7%BB%84%E7%BB%87%E5%BD%A2%E5%BC%8F"><span class="toc-text"> WorkerThreads的组织形式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%86%E5%8F%91"><span class="toc-text"> 任务的分发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%88%9B%E5%BB%BA"><span class="toc-text"> 任务创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%85%A5%E9%98%9F"><span class="toc-text"> 任务入队</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E5%BA%8F%E4%BB%BB%E5%8A%A1%E5%B7%B2%E5%AE%8C%E6%88%90%E7%AB%8B%E5%8D%B3%E5%85%A5%E9%98%9F"><span class="toc-text"> 前序任务已完成，立即入队</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E5%BA%8F%E4%BB%BB%E5%8A%A1%E6%9C%AA%E5%AE%8C%E6%88%90%E6%9A%82%E7%BC%93%E5%85%A5%E9%98%9F"><span class="toc-text"> 前序任务未完成，暂缓入队</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-18</div>
+        <a href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/"><div class="recent-posts-item-content">Frostbite Terrain Procedural Tools</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-17</div>
+        <a href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/"><div class="recent-posts-item-content">UE5-渲染线程中多线程任务分发简析</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-15</div>
+        <a href="/2024/07/15/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-4%EF%BC%9A%E6%80%BB%E7%BB%93/"><div class="recent-posts-item-content">UE5-地形系统-4：总结</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

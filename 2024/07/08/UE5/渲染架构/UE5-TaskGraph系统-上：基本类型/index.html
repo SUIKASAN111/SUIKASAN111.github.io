@@ -1,0 +1,1892 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>UE5-TaskGraph系统-上：基本类型</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="UE5-TaskGraph系统-上：基本类型">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/07/08/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8A%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-07-08">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5源码">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5多线程">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>43</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>9</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>16</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#graphtask-%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8B"><span class="toc-text"> GraphTask 任务类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fbasegraphtask"><span class="toc-text"> FBaseGraphTask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tgraphtask"><span class="toc-text"> TGraphTask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#esubsequentsmode"><span class="toc-text"> ESubsequentsMode</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#taskthread-%E4%BB%BB%E5%8A%A1%E7%BA%BF%E7%A8%8B%E7%B1%BB%E5%9E%8B"><span class="toc-text"> TaskThread 任务线程类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ftaskthreadbase"><span class="toc-text"> FTaskThreadBase</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fnamedtaskthread-ftaskthreadanythread"><span class="toc-text"> FNamedTaskThread &amp; FTaskThreadAnyThread</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fnamedtaskthread"><span class="toc-text"> FNamedTaskThread</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ftaskthreadanythread"><span class="toc-text"> FTaskThreadAnyThread</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#enamedthreads"><span class="toc-text"> ENamedThreads</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#taskgraph-%E4%BB%BB%E5%8A%A1%E5%9B%BE%E7%B1%BB%E5%9E%8B"><span class="toc-text"> TaskGraph 任务图类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ftaskgraphinterface"><span class="toc-text"> FTaskGraphInterface</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ftaskgraphimplementation"><span class="toc-text"> FTaskGraphImplementation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#graphevent-%E4%BB%BB%E5%8A%A1%E5%9B%BE%E4%BA%8B%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="toc-text"> GraphEvent 任务图事件类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fgraphevent"><span class="toc-text"> FGraphEvent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fgrapheventref"><span class="toc-text"> FGraphEventRef</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GDC/">
+        <div class="categories-list-item">
+          GDC
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">7</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+        <div class="categories-list-item">
+          UE5地形系统
+          <span class="categories-list-item-badge">4</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+        title="地形系统">
+        <div class="tags-list-item">地形系统</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+        title="UE5地形">
+        <div class="tags-list-item">UE5地形</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+        title="UE5多线程">
+        <div class="tags-list-item">UE5多线程</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-RDG/" 
+        title="UE5 RDG">
+        <div class="tags-list-item">UE5 RDG</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+        title="游戏引擎">
+        <div class="tags-list-item">游戏引擎</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      UE5-TaskGraph系统-上：基本类型
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-07-08T13:33:17.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-07-08</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+          class="post-meta-link">
+          UE5渲染架构
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>4.7k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/UE5/" 
+            class="post-meta-link">
+            UE5
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+            class="post-meta-link">
+            UE5源码
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+            class="post-meta-link">
+            UE5多线程
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="说明"><a class="markdownIt-Anchor" href="#说明"></a> 说明</h2>
+<p>本文为UE5 TaskGraph系统的上篇，主要对TaskGraph系统中重要的类型进行简要介绍与分析</p>
+<p>下篇主要对TaskGraph中数据组织形式、任务创建与分发的过程等进行简要剖析。下篇现已更新，请移步<a href="TODO">UE5-TaskGraph系统-下：机制分析</a></p>
+<h2 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h2>
+<p>TaskGraph（任务图）是UE实现的一套异步任务并行处理系统。在定义任务的同时，可以指定任务的依赖关系，TaskGraph会按照编排好的依赖关系来运行任务。<br>
+任务开始运行前可以指定多个依赖的前置任务，只有前置任务运行结束，本任务才会开始运行。最终，所有任务依赖关系形成一张有向无环图（DAG）。</p>
+<h2 id="graphtask-任务类型"><a class="markdownIt-Anchor" href="#graphtask-任务类型"></a> GraphTask 任务类型</h2>
+<h3 id="fbasegraphtask"><a class="markdownIt-Anchor" href="#fbasegraphtask"></a> FBaseGraphTask</h3>
+<p>FBaseGraphTask是运行于TaskGraph的任务，是基础父类，其派生的具体任务子类才会真正执行任务</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Public\Async\TaskGraphInterfaces.h
+
+class FBaseGraphTask : private UE::FInheritedContextBase
+&#123;
+protected:
+    FBaseGraphTask(int32 InNumberOfPrerequistitesOutstanding)
+        : ThreadToExecuteOn(ENamedThreads::AnyThread)
+        , NumberOfPrerequistitesOutstanding(InNumberOfPrerequistitesOutstanding + 1)
+    &#123;
+        checkThreadGraph(LifeStage.Increment() &#x3D;&#x3D; int32(LS_Contructed));
+        CaptureInheritedContext();
+    &#125;
+
+    void SetThreadToExecuteOn(ENamedThreads::Type InThreadToExecuteOn)
+    &#123;
+        ThreadToExecuteOn &#x3D; InThreadToExecuteOn;
+        checkThreadGraph(LifeStage.Increment() &#x3D;&#x3D; int32(LS_ThreadSet));
+    &#125;
+
+    &#x2F;&#x2F; 先决任务完成或部分地完成
+    void PrerequisitesComplete(ENamedThreads::Type CurrentThread, int32 NumAlreadyFinishedPrequistes, bool bUnlock &#x3D; true)
+    &#123;
+        checkThreadGraph(LifeStage.Increment() &#x3D;&#x3D; int32(LS_PrequisitesSetup));
+        int32 NumToSub &#x3D; NumAlreadyFinishedPrequistes + (bUnlock ? 1 : 0); &#x2F;&#x2F; the +1 is for the &quot;lock&quot; we set up in the constructor
+        if (NumberOfPrerequistitesOutstanding.Subtract(NumToSub) &#x3D;&#x3D; NumToSub) 
+        &#123;
+            bool bWakeUpWorker &#x3D; true;
+            QueueTask(CurrentThread, bWakeUpWorker);
+        &#125;
+    &#125;
+
+    &#x2F;** destructor, just checks the life stage **&#x2F;
+    virtual ~FBaseGraphTask()
+    &#123;
+#if DO_GUARD_SLOW
+        int32 Stage &#x3D; LifeStage.Increment();
+        checkf(Stage &#x3D;&#x3D; int32(LS_Deconstucted), TEXT(&quot;LifeStage was %d&quot;), Stage);
+#endif
+    &#125;
+
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
+    &#x2F;** Logs a task name that may contain invalid subsequents. Debug only. *&#x2F;
+    static void CORE_API LogPossiblyInvalidSubsequentsTask(const TCHAR* TaskName);
+#endif
+
+    &#x2F;&#x2F; 带条件(前置任务都已经执行完毕)地执行任务
+    void ConditionalQueueTask(ENamedThreads::Type CurrentThread, bool&amp; bWakeUpWorker)
+    &#123;
+        if (NumberOfPrerequistitesOutstanding.Decrement()&#x3D;&#x3D;0)
+        &#123;
+            QueueTask(CurrentThread, bWakeUpWorker);
+            bWakeUpWorker &#x3D; true;
+        &#125;
+    &#125;
+
+    (...)
+
+private:
+    (...)
+
+    &#x2F;&#x2F; 真正地执行任务, 由子类实现
+    virtual void ExecuteTask(TArray&lt;FBaseGraphTask*&gt;&amp; NewTasks, ENamedThreads::Type CurrentThread, bool bDeleteOnCompletion)&#x3D;0;
+
+    virtual void DeleteTask() &#x3D; 0;
+
+    &#x2F;&#x2F; Just checks the life stage and passes off to the virtual ExecuteTask method
+    FORCEINLINE void Execute(TArray&lt;FBaseGraphTask*&gt;&amp; NewTasks, ENamedThreads::Type CurrentThread, bool bDeleteOnCompletion)
+    &#123;
+        checkThreadGraph(LifeStage.Increment() &#x3D;&#x3D; int32(LS_Executing));
+
+        UE::FInheritedContextScope InheritedContextScope &#x3D; RestoreInheritedContext();
+        ExecuteTask(NewTasks, CurrentThread, bDeleteOnCompletion);
+    &#125;
+
+    &#x2F;&#x2F; 加入到TaskGraph任务队列中
+    void QueueTask(ENamedThreads::Type CurrentThreadIfKnown, bool bWakeUpWorker)
+    &#123;
+        checkThreadGraph(LifeStage.Increment() &#x3D;&#x3D; int32(LS_Queued));
+        TaskTrace::Scheduled(GetTraceId());
+        FTaskGraphInterface::Get().QueueTask(this, bWakeUpWorker, ThreadToExecuteOn, CurrentThreadIfKnown);
+    &#125;
+
+    ENamedThreads::Type         ThreadToExecuteOn; &#x2F;&#x2F; 执行任务的线程类型
+    FThreadSafeCounter          NumberOfPrerequistitesOutstanding; &#x2F;&#x2F; 执行任务前的计数器
+
+
+#if DO_GUARD_SLOW || USING_CODE_ANALYSIS
+    &#x2F;&#x2F; Life stage verification
+    &#x2F;&#x2F; Tasks go through 8 steps, in order. In non-final builds, we track them with a thread safe counter and verify that the progression is correct.
+    enum ELifeStage
+    &#123;
+        LS_BaseContructed &#x3D; 0,
+        LS_Contructed,
+        LS_ThreadSet,
+        LS_PrequisitesSetup,
+        LS_Queued,
+        LS_Executing,
+        LS_Deconstucted,
+    &#125;;
+    FThreadSafeCounter          LifeStage;
+
+#endif
+
+#if UE_TASK_TRACE_ENABLED
+    std::atomic&lt;TaskTrace::FId&gt; TraceId &#123; TaskTrace::InvalidId &#125;;
+#endif
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="tgraphtask"><a class="markdownIt-Anchor" href="#tgraphtask"></a> TGraphTask</h3>
+<p>TGraphTask是FBaseGraphTask的唯一子类，实现了接口，最主要的是实现了执行任务的函数。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Public\Async\TaskGraphInterfaces.h
+
+template&lt;typename TTask&gt;
+class TGraphTask final : public TConcurrentLinearObject&lt;TGraphTask&lt;TTask&gt;, FTaskGraphBlockAllocationTag&gt;, public FBaseGraphTask
+&#123;
+public:
+    &#x2F;&#x2F; 构造任务的工厂类
+    class FConstructor
+    &#123;
+    public:
+        &#x2F;&#x2F; 创建TTask任务对象, 然后设置TGraphTask任务的数据, 以便在适当时机执行
+        template&lt;typename...T&gt;
+        FGraphEventRef ConstructAndDispatchWhenReady(T&amp;&amp;... Args)
+        &#123;
+            new ((void *)&amp;Owner-&gt;TaskStorage) TTask(Forward&lt;T&gt;(Args)...);
+            return Owner-&gt;Setup(Prerequisites, CurrentThreadIfKnown);
+        &#125;
+
+        &#x2F;&#x2F; 创建TTask任务对象, 然后设置TGraphTask任务的数据, 并持有但不执行
+        template&lt;typename...T&gt;
+        TGraphTask* ConstructAndHold(T&amp;&amp;... Args)
+        &#123;
+            new ((void *)&amp;Owner-&gt;TaskStorage) TTask(Forward&lt;T&gt;(Args)...);
+            return Owner-&gt;Hold(Prerequisites, CurrentThreadIfKnown);
+        &#125;
+
+    private:
+        friend TGraphTask;
+
+        TGraphTask*                     Owner; &#x2F;&#x2F; 所属的TGraphTask对象
+        const FGraphEventArray*         Prerequisites; &#x2F;&#x2F; 先决任务
+        ENamedThreads::Type             CurrentThreadIfKnown;
+
+        FConstructor(TGraphTask* InOwner, const FGraphEventArray* InPrerequisites, ENamedThreads::Type InCurrentThreadIfKnown)
+            : Owner(InOwner)
+            , Prerequisites(InPrerequisites)
+            , CurrentThreadIfKnown(InCurrentThreadIfKnown)
+        &#123;
+        &#125;
+
+        &#x2F;&#x2F; 禁用拷贝构造函数和拷贝赋值运算符
+        FConstructor(const FConstructor&amp; Other)
+        &#123;
+            check(0);
+        &#125;
+
+        void operator&#x3D;(const FConstructor&amp; Other)
+        &#123;
+            check(0);
+        &#125;
+    &#125;;
+
+    &#x2F;&#x2F; 创建任务, 注意返回的是FConstructor对象, 以便对任务执行后续操作
+    static FConstructor CreateTask(const FGraphEventArray* Prerequisites &#x3D; NULL, ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread)
+    &#123;
+        FGraphEventRef GraphEvent &#x3D; TTask::GetSubsequentsMode() &#x3D;&#x3D; ESubsequentsMode::FireAndForget ? NULL : FGraphEvent::CreateGraphEvent();
+
+        int32 NumPrereq &#x3D; Prerequisites ? Prerequisites-&gt;Num() : 0;
+        return FConstructor(new TGraphTask(MoveTemp(GraphEvent), NumPrereq), Prerequisites, CurrentThreadIfKnown);
+    &#125;
+
+    void Unlock(ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread)
+    &#123;
+        TaskTrace::Launched(GetTraceId(), nullptr, Subsequents.IsValid(), ((TTask*)&amp;TaskStorage)-&gt;GetDesiredThread(), sizeof(*this));
+
+        bool bWakeUpWorker &#x3D; true;
+        ConditionalQueueTask(CurrentThreadIfKnown, bWakeUpWorker);
+    &#125;
+
+    FGraphEventRef GetCompletionEvent()
+    &#123;
+        return Subsequents;
+    &#125;
+
+    private:
+    friend class FConstructor;
+    friend class FGraphEvent;
+
+    &#x2F;&#x2F; 执行任务
+    void ExecuteTask(TArray&lt;FBaseGraphTask*&gt;&amp; NewTasks, ENamedThreads::Type CurrentThread, bool bDeleteOnCompletion) override
+    &#123;
+        (...)
+
+        if (TTask::GetSubsequentsMode() &#x3D;&#x3D; ESubsequentsMode::TrackSubsequents)
+        &#123;
+            Subsequents-&gt;CheckDontCompleteUntilIsEmpty(); &#x2F;&#x2F; we can only add wait for tasks while executing the task
+        &#125;
+        &#x2F;&#x2F; 执行任务
+        TTask&amp; Task &#x3D; *(TTask*)&amp;TaskStorage;
+        &#123;
+            TaskTrace::FTaskTimingEventScope TaskEventScope(GetTraceId());
+            FScopeCycleCounter Scope(Task.GetStatId(), true);
+            Task.DoTask(CurrentThread, Subsequents);
+            Task.~TTask();
+            checkThreadGraph(ENamedThreads::GetThreadIndex(CurrentThread) &lt;&#x3D; ENamedThreads::GetRenderThread() || FMemStack::Get().IsEmpty()); &#x2F;&#x2F; you must mark and pop memstacks if you use them in tasks! Named threads are excepted.
+        &#125;
+        
+        TaskConstructed &#x3D; false;
+
+        &#x2F;&#x2F; 执行后序任务
+        if (TTask::GetSubsequentsMode() &#x3D;&#x3D; ESubsequentsMode::TrackSubsequents)
+        &#123;
+            FPlatformMisc::MemoryBarrier();
+            Subsequents-&gt;DispatchSubsequents(NewTasks, CurrentThread, true);
+        &#125;
+        else
+        &#123;
+            &#x2F;&#x2F; &quot;fire and forget&quot; tasks don&#39;t have an accompanying FGraphEvent that traces completion and destruction
+            TaskTrace::Completed(GetTraceId());
+            TaskTrace::Destroyed(GetTraceId());
+        &#125;
+
+        &#x2F;&#x2F; 释放任务对象数据
+        if (bDeleteOnCompletion)
+        &#123;
+            DeleteTask();
+        &#125;
+    &#125;
+
+    void DeleteTask() final override
+    &#123;
+        delete this;
+    &#125;
+
+    &#x2F;&#x2F; 构造函数（私有）
+    TGraphTask(FGraphEventRef InSubsequents, int32 NumberOfPrerequistitesOutstanding)
+        : FBaseGraphTask(NumberOfPrerequistitesOutstanding)
+        , TaskConstructed(false)
+    &#123;
+        Subsequents.Swap(InSubsequents);
+        SetTraceId(Subsequents.IsValid() ? Subsequents-&gt;GetTraceId() : TaskTrace::GenerateTaskId());
+    &#125;
+
+    &#x2F;&#x2F; 析构函数（私有），检查任务是否完成
+    ~TGraphTask() override
+    &#123;
+        checkThreadGraph(!TaskConstructed);
+    &#125;
+
+    &#x2F;&#x2F; 设置先决任务
+    void SetupPrereqs(const FGraphEventArray* Prerequisites, ENamedThreads::Type CurrentThreadIfKnown, bool bUnlock)
+    &#123;
+        checkThreadGraph(!TaskConstructed);
+        TaskConstructed &#x3D; true;
+        TTask&amp; Task &#x3D; *(TTask*)&amp;TaskStorage;
+        SetThreadToExecuteOn(Task.GetDesiredThread());
+        int32 AlreadyCompletedPrerequisites &#x3D; 0;
+        if (Prerequisites)
+        &#123;
+            for (int32 Index &#x3D; 0; Index &lt; Prerequisites-&gt;Num(); Index++)
+            &#123;
+                FGraphEvent* Prerequisite &#x3D; (*Prerequisites)[Index];
+                if (Prerequisite &#x3D;&#x3D; nullptr || !Prerequisite-&gt;AddSubsequent(this))
+                &#123;
+                    AlreadyCompletedPrerequisites++;
+                &#125;
+            &#125;
+        &#125;
+        PrerequisitesComplete(CurrentThreadIfKnown, AlreadyCompletedPrerequisites, bUnlock);
+    &#125;
+
+    &#x2F;&#x2F; 设置任务数据
+    FGraphEventRef Setup(const FGraphEventArray* Prerequisites &#x3D; NULL, ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread)
+    &#123;
+        TaskTrace::Launched(GetTraceId(), nullptr, Subsequents.IsValid(), ((TTask*)&amp;TaskStorage)-&gt;GetDesiredThread(), sizeof(*this));
+
+        FGraphEventRef ReturnedEventRef &#x3D; Subsequents; &#x2F;&#x2F; very important so that this doesn&#39;t get destroyed before we return
+        SetupPrereqs(Prerequisites, CurrentThreadIfKnown, true);
+        return ReturnedEventRef;
+    &#125;
+
+    &#x2F;&#x2F; 持有任务数据
+    TGraphTask* Hold(const FGraphEventArray* Prerequisites &#x3D; NULL, ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread)
+    &#123;
+        TaskTrace::Created(GetTraceId(), sizeof(*this));
+
+        SetupPrereqs(Prerequisites, CurrentThreadIfKnown, false);
+        return this;
+    &#125;
+
+    &#x2F;&#x2F; 创建任务
+    static FConstructor CreateTask(FGraphEventRef SubsequentsToAssume, const FGraphEventArray* Prerequisites &#x3D; NULL, ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread)
+    &#123;
+        return FConstructor(new TGraphTask(SubsequentsToAssume, Prerequisites ? Prerequisites-&gt;Num() : 0), Prerequisites, CurrentThreadIfKnown);
+    &#125;
+
+    TAlignedBytes&lt;sizeof(TTask),alignof(TTask)&gt; TaskStorage; &#x2F;&#x2F; 被执行的任务对象
+    bool                        TaskConstructed;
+    FGraphEventRef              Subsequents; &#x2F;&#x2F; 后续任务同步对象
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在ExecuteTask函数中，调用了TTask::DoTask函数，也就是说实际执行任务的是TTask模板类。</p>
+<p>自定义任务可以参考官方注释中的class FGenericTask，也可以直接派生TAsyncGraphTask类，TAsyncGraphTask类派生自任务基类FAsyncGraphTaskBase</p>
+<h3 id="esubsequentsmode"><a class="markdownIt-Anchor" href="#esubsequentsmode"></a> ESubsequentsMode</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Public\Async\TaskGraphInterfaces.h
+
+namespace ESubsequentsMode
+&#123;
+    enum Type
+    &#123;
+        &#x2F;&#x2F; 会被其他任务依赖
+        TrackSubsequents,
+        &#x2F;&#x2F; 仅执行，不会被其他任务依赖
+        FireAndForget
+    &#125;;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="taskthread-任务线程类型"><a class="markdownIt-Anchor" href="#taskthread-任务线程类型"></a> TaskThread 任务线程类型</h2>
+<h3 id="ftaskthreadbase"><a class="markdownIt-Anchor" href="#ftaskthreadbase"></a> FTaskThreadBase</h3>
+<p>FTaskThreadBase是执行任务的线程父类，定义了一组设置、操作任务的接口，如初始化、帧更新、入队任务、唤醒线程、请求退出等。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Private\Async\TaskGraph.cpp
+
+class FTaskThreadBase : public FRunnable, FSingleThreadRunnable
+&#123;
+public:
+    FTaskThreadBase()
+        : ThreadId(ENamedThreads::AnyThread)
+        , PerThreadIDTLSSlot(FPlatformTLS::InvalidTlsSlot)
+        , OwnerWorker(nullptr)
+    &#123;
+        NewTasks.Reset(128);
+    &#125;
+
+    &#x2F;&#x2F; 设置数据
+    void Setup(ENamedThreads::Type InThreadId, uint32 InPerThreadIDTLSSlot, FWorkerThread* InOwnerWorker);
+
+    &#x2F;&#x2F; 从当前线程初始化
+    void InitializeForCurrentThread();
+
+    ENamedThreads::Type GetThreadId() const; &#x2F;&#x2F; 返回ThreadId
+
+    &#x2F;&#x2F; 用于NamedThread处理任务直到线程空闲或RequestQuit被调用
+    virtual void ProcessTasksUntilQuit(int32 QueueIndex) &#x3D; 0;
+    virtual uint64 ProcessTasksUntilIdle(int32 QueueIndex);
+
+    &#x2F;&#x2F; 入队任务, 假设this线程和当前线程一样。如果是NamedThread, 会直接进入私有的队列
+    virtual void EnqueueFromThisThread(int32 QueueIndex, FBaseGraphTask* Task);
+
+    &#x2F;&#x2F; 入队任务, 假设this线程和当前线程不一样
+    virtual bool EnqueueFromOtherThread(int32 QueueIndex, FBaseGraphTask* Task);
+
+    &#x2F;&#x2F; 请求退出。会导致线程空闲时退出到调用者。如果是NamedThread，在ProcessTasksUntilQuit中用以返回给调用者;AnyThread则直接关闭
+    virtual void RequestQuit(int32 QueueIndex) &#x3D; 0;
+
+    &#x2F;&#x2F; 唤醒线程
+    virtual void WakeUp(int32 QueueIndex &#x3D; 0) &#x3D; 0;
+
+    &#x2F;&#x2F; 查询任务是否在处理中
+    virtual bool IsProcessingTasks(int32 QueueIndex) &#x3D; 0;
+
+    &#x2F;&#x2F; 单线程Tick
+    virtual void Tick() override;
+
+    virtual bool Init() override;
+
+    virtual uint32 Run() override;
+
+    virtual void Stop() override
+    &#123;
+        RequestQuit(-1);
+    &#125;
+
+    virtual void Exit() override
+    &#123;
+    &#125;
+
+    virtual FSingleThreadRunnable* GetSingleThreadInterface() override
+    &#123;
+        return this;
+    &#125;
+
+protected:
+    ENamedThreads::Type         ThreadId; &#x2F;&#x2F; 线程ID
+    uint32                      PerThreadIDTLSSlot; &#x2F;&#x2F; TLS Slot
+    FThreadSafeCounter          IsStalled; &#x2F;&#x2F;  阻塞计数器，用于触发阻塞信号
+    TArray&lt;FBaseGraphTask*&gt;     NewTasks; &#x2F;&#x2F; 待处理任务列表
+    FWorkerThread*              OwnerWorker; &#x2F;&#x2F; 所属的工作线程
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="fnamedtaskthread-ftaskthreadanythread"><a class="markdownIt-Anchor" href="#fnamedtaskthread-ftaskthreadanythread"></a> FNamedTaskThread &amp; FTaskThreadAnyThread</h3>
+<p>FTaskThreadBase只是抽象类，具体的实现由子类FNamedTaskThread和FTaskThreadAnyThread完成，前者是带名字的任务线程，后者是无名的任务线程。</p>
+<p>两者在处理任务时的操作有所不同。FNamedTaskThread::ProcessTasksNamedThread从对应的任务队列的队首获得任务并执行，而FTaskThreadAnyThread::ProcessTasks中需要调用FTaskGraphImplementation::FindWork来获取任务。</p>
+<h4 id="fnamedtaskthread"><a class="markdownIt-Anchor" href="#fnamedtaskthread"></a> FNamedTaskThread</h4>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Private\Async\TaskGraph.cpp
+
+class FNamedTaskThread : public FTaskThreadBase
+&#123;
+public:
+    &#x2F;&#x2F; NamedThread处理任务直到线程空闲或RequestQuit被调用
+    virtual void ProcessTasksUntilQuit(int32 QueueIndex) override
+    &#123;
+        check(Queue(QueueIndex).StallRestartEvent); &#x2F;&#x2F; make sure we are started up
+
+        Queue(QueueIndex).QuitForReturn &#x3D; false;
+        verify(++Queue(QueueIndex).RecursionGuard &#x3D;&#x3D; 1);
+        const bool bIsMultiThread &#x3D; FTaskGraphInterface::IsMultithread();
+        &#x2F;&#x2F; 循环处理队列任务, 直到退出、关闭或平台不支持多线程
+        do
+        &#123;
+            const bool bAllowStall &#x3D; bIsMultiThread;
+            ProcessTasksNamedThread(QueueIndex, bAllowStall);
+        &#125; while (!Queue(QueueIndex).QuitForReturn &amp;&amp; !Queue(QueueIndex).QuitForShutdown &amp;&amp; bIsMultiThread); &#x2F;&#x2F; @Hack - quit now when running with only one thread.
+        verify(!--Queue(QueueIndex).RecursionGuard);
+    &#125;
+
+    &#x2F;&#x2F; NamedThread处理任务直到线程空闲或RequestQuit被调用
+    virtual uint64 ProcessTasksUntilIdle(int32 QueueIndex) override
+    &#123;
+        check(Queue(QueueIndex).StallRestartEvent); &#x2F;&#x2F; make sure we are started up
+
+        Queue(QueueIndex).QuitForReturn &#x3D; false;
+        verify(++Queue(QueueIndex).RecursionGuard &#x3D;&#x3D; 1);
+        uint64 ProcessedTasks &#x3D; ProcessTasksNamedThread(QueueIndex, false);
+        verify(!--Queue(QueueIndex).RecursionGuard);
+        return ProcessedTasks;
+    &#125;
+
+    &#x2F;&#x2F; NamedThread处理任务
+    uint64 ProcessTasksNamedThread(int32 QueueIndex, bool bAllowStall)
+    &#123;
+        (...)
+
+        while (!Queue(QueueIndex).QuitForReturn)
+        &#123;
+            const bool bIsRenderThreadAndPolling &#x3D; bIsRenderThreadMainQueue &amp;&amp; (GRenderThreadPollPeriodMs &gt;&#x3D; 0);
+            const bool bStallQueueAllowStall &#x3D; bAllowStall &amp;&amp; !bIsRenderThreadAndPolling;
+
+            &#x2F;&#x2F; 从队列首部获取任务
+            FBaseGraphTask* Task &#x3D; Queue(QueueIndex).StallQueue.Pop(0, bStallQueueAllowStall);
+            TestRandomizedThreads();
+            if (!Task)
+            &#123;
+                (...)
+            &#125;
+            else &#x2F;&#x2F; 任务不为空
+            &#123;
+                &#x2F;&#x2F; 执行任务
+                Task-&gt;Execute(NewTasks, ENamedThreads::Type(ThreadId | (QueueIndex &lt;&lt; ENamedThreads::QueueIndexShift)), true);
+                ProcessedTasks++;
+                TestRandomizedThreads();
+            &#125;
+        &#125;
+        (...)
+        return ProcessedTasks;
+    &#125;
+
+    virtual void EnqueueFromThisThread(int32 QueueIndex, FBaseGraphTask* Task) override;
+    virtual void RequestQuit(int32 QueueIndex) override;
+    virtual bool EnqueueFromOtherThread(int32 QueueIndex, FBaseGraphTask* Task) override;
+    virtual bool IsProcessingTasks(int32 QueueIndex) override;
+    virtual void WakeUp(int32 QueueIndex) override;
+
+private:
+    (...)
+
+    &#x2F;&#x2F; 线程任务队列
+    struct FThreadTaskQueue
+    &#123;
+        FStallingTaskQueue&lt;FBaseGraphTask, PLATFORM_CACHE_LINE_SIZE, 2&gt; StallQueue; &#x2F;&#x2F; 阻塞的任务队列
+        uint32 RecursionGuard; &#x2F;&#x2F; 防止循环（递归）调用
+        bool QuitForReturn; &#x2F;&#x2F; 是否请求退出
+        bool QuitForShutdown; &#x2F;&#x2F; 是否请求关闭
+        FEvent* StallRestartEvent; &#x2F;&#x2F; 当线程满载时的阻塞事件
+
+        FThreadTaskQueue()
+            : RecursionGuard(0)
+            , QuitForReturn(false)
+            , QuitForShutdown(false)
+            , StallRestartEvent(FPlatformProcess::GetSynchEventFromPool(false))
+        &#123;
+        &#125;
+        ~FThreadTaskQueue()
+        &#123;
+            FPlatformProcess::ReturnSynchEventToPool(StallRestartEvent);
+            StallRestartEvent &#x3D; nullptr;
+        &#125;
+    &#125;;
+
+    FORCEINLINE FThreadTaskQueue&amp; Queue(int32 QueueIndex)
+    &#123;
+        checkThreadGraph(QueueIndex &gt;&#x3D; 0 &amp;&amp; QueueIndex &lt; ENamedThreads::NumQueues);
+        return Queues[QueueIndex];
+    &#125;
+    FORCEINLINE const FThreadTaskQueue&amp; Queue(int32 QueueIndex) const
+    &#123;
+        checkThreadGraph(QueueIndex &gt;&#x3D; 0 &amp;&amp; QueueIndex &lt; ENamedThreads::NumQueues);
+        return Queues[QueueIndex];
+    &#125;
+
+    FThreadTaskQueue Queues[ENamedThreads::NumQueues]; &#x2F;&#x2F; NamedThread专用的任务队列
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="ftaskthreadanythread"><a class="markdownIt-Anchor" href="#ftaskthreadanythread"></a> FTaskThreadAnyThread</h4>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Private\Async\TaskGraph.cpp
+
+class FTaskThreadAnyThread : public FTaskThreadBase
+&#123;
+public:
+    FTaskThreadAnyThread(int32 InPriorityIndex)
+        : PriorityIndex(InPriorityIndex)
+    &#123;
+    &#125;
+
+    virtual void ProcessTasksUntilQuit(int32 QueueIndex) override
+    &#123;
+        if (PriorityIndex !&#x3D; (ENamedThreads::BackgroundThreadPriority &gt;&gt; ENamedThreads::ThreadPriorityShift))
+        &#123;
+            FMemory::SetupTLSCachesOnCurrentThread();
+        &#125;
+        check(!QueueIndex);
+        const bool bIsMultiThread &#x3D; FTaskGraphInterface::IsMultithread();
+        do
+        &#123;
+            ProcessTasks();
+        &#125; while (!Queue.QuitForShutdown &amp;&amp; bIsMultiThread); &#x2F;&#x2F; @Hack - quit now when running with only one thread.
+    &#125;
+
+    virtual uint64 ProcessTasksUntilIdle(int32 QueueIndex) override
+    &#123;
+        if (FTaskGraphInterface::IsMultithread() &#x3D;&#x3D; false)
+        &#123;
+            return ProcessTasks();
+        &#125;
+        else
+        &#123;
+            check(0);
+            return 0;
+        &#125;
+    &#125;
+
+    (...)
+
+private:
+
+#if UE_EXTERNAL_PROFILING_ENABLED
+    static inline const TCHAR* ThreadPriorityToName(int32 PriorityIdx)
+    &#123;
+        PriorityIdx &lt;&lt;&#x3D; ENamedThreads::ThreadPriorityShift;
+        if (PriorityIdx &#x3D;&#x3D; ENamedThreads::HighThreadPriority)
+        &#123;
+            return TEXT(&quot;Task Thread HP&quot;); &#x2F;&#x2F; 高优先级的工作线程
+        &#125;
+        else if (PriorityIdx &#x3D;&#x3D; ENamedThreads::NormalThreadPriority)
+        &#123;
+            return TEXT(&quot;Task Thread NP&quot;); &#x2F;&#x2F; 普通优先级的工作线程
+        &#125;
+        else if (PriorityIdx &#x3D;&#x3D; ENamedThreads::BackgroundThreadPriority)
+        &#123;
+            return TEXT(&quot;Task Thread BP&quot;); &#x2F;&#x2F; 后台优先级的工作线程
+        &#125;
+        else
+        &#123;
+            return TEXT(&quot;Task Thread Unknown Priority&quot;);
+        &#125;
+    &#125;
+#endif
+
+    &#x2F;&#x2F; 处理任务，与NamedTaskThread做法不同，主要是从TaskGraph系统中的无名任务队列获取任务
+    uint64 ProcessTasks()
+    &#123;
+        (...)
+
+        while (1)
+        &#123;
+            &#x2F;&#x2F; 从TaskGraph系统中的无名任务队列获取任务的
+            FBaseGraphTask* Task &#x3D; FindWork();
+            if (!Task)
+            &#123;
+                (...)
+
+                TestRandomizedThreads();
+                const bool bIsMultithread &#x3D; FTaskGraphInterface::IsMultithread();
+                if (bIsMultithread)
+                &#123;
+                    FScopeCycleCounter Scope(StallStatId, EStatFlags::Verbose);
+                    Queue.StallRestartEvent-&gt;Wait(MAX_uint32, bCountAsStall);
+                    bDidStall &#x3D; true;
+                &#125;
+                if (Queue.QuitForShutdown || !bIsMultithread)
+                &#123;
+                    break;
+                &#125;
+                TestRandomizedThreads();
+
+                (...)
+
+                continue;
+            &#125;
+            TestRandomizedThreads();
+
+            (...)
+
+            bDidStall &#x3D; false;
+            Task-&gt;Execute(NewTasks, ENamedThreads::Type(ThreadId), true);
+            ProcessedTasks++;
+            TestRandomizedThreads();
+            if (Queue.bStallForTuning)
+            &#123;
+                (...)
+                &#123;
+                    FScopeLock Lock(&amp;Queue.StallForTuning);
+                &#125;
+                (...)
+            &#125;
+        &#125;
+        verify(!--Queue.RecursionGuard);
+        return ProcessedTasks;
+    &#125;
+
+    &#x2F;&#x2F; 任务队列数据
+    struct FThreadTaskQueue
+    &#123;
+        FEvent* StallRestartEvent; &#x2F;&#x2F; 当线程满载时的阻塞事件
+        uint32 RecursionGuard; &#x2F;&#x2F; 防止循环（递归）调用
+        bool QuitForShutdown; &#x2F;&#x2F; 是否请求关闭
+        bool bStallForTuning;
+        FCriticalSection StallForTuning; &#x2F;&#x2F; 阻塞临界区
+
+        FThreadTaskQueue()
+            : StallRestartEvent(FPlatformProcess::GetSynchEventFromPool(false))
+            , RecursionGuard(0)
+            , QuitForShutdown(false)
+            , bStallForTuning(false)
+        &#123;
+
+        &#125;
+        ~FThreadTaskQueue()
+        &#123;
+            FPlatformProcess::ReturnSynchEventToPool(StallRestartEvent);
+            StallRestartEvent &#x3D; nullptr;
+        &#125;
+    &#125;;
+
+    &#x2F;&#x2F; 从TaskGraph系统中获取任务
+    FBaseGraphTask* FindWork();
+
+    &#x2F;&#x2F; 任务队列，只有第一个用于无名线程
+    FThreadTaskQueue Queue;
+
+    int32 PriorityIndex;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="enamedthreads"><a class="markdownIt-Anchor" href="#enamedthreads"></a> ENamedThreads</h3>
+<p>namespace ENamedThreads中提供了线程类型枚举以及设置和获取渲染线程、线程索引、线程优先级、任务优先级的接口</p>
+<p><img src="/2024/07/08/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8A%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/ENamedThreads.png" alt="ENamedThreads" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/08/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8A%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/ENamedThreads.png" class="lozad post-image"></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Public\Async\TaskGraphInterfaces.h
+
+namespace ENamedThreads
+&#123;
+    enum Type : int32
+    &#123;
+        UnusedAnchor &#x3D; -1,
+        &#x2F;** The always-present, named threads are listed next **&#x2F;
+        RHIThread,
+        GameThread,
+        &#x2F;&#x2F; The render thread is sometimes the game thread and is sometimes the actual rendering thread
+        ActualRenderingThread &#x3D; GameThread + 1,
+        &#x2F;&#x2F; CAUTION ThreadedRenderingThread must be the last named thread, insert new named threads before it
+
+        &#x2F;** not actually a thread index. Means &quot;Unknown Thread&quot; or &quot;Any Unnamed Thread&quot; **&#x2F;
+        AnyThread &#x3D; 0xff, 
+
+        &#x2F;** High bits are used for a queue index and priority**&#x2F;
+
+        MainQueue &#x3D;         0x000,
+        LocalQueue &#x3D;        0x100,
+
+        NumQueues &#x3D;         2,
+        ThreadIndexMask &#x3D;   0xff,
+        QueueIndexMask &#x3D;    0x100,
+        QueueIndexShift &#x3D;   8,
+
+        &#x2F;** High bits are used for a queue index task priority and thread priority**&#x2F;
+
+        NormalTaskPriority &#x3D;    0x000,
+        HighTaskPriority &#x3D;      0x200,
+
+        NumTaskPriorities &#x3D;     2,
+        TaskPriorityMask &#x3D;      0x200,
+        TaskPriorityShift &#x3D;     9,
+
+        NormalThreadPriority &#x3D; 0x000,
+        HighThreadPriority &#x3D; 0x400,
+        BackgroundThreadPriority &#x3D; 0x800,
+
+        NumThreadPriorities &#x3D; 3,
+        ThreadPriorityMask &#x3D; 0xC00,
+        ThreadPriorityShift &#x3D; 10,
+
+        &#x2F;** Combinations **&#x2F;
+        GameThread_Local &#x3D; GameThread | LocalQueue,
+        ActualRenderingThread_Local &#x3D; ActualRenderingThread | LocalQueue,
+
+        AnyHiPriThreadNormalTask &#x3D; AnyThread | HighThreadPriority | NormalTaskPriority,
+        AnyHiPriThreadHiPriTask &#x3D; AnyThread | HighThreadPriority | HighTaskPriority,
+
+        AnyNormalThreadNormalTask &#x3D; AnyThread | NormalThreadPriority | NormalTaskPriority,
+        AnyNormalThreadHiPriTask &#x3D; AnyThread | NormalThreadPriority | HighTaskPriority,
+
+        AnyBackgroundThreadNormalTask &#x3D; AnyThread | BackgroundThreadPriority | NormalTaskPriority,
+        AnyBackgroundHiPriTask &#x3D; AnyThread | BackgroundThreadPriority | HighTaskPriority,
+    &#125;;
+
+    (...)
+
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="taskgraph-任务图类型"><a class="markdownIt-Anchor" href="#taskgraph-任务图类型"></a> TaskGraph 任务图类型</h2>
+<p>TaskGraph会根据线程优先级、是否启用后台线程创建不同的工作线程集合，然后创建它们的FWorkerThread对象。<br>
+入队任务时，会将任务Push到任务列表IncomingAnyThreadTasks中，并取出可执行的任务索引，根据任务的属性（希望在哪个线程执行、优先级、任务索引）启用对应的工作线程去执行。</p>
+<h3 id="ftaskgraphinterface"><a class="markdownIt-Anchor" href="#ftaskgraphinterface"></a> FTaskGraphInterface</h3>
+<p>FTaskGraphInterface就是任务图的管理器和工厂，提供了任务操作、线程操作的接口。</p>
+<h3 id="ftaskgraphimplementation"><a class="markdownIt-Anchor" href="#ftaskgraphimplementation"></a> FTaskGraphImplementation</h3>
+<p>FTaskGraphImplementation继承并实现了FTaskGraphInterface的接口。FTaskGraphImplementation采用了特殊的线程对象WorkerThreads（工作线程）来作为执行的载体，如果是专用的线程（带名字的线程，如GameThread、RHI、ActualRenderingThread），则会进入专用的任务队列。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Private\Async\TaskGraph.cpp
+
+class FTaskGraphImplementation final : public FTaskGraphInterface
+&#123;
+public:
+    &#x2F;&#x2F; 获取FTaskGraphImplementation单例
+    static FTaskGraphImplementation&amp; Get()
+    &#123;
+        checkThreadGraph(!GUseNewTaskBackend);
+        checkThreadGraph(TaskGraphImplementationSingleton);
+        return *static_cast&lt;FTaskGraphImplementation*&gt;(TaskGraphImplementationSingleton);
+    &#125;
+
+    &#x2F;&#x2F; 构造函数, 计算任务线程数量, 创建专用线程和无名线程等
+    FTaskGraphImplementation(int32);
+
+    virtual ~FTaskGraphImplementation()
+
+    &#x2F;&#x2F; 入队任务，AnyThread和NamedTaskThread分别处理
+    &#x2F;&#x2F; AnyThread的任务会加入IncomingAnyThreadTasks对应优先级的队列
+    &#x2F;&#x2F; NamedTaskThread的任务会根据优先级，加入各自所有的FThreadTaskQueue的对应队列
+    virtual void QueueTask(FBaseGraphTask* Task, bool bWakeUpWorker, ENamedThreads::Type ThreadToExecuteOn, ENamedThreads::Type InCurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread) final override;
+
+    virtual int32 GetNumWorkerThreads() final override;
+    virtual int32 GetNumForegroundThreads() final override;
+    virtual int32 GetNumBackgroundThreads() final override;
+    virtual bool IsCurrentThreadKnown() final override;
+    virtual ENamedThreads::Type GetCurrentThreadIfKnown(bool bLocalQueue) final override;
+    virtual bool IsThreadProcessingTasks(ENamedThreads::Type ThreadToCheck) final override;
+
+    &#x2F;&#x2F; 将当前线程导入到指定Index
+    virtual void AttachToThread(ENamedThreads::Type CurrentThread) final override;
+
+    &#x2F;&#x2F; ----处理任务接口----
+    virtual uint64 ProcessThreadUntilIdle(ENamedThreads::Type CurrentThread) final override;
+    virtual void ProcessThreadUntilRequestReturn(ENamedThreads::Type CurrentThread) final override;
+    virtual void RequestReturn(ENamedThreads::Type CurrentThread) final override;
+    virtual void WaitUntilTasksComplete(const FGraphEventArray&amp; Tasks, ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread) final override;
+    virtual void TriggerEventWhenTasksComplete(FEvent* InEvent, const FGraphEventArray&amp; Tasks, ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread, ENamedThreads::Type TriggerThread &#x3D; ENamedThreads::AnyHiPriThreadHiPriTask) final override;
+    virtual void AddShutdownCallback(TFunction&lt;void()&gt;&amp; Callback);
+
+    &#x2F;&#x2F; ----任务调度接口----
+    virtual void WakeNamedThread(ENamedThreads::Type ThreadToWake) override;
+    void StartTaskThread(int32 Priority, int32 IndexToStart);
+    void StartAllTaskThreads(bool bDoBackgroundThreads);
+    FBaseGraphTask* FindWork(ENamedThreads::Type ThreadInNeed) override;
+    void StallForTuning(int32 Index, bool Stall) override;
+    void SetTaskThreadPriorities(EThreadPriority Pri);
+
+private:
+    &#x2F;&#x2F; 获取指定索引的任务线程引用
+    FTaskThreadBase&amp; Thread(int32 Index);
+
+    &#x2F;&#x2F; 获取当前线程索引
+    ENamedThreads::Type GetCurrentThread();
+    int32 ThreadIndexToPriorityIndex(int32 ThreadIndex);
+
+    enum
+    &#123;
+        &#x2F;** Compile time maximum number of threads. Didn&#39;t really need to be a compile time constant, but task thread are limited by MAX_LOCK_FREE_LINKS_AS_BITS **&#x2F;
+        MAX_THREADS &#x3D; 0xFFFF,
+        MAX_THREAD_PRIORITIES &#x3D; 3
+    &#125;;
+
+    FWorkerThread       WorkerThreads[MAX_THREADS]; &#x2F;&#x2F; 所有工作线程(任务线程)对象数组
+    int32               NumThreads; &#x2F;&#x2F; 实际被使用的线程数量
+    int32               NumNamedThreads; &#x2F;&#x2F; 专用线程数量
+    int32               NumTaskThreadSets; &#x2F;&#x2F; 任务线程集合数量
+    int32               NumTaskThreadsPerSet; &#x2F;&#x2F; 每个集合拥有的任务线程数量
+
+    bool                bCreatedHiPriorityThreads;
+    bool                bCreatedBackgroundPriorityThreads;
+
+    ENamedThreads::Type LastExternalThread;
+    FThreadSafeCounter  ReentrancyCheck;
+    uint32              PerThreadIDTLSSlot;
+
+    TArray&lt;TFunction&lt;void()&gt; &gt; ShutdownCallbacks; &#x2F;&#x2F; 销毁前的回调
+
+    FStallingTaskQueue&lt;FBaseGraphTask, PLATFORM_CACHE_LINE_SIZE, 2&gt; IncomingAnyThreadTasks[MAX_THREAD_PRIORITIES];
+&#125;;
+
+
+struct FWorkerThread
+&#123;
+    FTaskThreadBase*    TaskGraphWorker; &#x2F;&#x2F; 所属的FTaskThread对象
+    FRunnableThread*    RunnableThread; &#x2F;&#x2F; 真正执行任务的可运行线程
+    bool                bAttached; &#x2F;&#x2F; 是否附加的线程(一般用于专用线程)
+
+    &#x2F;** Constructor to set reasonable defaults. **&#x2F;
+    FWorkerThread()
+        : TaskGraphWorker(nullptr)
+        , RunnableThread(nullptr)
+        , bAttached(false)
+    &#123;
+    &#125;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>WorkerThreads保存TaskGraph系统用到所有的线程对象，分布如下图</p>
+<p><img src="/2024/07/08/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8A%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/WorkerThreadsLayout.png" alt="WorkerThreadsLayout" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/08/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8A%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/WorkerThreadsLayout.png" class="lozad post-image"></p>
+<h2 id="graphevent-任务图事件类型"><a class="markdownIt-Anchor" href="#graphevent-任务图事件类型"></a> GraphEvent 任务图事件类型</h2>
+<h3 id="fgraphevent"><a class="markdownIt-Anchor" href="#fgraphevent"></a> FGraphEvent</h3>
+<p>FGraphEvent表示一个Task完成的事件，FGraphEvent实现了Task之间的依赖关系，只有Task依赖的所有前置Task执行完成，当前Task才会被加入到队列中。所以FGraphEvent总是和一个Task相关，它也是在一个Task初始化的时候创建的。<br>
+在一个Task执行完成之后，与其相关的Event就算完成了，于是Event就会处理所有依赖于自己的后续Task。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Public\Async\TaskGraphInterfaces.h
+
+class FGraphEvent 
+&#123;
+public:
+    static CORE_API FGraphEventRef CreateGraphEvent();
+
+    &#x2F;&#x2F; 参数FBaseGraphTask* Task需要当前FGraphEvent作为其前置任务事件时，需要将Task添加进当前FGraphEvent的链表中
+    &#x2F;&#x2F; 如果当前Event已经触发，则添加失败，返回false；添加成功，则返回true
+    bool AddSubsequent(class FBaseGraphTask* Subsequent);
+
+    &#x2F;&#x2F; 检查前序任务事件数是否为0
+    void CheckDontCompleteUntilIsEmpty();
+
+
+    &#x2F;&#x2F; 将EventsToWaitFor加入Event的前序任务事件列表
+    void DontCompleteUntil(FGraphEventRef EventToWaitFor);
+
+
+    &#x2F;&#x2F; 当前Event未完成时，推动它依赖的未完成前置任务执行。当前Event完成后，则推动依赖该Event的任务执行
+    CORE_API void DispatchSubsequents(ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread);
+    CORE_API void DispatchSubsequents(TArray&lt;FBaseGraphTask*&gt;&amp; NewTasks, ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread, bool bInternal &#x3D; false);
+
+    &#x2F;&#x2F; 当前任务事件是否完成
+    bool IsComplete() const
+    &#123;
+        return SubsequentList.IsClosed();
+    &#125;
+
+    &#x2F;&#x2F; 等待直到当前Event的任务完成
+    void Wait(ENamedThreads::Type CurrentThreadIfKnown &#x3D; ENamedThreads::AnyThread);
+
+    (...)
+
+private:
+    friend class TRefCountPtr&lt;FGraphEvent&gt;;
+    friend class TLockFreeClassAllocator_TLSCache&lt;FGraphEvent, PLATFORM_CACHE_LINE_SIZE&gt;;
+
+    &#x2F;&#x2F; 释放ToRecycle的内存
+    static CORE_API void Recycle(FGraphEvent* ToRecycle);
+
+    friend struct FGraphEventAndSmallTaskStorage;
+
+    &#x2F;**
+        * Hidden Constructor
+    **&#x2F;
+    FGraphEvent()
+        : ThreadToDoGatherOn(ENamedThreads::AnyHiPriThreadHiPriTask)
+    &#123;
+    &#125;
+
+    &#x2F;**
+        * Destructor. Verifies we aren&#39;t destroying it prematurely. 
+    **&#x2F;
+    ~FGraphEvent();
+
+    &#x2F;&#x2F; Interface for TRefCountPtr
+
+public:
+    &#x2F;&#x2F; 引用计数+1
+    uint32 AddRef();
+    &#x2F;&#x2F; 引用计数-1
+    uint32 Release();
+    &#x2F;&#x2F; 返回引用计数
+    uint32 GetRefCount() const;
+
+private:
+    &#x2F;&#x2F; 后继任务列表
+    TClosableLockFreePointerListUnorderedSingleConsumer&lt;FBaseGraphTask, 0&gt;  SubsequentList;
+    &#x2F;&#x2F; 前序任务事件列表
+    FGraphEventArray                                                        EventsToWaitFor;
+    &#x2F;&#x2F; 引用计数
+    FThreadSafeCounter                                                      ReferenceCount;
+    &#x2F;&#x2F; 用于推动执行未完成的前序任务的FNullGraphTask所线程
+    ENamedThreads::Type                                                     ThreadToDoGatherOn;
+
+    (...)
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="fgrapheventref"><a class="markdownIt-Anchor" href="#fgrapheventref"></a> FGraphEventRef</h3>
+<p>指向FGraphEvent类型的带引用计数的指针</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Core\Public\Async\TaskGraphFwd.h
+
+using FGraphEventRef &#x3D; TRefCountPtr&lt;class FGraphEvent&gt;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-systems-in-unreal-engine">Unreal Engine Documentation: Tasks System</a></p>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/task-graph-insights-in-unreal-engine-5">Unreal Engine Documentation: Task Graph Insights</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/14327537.html#2424-taskgraph">剖析虚幻渲染体系（02）- 多线程渲染</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/kekec/p/13915313.html">UE4之TaskGraph系统</a></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/07/08/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8A%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">
+            https://suikasan111.github.io/2024/07/08/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8A%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2024/07/09/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8B%EF%BC%9A%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">UE5-TaskGraph系统-下：机制分析 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/07/07/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89MeshPass/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">UE5-添加自定义MeshPass </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#graphtask-%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8B"><span class="toc-text"> GraphTask 任务类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fbasegraphtask"><span class="toc-text"> FBaseGraphTask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tgraphtask"><span class="toc-text"> TGraphTask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#esubsequentsmode"><span class="toc-text"> ESubsequentsMode</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#taskthread-%E4%BB%BB%E5%8A%A1%E7%BA%BF%E7%A8%8B%E7%B1%BB%E5%9E%8B"><span class="toc-text"> TaskThread 任务线程类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ftaskthreadbase"><span class="toc-text"> FTaskThreadBase</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fnamedtaskthread-ftaskthreadanythread"><span class="toc-text"> FNamedTaskThread &amp; FTaskThreadAnyThread</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fnamedtaskthread"><span class="toc-text"> FNamedTaskThread</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ftaskthreadanythread"><span class="toc-text"> FTaskThreadAnyThread</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#enamedthreads"><span class="toc-text"> ENamedThreads</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#taskgraph-%E4%BB%BB%E5%8A%A1%E5%9B%BE%E7%B1%BB%E5%9E%8B"><span class="toc-text"> TaskGraph 任务图类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ftaskgraphinterface"><span class="toc-text"> FTaskGraphInterface</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ftaskgraphimplementation"><span class="toc-text"> FTaskGraphImplementation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#graphevent-%E4%BB%BB%E5%8A%A1%E5%9B%BE%E4%BA%8B%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="toc-text"> GraphEvent 任务图事件类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fgraphevent"><span class="toc-text"> FGraphEvent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fgrapheventref"><span class="toc-text"> FGraphEventRef</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#graphtask-%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8B"><span class="toc-text"> GraphTask 任务类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fbasegraphtask"><span class="toc-text"> FBaseGraphTask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tgraphtask"><span class="toc-text"> TGraphTask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#esubsequentsmode"><span class="toc-text"> ESubsequentsMode</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#taskthread-%E4%BB%BB%E5%8A%A1%E7%BA%BF%E7%A8%8B%E7%B1%BB%E5%9E%8B"><span class="toc-text"> TaskThread 任务线程类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ftaskthreadbase"><span class="toc-text"> FTaskThreadBase</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fnamedtaskthread-ftaskthreadanythread"><span class="toc-text"> FNamedTaskThread &amp; FTaskThreadAnyThread</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fnamedtaskthread"><span class="toc-text"> FNamedTaskThread</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ftaskthreadanythread"><span class="toc-text"> FTaskThreadAnyThread</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#enamedthreads"><span class="toc-text"> ENamedThreads</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#taskgraph-%E4%BB%BB%E5%8A%A1%E5%9B%BE%E7%B1%BB%E5%9E%8B"><span class="toc-text"> TaskGraph 任务图类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ftaskgraphinterface"><span class="toc-text"> FTaskGraphInterface</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ftaskgraphimplementation"><span class="toc-text"> FTaskGraphImplementation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#graphevent-%E4%BB%BB%E5%8A%A1%E5%9B%BE%E4%BA%8B%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="toc-text"> GraphEvent 任务图事件类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fgraphevent"><span class="toc-text"> FGraphEvent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fgrapheventref"><span class="toc-text"> FGraphEventRef</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-18</div>
+        <a href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/"><div class="recent-posts-item-content">Frostbite Terrain Procedural Tools</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-17</div>
+        <a href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/"><div class="recent-posts-item-content">UE5-渲染线程中多线程任务分发简析</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-15</div>
+        <a href="/2024/07/15/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-4%EF%BC%9A%E6%80%BB%E7%BB%93/"><div class="recent-posts-item-content">UE5-地形系统-4：总结</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

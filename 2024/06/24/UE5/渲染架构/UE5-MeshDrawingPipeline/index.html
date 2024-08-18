@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>UE5-Mesh Drawing Pipeline</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="UE5-Mesh Drawing Pipeline">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/2024/06/24/UE5/渲染架构/UE5-MeshDrawingPipeline/banner.png">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-06-24">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5渲染架构">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>43</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>9</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>16</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#overview"><span class="toc-text"> Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#fprimitivesceneproxy%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="toc-text"> FPrimitiveSceneProxy的创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90meshbatch"><span class="toc-text"> 生成MeshBatch</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#emeshbatch"><span class="toc-text"> EMeshBatch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B6%E9%9B%86fmeshbatches"><span class="toc-text"> 收集FMeshBatches</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#staticcached-mesh-batches"><span class="toc-text"> Static&#x2F;Cached Mesh Batches</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dynamic-mesh-batches"><span class="toc-text"> Dynamic Mesh Batches</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#fmobilescenerenderer"><span class="toc-text"> FMobileSceneRenderer</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fdeferredshadingscenerenderer"><span class="toc-text"> FDeferredShadingSceneRenderer</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90meshdrawcommand"><span class="toc-text"> 生成MeshDrawCommand</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 基本类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fmeshdrawcommand"><span class="toc-text"> FMeshDrawCommand</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fmeshpassprocessor"><span class="toc-text"> FMeshPassProcessor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fmeshdrawcommandpasssetuptask"><span class="toc-text"> FMeshDrawCommandPassSetupTask</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fmeshbatch%E8%BD%AC%E6%8D%A2%E4%B8%BAfmeshdrawcommand"><span class="toc-text"> FMeshBatch转换为FMeshDrawCommand</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#staticcached"><span class="toc-text"> Static&#x2F;Cached</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dynamic"><span class="toc-text"> Dynamic</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#meshdrawcommand-dispatch%E6%9C%BA%E5%88%B6"><span class="toc-text"> MeshDrawCommand Dispatch机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0"><span class="toc-text"> 重要函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90rhicommandlist"><span class="toc-text"> 生成RHICommandList</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GDC/">
+        <div class="categories-list-item">
+          GDC
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">7</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+        <div class="categories-list-item">
+          UE5地形系统
+          <span class="categories-list-item-badge">4</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+        title="地形系统">
+        <div class="tags-list-item">地形系统</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+        title="UE5地形">
+        <div class="tags-list-item">UE5地形</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+        title="UE5多线程">
+        <div class="tags-list-item">UE5多线程</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-RDG/" 
+        title="UE5 RDG">
+        <div class="tags-list-item">UE5 RDG</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+        title="游戏引擎">
+        <div class="tags-list-item">游戏引擎</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+  <div class="image-wrapper">
+    <img 
+      src="/2024/06/24/UE5/渲染架构/UE5-MeshDrawingPipeline/banner.png" 
+      data-src="/2024/06/24/UE5/渲染架构/UE5-MeshDrawingPipeline/banner.png"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="UE5-Mesh Drawing Pipeline thumbnail">
+  </div>
+
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      UE5-Mesh Drawing Pipeline
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-06-24T14:39:29.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-06-24</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+          class="post-meta-link">
+          UE5渲染架构
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>6.7k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/UE5/" 
+            class="post-meta-link">
+            UE5
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+            class="post-meta-link">
+            UE5渲染架构
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="overview"><a class="markdownIt-Anchor" href="#overview"></a> Overview</h2>
+<p>通常，在学习OpenGL、D3D等图形API时，我们可以直接调用其DrawCall，直奔主题。但是，对于商业游戏引擎而言，需要以每秒数十帧渲染复杂的场景，其中可能产生成百上千个Draw Call，绘制数十万甚至数百万个三角形，直接采用简单的图形API调用显然太过低效。</p>
+<p>因此，商业游戏引擎需要在真正调用图形API之前，会进行很多操作，如遮挡剔除、动态和静态合拼、动态Instance、缓存状态和命令、生成中间指令再转译成图形API指令等等。</p>
+<p>UE4.22对Mesh Drawing Pipeline进行了一次重构，使用PassMeshProcessor取代DrawingPolicy，在FMeshBatch和RHI命令之间增加了一个概念FMeshDrawCommand，以便更大程度更加可控地排序、缓存、合并绘制指令。</p>
+<p><img src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/MeshDrawingPipeline.png" alt="MeshDrawingPipeline" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/MeshDrawingPipeline.png" class="lozad post-image"></p>
+<p>Mesh Rendering从FPrimitiveSceneProxy（游戏线程UPrimitiveComponent在渲染线程的代表）开始。FPrimitiveSceneProxy负责通过对GetDynamicMeshElements和DrawStaticElements的回调将FMeshBatch提交给渲染器。</p>
+<p>FMeshBatch将FPrimitiveSceneProxy实现（用户代码）与Mesh Passes（私有渲染器模块）解耦。它包含了Pass确定最终着色器绑定和渲染状态所需的所有内容，因此Proxy永远不知道将在哪些通道中渲染。</p>
+<p>下一步是将FMeshBatch转换为MeshPass特定的FMeshDrawCommand。</p>
+<p>最后，SubmitMeshDrawCommands用于将FMeshDrawCommand转换为RHICommandList上设置的一系列RHI命令。</p>
+<h2 id="fprimitivesceneproxy的创建"><a class="markdownIt-Anchor" href="#fprimitivesceneproxy的创建"></a> FPrimitiveSceneProxy的创建</h2>
+<p>UPrimitiveComponent的数据不会在渲染线程被直接使用，因此当渲染开始时，会先调用FScene::AddPrimitive对传入的UPrimitiveComponent创建FPrimitiveSceneProxy</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\RendererScene.cpp
+
+void FScene::AddPrimitive(UPrimitiveComponent* Primitive)
+&#123;
+    &#x2F;&#x2F; If the bulk reregister flag is set, add &#x2F; remove will be handled in bulk by the FStaticMeshComponentBulkReregisterContext
+    if (Primitive-&gt;bBulkReregister)
+    &#123;
+        return;
+    &#125;
+    BatchAddPrimitivesInternal(MakeArrayView(&amp;Primitive, 1));
+&#125;
+
+template&lt;class T&gt;
+void FScene::BatchAddPrimitivesInternal(TArrayView&lt;T*&gt; InPrimitives)
+&#123;
+    (...)
+
+    for (T* Primitive : InPrimitives)
+    &#123;
+        (...)
+
+        FPrimitiveSceneProxy* PrimitiveSceneProxy  &#x3D; nullptr;
+
+        if (Primitive-&gt;GetPrimitiveComponentInterface())
+        &#123;
+            checkf(!Primitive-&gt;GetSceneProxy(), TEXT(&quot;Primitive has already been added to the scene!&quot;));
+            PrimitiveSceneProxy &#x3D; Primitive-&gt;GetPrimitiveComponentInterface()-&gt;CreateSceneProxy();
+            check(SceneData.SceneProxy &#x3D;&#x3D; PrimitiveSceneProxy); &#x2F;&#x2F; CreateSceneProxy has access to the shared SceneData and should set it properly
+        &#125;
+        else
+        &#123;
+            check(!Primitive-&gt;ShouldRecreateProxyOnUpdateTransform()); &#x2F;&#x2F; recreating proxies when updating the transform requires a IPrimitiveComponentInterface
+            PrimitiveSceneProxy &#x3D; Primitive-&gt;GetSceneProxy();
+        &#125;
+
+        (...)
+
+        if (!CreateCommands.IsEmpty())
+        &#123;
+            ENQUEUE_RENDER_COMMAND(AddPrimitiveCommand)(
+                [this, CreateCommands &#x3D; MoveTemp(CreateCommands)](FRHICommandListBase&amp; RHICmdList)
+            &#123;
+                for (const FCreateCommand&amp; Command : CreateCommands)
+                &#123;
+                    FScopeCycleCounter Context(Command.PrimitiveSceneProxy-&gt;GetStatId());
+                    Command.PrimitiveSceneProxy-&gt;SetTransform(RHICmdList, Command.RenderMatrix, Command.WorldBounds, Command.LocalBounds, Command.AttachmentRootPosition);
+                    Command.PrimitiveSceneProxy-&gt;CreateRenderThreadResources(RHICmdList);
+
+                    AddPrimitiveSceneInfo_RenderThread(Command.PrimitiveSceneInfo, Command.PreviousTransform);
+                &#125;
+            &#125;);
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>FPrimitiveSceneProxy创建完成后，会通过ENQUEUE_RENDER_COMMAND(AddPrimitiveCommand)将命令加入渲染线程的队列，后续执行时会对FPrimitiveSceneProxy设置Transform，创建渲染资源，并进行Primitive信息的收集，加入到AddedPrimitiveSceneInfos中。</p>
+<h2 id="生成meshbatch"><a class="markdownIt-Anchor" href="#生成meshbatch"></a> 生成MeshBatch</h2>
+<h3 id="emeshbatch"><a class="markdownIt-Anchor" href="#emeshbatch"></a> EMeshBatch</h3>
+<p>FMeshBatch记录了一组拥有相同材质和顶点工厂的FMeshBatchElement数据。其中FMeshBatchElement存储了FMeshBatch中单个Mesh所需的数据。也就是说，一个FMeshBatch拥有一组FMeshBatchElement、一个顶点工厂和一个材质实例，同一个FMeshBatch的所有FMeshBatchElement共享着相同的材质和Vertex Factory。但大多数情况下，FMeshBatch只会有一个FMeshBatchElement。</p>
+<p>FMeshBatch的作用就是：将FPrimitiveSceneProxy和最终的渲染结构分离，FMeshBatch包含了需要渲染的全部信息，因此FPrimitiveSceneProxy不需要知道Pass将渲染什么。</p>
+<p><img src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/MeshBatch.png" alt="MeshBatch" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/MeshBatch.png" class="lozad post-image"></p>
+<h3 id="收集fmeshbatches"><a class="markdownIt-Anchor" href="#收集fmeshbatches"></a> 收集FMeshBatches</h3>
+<p>FPrimitiveSceneProxy有两个生成FMeshBatch的路径：缓存路径和动态路径</p>
+<p>FPrimitiveSceneProxy使用GetViewRelevance函数控制生成FMeshBatches所使用的路径。</p>
+<p><img src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/DynamicRelevance&amp;StaticRelevance.png" alt="DynamicRelevance&amp;StaticRelevance" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/DynamicRelevance&amp;StaticRelevance.png" class="lozad post-image"></p>
+<p>缓存路径构建并重用FMeshBatch，用于于不改变每一帧（比如静态网格体）的绘制。由DrawStaticElements函数实现，当一个Proxy被添加到场景中时会调用此函数。创建的FMeshBatches存储在FPrimitiveSceneInfo::StaticMeshes中，并且每一帧都被重用，直到从场景中删除Proxy为止。</p>
+<p>动态路径每一帧重新创建FMeshBatch，用于在帧与帧之间经常会发生变化的绘制，例如粒子。由GetDynamicMeshElements实现。该函数从InitViews中调用每一帧，并为每个View创建一个临时的FMeshBatch。</p>
+<h4 id="staticcached-mesh-batches"><a class="markdownIt-Anchor" href="#staticcached-mesh-batches"></a> Static/Cached Mesh Batches</h4>
+<p><img src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/GatherStaticMeshBatch.png" alt="GatherStaticMeshBatch" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/GatherStaticMeshBatch.png" class="lozad post-image"></p>
+<p>注：UE5是在FPrimitiveSceneInfo::AddStaticMeshes中嵌套调用FPrimitiveSceneProxy::DrawStaticElements，FPrimitiveSceneInfo::AddStaticMeshes执行完毕后，才调用FPrimitiveSceneInfo::CacheMeshDrawCommands</p>
+<p>FScene::UpdateAllPrimitiveSceneInfos --&gt; FScene::Update --&gt; (FPrimitiveSceneInfo::AddToScene) --&gt; FPrimitiveSceneInfo::AddStaticMeshes</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\RendererScene.cpp
+
+void FScene::UpdateAllPrimitiveSceneInfos(FRDGBuilder&amp; GraphBuilder, EUpdateAllPrimitiveSceneInfosAsyncOps AsyncOps)
+&#123;
+    FUpdateParameters Parameters;
+    Parameters.AsyncOps &#x3D; AsyncOps;
+    Update(GraphBuilder, Parameters);
+&#125;
+
+void FScene::Update(FRDGBuilder&amp; GraphBuilder, const FUpdateParameters&amp; Parameters)
+&#123;
+    (...)
+    if (SceneInfosWithAddToScene.Num() &gt; 0)
+    &#123;
+        FPrimitiveSceneInfo::AddToScene(this, SceneInfosWithAddToScene);
+    &#125;
+    (...)
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\PrimitiveSceneInfo.cpp
+
+void FPrimitiveSceneInfo::AddToScene(FScene* Scene, TArrayView&lt;FPrimitiveSceneInfo*&gt; SceneInfos)
+&#123;
+    (...)
+&#125;
+
+void FPrimitiveSceneInfo::AddStaticMeshes(FRHICommandListBase&amp; RHICmdList, FScene* Scene, TArrayView&lt;FPrimitiveSceneInfo*&gt; SceneInfos, bool bCacheMeshDrawCommands)
+&#123;
+    (...)
+
+    &#123;
+        ParallelForTemplate(SceneInfos.Num(), [Scene, &amp;SceneInfos](int32 Index)
+        &#123;
+            (...)
+            SceneInfo-&gt;Proxy-&gt;DrawStaticElements(&amp;BatchingSPDI);
+            (...)
+        &#125;);
+    &#125;
+
+    (...)
+
+    if (bCacheMeshDrawCommands)
+    &#123;
+        CacheMeshDrawCommands(Scene, SceneInfos);
+        CacheNaniteMaterialBins(Scene, SceneInfos);
+    #if RHI_RAYTRACING
+        CacheRayTracingPrimitives(Scene, SceneInfos);
+    #endif
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>DrawStaticElements由FPrimitiveSceneProxy的子类各自实现，在其中传入FStaticPrimitiveDrawInterface实例并完成设置，最后调用FStaticPrimitiveDrawInterface::DrawMesh（该函数为纯虚函数，实际上调用的是其子类版本FBatchingSPDI::DrawMesh）</p>
+<p>以FTextRenderSceneProxy::DrawStaticElements作为参考</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Engine\Private\Components\TextRenderComponent.cpp
+
+void FTextRenderSceneProxy::DrawStaticElements(FStaticPrimitiveDrawInterface* PDI)
+&#123;
+    &#x2F;&#x2F; Vertex factory will not been initialized when the font is invalid or the text string is empty.
+    if(VertexFactory.IsInitialized())
+    &#123;
+        PDI-&gt;ReserveMemoryForMeshes(TextBatches.Num());
+
+        for (const FTextBatch&amp; TextBatch : TextBatches)
+        &#123;
+            &#x2F;&#x2F; Draw the mesh.
+            FMeshBatch Mesh;
+            FMeshBatchElement&amp; BatchElement &#x3D; Mesh.Elements[0];
+            BatchElement.IndexBuffer &#x3D; &amp;IndexBuffer;
+            Mesh.VertexFactory &#x3D; &amp;VertexFactory;
+            Mesh.MaterialRenderProxy &#x3D; TextBatch.Material-&gt;GetRenderProxy();
+            BatchElement.FirstIndex &#x3D; TextBatch.IndexBufferOffset;
+            BatchElement.NumPrimitives &#x3D; TextBatch.IndexBufferCount &#x2F; 3;
+            BatchElement.MinVertexIndex &#x3D; TextBatch.VertexBufferOffset;
+            BatchElement.MaxVertexIndex &#x3D; TextBatch.VertexBufferOffset + TextBatch.VertexBufferCount - 1;
+            Mesh.ReverseCulling &#x3D; IsLocalToWorldDeterminantNegative();
+            Mesh.bDisableBackfaceCulling &#x3D; false;
+            Mesh.Type &#x3D; PT_TriangleList;
+            Mesh.DepthPriorityGroup &#x3D; SDPG_World;
+            Mesh.LODIndex &#x3D; 0;
+            PDI-&gt;DrawMesh(Mesh, 1.0f);
+        &#125;
+    &#125;
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\PrimitiveSceneInfo.cpp
+
+class FBatchingSPDI : public FStaticPrimitiveDrawInterface
+&#123;
+public:
+    (...)
+    virtual void DrawMesh(const FMeshBatch&amp; Mesh, float ScreenSize) final override
+    &#123;
+        if (Mesh.HasAnyDrawCalls())
+        &#123;
+            checkSlow(IsInParallelRenderingThread());
+
+            FPrimitiveSceneProxy* PrimitiveSceneProxy &#x3D; PrimitiveSceneInfo-&gt;Proxy;
+            const ERHIFeatureLevel::Type FeatureLevel &#x3D; PrimitiveSceneInfo-&gt;Scene-&gt;GetFeatureLevel();
+
+            if (!Mesh.Validate(PrimitiveSceneProxy, FeatureLevel))
+            &#123;
+                return;
+            &#125;
+
+            FStaticMeshBatch* StaticMesh &#x3D; new(PrimitiveSceneInfo-&gt;StaticMeshes) FStaticMeshBatch(
+                PrimitiveSceneInfo,
+                Mesh,
+                CurrentHitProxy ? CurrentHitProxy-&gt;Id : FHitProxyId()
+            );
+
+            StaticMesh-&gt;PreparePrimitiveUniformBuffer(PrimitiveSceneProxy, FeatureLevel);
+            &#x2F;&#x2F; Volumetric self shadow mesh commands need to be generated every frame, as they depend on single frame uniform buffers with self shadow data.
+            const bool bSupportsCachingMeshDrawCommands &#x3D; SupportsCachingMeshDrawCommands(*StaticMesh, FeatureLevel) &amp;&amp; !PrimitiveSceneProxy-&gt;CastsVolumetricTranslucentShadow();
+
+            const FMaterial&amp; Material &#x3D; Mesh.MaterialRenderProxy-&gt;GetIncompleteMaterialWithFallback(FeatureLevel);
+            bool bUseSkyMaterial &#x3D; Material.IsSky();
+            bool bUseSingleLayerWaterMaterial &#x3D; Material.GetShadingModels().HasShadingModel(MSM_SingleLayerWater);
+            bool bUseAnisotropy &#x3D; Material.GetShadingModels().HasAnyShadingModel(&#123;MSM_DefaultLit, MSM_ClearCoat&#125;) &amp;&amp; Material.MaterialUsesAnisotropy_RenderThread();
+            bool bSupportsNaniteRendering &#x3D; SupportsNaniteRendering(StaticMesh-&gt;VertexFactory, PrimitiveSceneProxy, Mesh.MaterialRenderProxy, FeatureLevel);
+            bool bSupportsGPUScene &#x3D; StaticMesh-&gt;VertexFactory-&gt;SupportsGPUScene(FeatureLevel);
+            bool bUseForWaterInfoTextureDepth &#x3D; Mesh.bUseForWaterInfoTextureDepth;
+            bool bUseForLumenSceneCapture &#x3D; Mesh.bUseForLumenSurfaceCacheCapture;
+
+            FStaticMeshBatchRelevance* StaticMeshRelevance &#x3D; new(PrimitiveSceneInfo-&gt;StaticMeshRelevances) FStaticMeshBatchRelevance(
+                *StaticMesh, 
+                ScreenSize, 
+                bSupportsCachingMeshDrawCommands,
+                bUseSkyMaterial,
+                bUseSingleLayerWaterMaterial,
+                bUseAnisotropy,
+                bSupportsNaniteRendering,
+                bSupportsGPUScene,
+                bUseForWaterInfoTextureDepth,
+                bUseForLumenSceneCapture,
+                FeatureLevel
+                );
+        &#125;
+    &#125;
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>FBatchingSPDI::DrawMesh最主要作用是将PrimitiveSceneProxy转换成FStaticMeshBatch</p>
+<p>UWorld发生改变而调用其PropagateLightingScenarioChange函数时，会在其中调用UStaticMeshComponent, ULightComponent等类型的PropagateLightingScenarioChange函数，而其中则调用了FScene::UpdateAllPrimitiveSceneInfos，从而在改变发生时重新收集一次StaticMeshBatches</p>
+<h4 id="dynamic-mesh-batches"><a class="markdownIt-Anchor" href="#dynamic-mesh-batches"></a> Dynamic Mesh Batches</h4>
+<p>上述CachedMeshBatch在帧间不发生变化，因此由FScene来收集并缓存即可，而DynamicMeshBatch在帧间会发生变化，应当每帧都要收集，因此交由FSceneRenderer负责。</p>
+<p>下面以FMobileShadingRenderer为例简述收集DynamicMeshBatch的流程（因为FSceneRender::Render是纯虚函数，由其子类实现，每个子类的流程各不相同）</p>
+<h5 id="fmobilescenerenderer"><a class="markdownIt-Anchor" href="#fmobilescenerenderer"></a> FMobileSceneRenderer</h5>
+<p>以下为FMobileSceneRenderer大致的调用流程：</p>
+<p>FMobileShadingRenderer::Render --&gt; FMobileSceneRenderer::InitViews --&gt; FVisibilityTaskData::ProcessRenderThreadTasks --&gt; FVisibilityTaskData::GatherDynamicMeshElements</p>
+<p>TaskDatas.VisibilityTaskData::FinishGatherDynamicMeshElements --&gt; FVisibilityTaskData::SetupMeshPasses --&gt; ComputeDynamicMeshRelevance</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MobileShadingRenderer.cpp
+
+void FMobileSceneRenderer::Render(FRDGBuilder&amp; GraphBuilder)
+&#123;
+    (...)
+    InitViews(GraphBuilder, SceneTexturesConfig, InstanceCullingManager, VirtualTextureUpdater.Get(), InitViewTaskDatas);
+    (...)
+&#125;
+
+void FMobileSceneRenderer::InitViews(
+    FRDGBuilder&amp; GraphBuilder,
+    FSceneTexturesConfig&amp; SceneTexturesConfig,
+    FInstanceCullingManager&amp; InstanceCullingManager,
+    FVirtualTextureUpdater* VirtualTextureUpdater,
+    FInitViewTaskDatas&amp; TaskDatas)
+&#123;
+    (...)
+    TaskDatas.VisibilityTaskData-&gt;ProcessRenderThreadTasks();
+    TaskDatas.VisibilityTaskData-&gt;FinishGatherDynamicMeshElements(BasePassDepthStencilAccess, InstanceCullingManager, VirtualTextureUpdater);
+    (...)
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneVisibility.cpp
+
+void FVisibilityTaskData::ProcessRenderThreadTasks()
+&#123;
+    (...)
+    if (TaskConfig.Schedule &#x3D;&#x3D; EVisibilityTaskSchedule::RenderThread)
+    &#123;
+        (...)
+        GatherDynamicMeshElements(*DynamicMeshElements.PrimitiveViewMasks);
+    &#125;
+    else
+    &#123;
+        if (DynamicMeshElements.CommandPipe)
+        &#123;
+            SCOPED_NAMED_EVENT(WaitForGatherDynamicMeshElements, FColor::Magenta);
+
+            &#x2F;&#x2F; Wait on the command pipe first as it will be continually updating the render thread event (and process tasks while we wait).
+            Tasks.DynamicMeshElementsPipe-&gt;Wait(ENamedThreads::GetRenderThread_Local());
+        &#125;
+        else
+        &#123;
+            Tasks.ComputeRelevance.Wait();
+            check(DynamicMeshElements.PrimitiveViewMasks);
+            GatherDynamicMeshElements(*DynamicMeshElements.PrimitiveViewMasks);
+        &#125;
+        (...)
+    &#125;
+    (...)
+&#125;
+
+void FVisibilityTaskData::GatherDynamicMeshElements(FDynamicPrimitiveIndexList&amp;&amp; DynamicPrimitiveIndexList)
+&#123;
+    (...)
+&#125;
+
+void FVisibilityTaskData::FinishGatherDynamicMeshElements(FExclusiveDepthStencil::Type BasePassDepthStencilAccess, FInstanceCullingManager&amp; InstanceCullingManager, FVirtualTextureUpdater* VirtualTextureUpdater)
+&#123;
+    (...)
+
+    Tasks.MeshPassSetup &#x3D; UE::Tasks::Launch(UE_SOURCE_LOCATION, [this, BasePassDepthStencilAccess, &amp;InstanceCullingManager]
+    &#123;
+        FOptionalTaskTagScope Scope(ETaskTag::EParallelRenderingThread);
+        SetupMeshPasses(BasePassDepthStencilAccess, InstanceCullingManager);
+
+    &#125;, TaskConfig.TaskPriority);
+
+    FSceneRenderer::DynamicReadBufferForInitViews.Commit(RHICmdList);
+&#125;
+
+void FVisibilityTaskData::SetupMeshPasses(FExclusiveDepthStencil::Type BasePassDepthStencilAccess, FInstanceCullingManager&amp; InstanceCullingManager)
+&#123;
+    DynamicMeshElements.ContextContainer.MergeContexts(DynamicMeshElements.DynamicPrimitives);
+
+    &#123;
+        SCOPED_NAMED_EVENT(DynamicRelevance, FColor::Magenta);
+
+        for (FViewInfo* View : Views)
+        &#123;
+            View-&gt;DynamicMeshElementsPassRelevance.SetNum(View-&gt;DynamicMeshElements.Num());
+        &#125;
+
+        for (FDynamicPrimitive DynamicPrimitive : DynamicMeshElements.DynamicPrimitives)
+        &#123;
+            (...)
+
+            for (int32 ElementIndex &#x3D; DynamicPrimitive.StartElementIndex; ElementIndex &lt; DynamicPrimitive.EndElementIndex; ++ElementIndex)
+            &#123;
+                const FMeshBatchAndRelevance&amp; MeshBatch &#x3D; View.DynamicMeshElements[ElementIndex];
+                FMeshPassMask&amp; PassRelevance &#x3D; View.DynamicMeshElementsPassRelevance[ElementIndex];
+
+                ComputeDynamicMeshRelevance(ShadingPath, bAddLightmapDensityCommands, ViewRelevance, MeshBatch, View, PassRelevance, PrimitiveSceneInfo, Bounds);
+            &#125;
+        &#125;
+    &#125;
+    (...)
+
+    for (int32 ViewIndex &#x3D; 0; ViewIndex &lt; Views.Num(); ViewIndex++)
+    &#123;
+        (...)
+        SceneRenderer.SetupMeshPass(View, BasePassDepthStencilAccess, ViewCommands, InstanceCullingManager);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中的GatherDynamicMeshElements有很多嵌套调用，简而言之它将收集DynamicMeshBatch的任务加入队列，而其中加入队列的具体操作需要委托给FDynamicMeshElementContext类型的同名方法各自完成。</p>
+<p>场景渲染器FSceneRenderer（Render方法由其子类实现，如FDeferredShadingSceneRenderer, FMobileSceneRenderer）在渲染之初，会执行可见性测试和剔除，以便剔除被遮挡和被隐藏的物体，在此阶段的末期会调用GatherDynamicMeshElements收集当前场景所有的FPrimitiveSceneProxy。</p>
+<p>在GatherDynamicMeshElements中，会给每个FSceneRenderer创建一个FMeshElementCollector的对象，以便收集场景中所有可见的FPrimitiveSceneProxy的网格数据。FMeshElementCollector和FSceneRenderer是一一对应关系，每个FSceneRenderer拥有一个FMeshElementCollector。Collector通常拥有一组需要渲染的FMeshBatch列表，以及它们的管理数据和状态，在收集完对应View的可见MeshBatch后调用其AddMesh函数将MeshBatch加入当前View中。</p>
+<p>在MeshBatch收集的最后，需要对记录当前MeshBatch会被哪些MeshPass引用的PassMask进行设置，这个操作在FVisibilityTaskData::FinishGatherDynamicMeshElements中调用FVisibilityTaskData::SetupMeshPasses，然后再嵌套调用ComputeDynamicMeshRelevance完成PassMask.Set</p>
+<h5 id="fdeferredshadingscenerenderer"><a class="markdownIt-Anchor" href="#fdeferredshadingscenerenderer"></a> FDeferredShadingSceneRenderer</h5>
+<p>FDeferredShadingSceneRenderer与FMobileSceneRenderer的流程有些区别，其中没有InitViews函数，而是从BeginInitViews进入</p>
+<p>FDeferredShadingSceneRenderer::BeginInitViews --&gt;  FVisibilityTaskData::ProcessRenderThreadTasks --&gt; FVisibilityTaskData::GatherDynamicMeshElements</p>
+<p>FVisibilityTaskData::FinishGatherDynamicMeshElements --&gt; FVisibilityTaskData::SetupMeshPasses --&gt; ComputeDynamicMeshRelevance</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\DeferredShadingRenderer.cpp
+
+void FDeferredShadingSceneRenderer::Render(FRDGBuilder&amp; GraphBuilder)
+&#123;
+    (...)
+
+    &#123;
+        RDG_GPU_STAT_SCOPE(GraphBuilder, VisibilityCommands);
+        BeginInitViews(GraphBuilder, SceneTexturesConfig, InstanceCullingManager, ExternalAccessQueue, InitViewTaskDatas);
+    &#125;
+
+    (...)
+
+    InitViewTaskDatas.VisibilityTaskData-&gt;FinishGatherDynamicMeshElements(BasePassDepthStencilAccess, InstanceCullingManager, VirtualTextureUpdater.Get());
+
+    (...)
+&#125;
+
+void FDeferredShadingSceneRenderer::BeginInitViews(
+    FRDGBuilder&amp; GraphBuilder,
+    const FSceneTexturesConfig&amp; SceneTexturesConfig,
+    FInstanceCullingManager&amp; InstanceCullingManager,
+    FRDGExternalAccessQueue&amp; ExternalAccessQueue,
+    FInitViewTaskDatas&amp; TaskDatas)
+&#123;
+    (...)
+
+    TaskDatas.VisibilityTaskData-&gt;ProcessRenderThreadTasks();
+
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>FDeferredShadingSceneRenderer的入口与FMobileSceneRenderer不同，但是进入FVisibilityTaskData成员函数调用后就一致了，这里不再赘述。</p>
+<h2 id="生成meshdrawcommand"><a class="markdownIt-Anchor" href="#生成meshdrawcommand"></a> 生成MeshDrawCommand</h2>
+<h3 id="基本类型"><a class="markdownIt-Anchor" href="#基本类型"></a> 基本类型</h3>
+<h4 id="fmeshdrawcommand"><a class="markdownIt-Anchor" href="#fmeshdrawcommand"></a> FMeshDrawCommand</h4>
+<p>FMeshDrawCommand是FMeshBatch和RHI之间的接口，是由MeshPass特定的FMeshPassProcessor根据FMeshBatch创建的。</p>
+<p>FMeshDrawCommand是一种更加紧凑、更加简洁、更有利于CPU访问的数据结构，用于表示场景数据。它是一个完全无状态的绘制描述，存储了RHI需要知道的，关于网格体绘制的所有信息：</p>
+<ul>
+<li>要使用的着色器</li>
+<li>其资源绑定</li>
+<li>DrawCall参数</li>
+</ul>
+<p>这也就是在RHI级别之上进行缓存并合并DrawCall。</p>
+<h4 id="fmeshpassprocessor"><a class="markdownIt-Anchor" href="#fmeshpassprocessor"></a> FMeshPassProcessor</h4>
+<p>FMeshPassProcessor，负责将FMeshBatch转换为用于给定通道的网格体绘制命令。这是最终的绘制筛选发生的地方，会选择适当的着色器并收集着色器绑定。</p>
+<p>自定义MeshPassProcessor必须派生自FMeshPassProcessor，并且需要覆盖AddMeshBatch函数。AddMeshBatch进行的工作：</p>
+<ul>
+<li>绘制筛选。例如，如果一个材质具有半透明的绘制模式，那么就不应该在FDepthPassMeshProcessor中处理它。</li>
+<li>选择着色器和管道状态（深度/模具/混合状态）</li>
+<li>最后调用BuildMeshDrawCommands，为pass/material/vertex factory/primitive进行着色器绑定，并将新的绘制命令添加到相关列表中</li>
+</ul>
+<p>UE的ShaderBindings可以是UniformBuffers, Samplers, Textures, ShaderResourceViews, LooseParameters(FShaderParameter)。FMeshPassProcessor并不是将Shader Bindings随RHICmdList.SetShaderParameter一起直接发送到RHI，而只将它们记录到FMeshDrawSingleShaderBindings类中。BuildMeshDrawCommands函数在所有通道之间共享代码，它将在通道着色器上调用GetShaderBindings。</p>
+<p>FMeshPassProcessor常见的子类有：</p>
+<ul>
+<li>FDepthPassMeshProcessor：深度通道网格处理器，对应EMeshPass::DepthPass</li>
+<li>FBasePassMeshProcessor：几何通道网格处理器，对应EMeshPass::BasePass</li>
+<li>FCustomDepthPassMeshProcessor：自定义深度通道网格处理器，对应EMeshPass::CustomDepth</li>
+<li>FShadowDepthPassMeshProcessor：阴影通道网格处理器，对应EMeshPass::CSMShadowDepth</li>
+<li>FTranslucencyDepthPassMeshProcessor：透明深度通道网格处理器，没有对应的EMeshPass。</li>
+<li>FLightmapDensityMeshProcessor：光照图网格处理器，对应EMeshPass::LightmapDensity</li>
+</ul>
+<h4 id="fmeshdrawcommandpasssetuptask"><a class="markdownIt-Anchor" href="#fmeshdrawcommandpasssetuptask"></a> FMeshDrawCommandPassSetupTask</h4>
+<ul>
+<li>
+<p>FMeshDrawCommandPassSetupTask: 并行设置MeshDrawCommand的任务。包含动态网格绘制命令的生成、排序、合并等。</p>
+</li>
+<li>
+<p>FMeshDrawCommandPassSetupTaskContext: FMeshDrawCommandPassSetupTask所需的上下文，其中包含View相关的数据、MeshPassProcessor、命令相关的数据、需在渲染线程预分配的资源、透明物体排序所需的信息。</p>
+</li>
+<li>
+<p>FMeshDrawCommandInitResourcesTask: MeshDrawCommand所需的预分配资源</p>
+</li>
+</ul>
+<h3 id="fmeshbatch转换为fmeshdrawcommand"><a class="markdownIt-Anchor" href="#fmeshbatch转换为fmeshdrawcommand"></a> FMeshBatch转换为FMeshDrawCommand</h3>
+<h4 id="staticcached"><a class="markdownIt-Anchor" href="#staticcached"></a> Static/Cached</h4>
+<p>FScene::Update中在最后调用FPrimitiveSceneInfo::CacheMeshDrawCommands，生成MeshDrawCommand</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\PrimitiveSceneInfo.cpp
+
+void FPrimitiveSceneInfo::CacheMeshDrawCommands(FScene* Scene, TArrayView&lt;FPrimitiveSceneInfo*&gt; SceneInfos)
+&#123;
+    SCOPED_NAMED_EVENT(FPrimitiveSceneInfo_CacheMeshDrawCommands, FColor::Emerald);
+    CSV_SCOPED_TIMING_STAT_EXCLUSIVE(FPrimitiveSceneInfo_CacheMeshDrawCommands);
+
+    QUICK_SCOPE_CYCLE_COUNTER(STAT_CacheMeshDrawCommands);
+
+    &#x2F;&#x2F; 计数并行的线程数量
+    const int BATCH_SIZE &#x3D; WITH_EDITOR ? 1 : GMeshDrawCommandsBatchSize;
+    const int NumBatches &#x3D; (SceneInfos.Num() + BATCH_SIZE - 1) &#x2F; BATCH_SIZE;
+    &#x2F;&#x2F; 线程回调
+    auto DoWorkLambda &#x3D; [Scene, SceneInfos, BATCH_SIZE](FCachedPassMeshDrawListContext&amp; DrawListContext, int32 Index)
+    &#123;
+        SCOPED_NAMED_EVENT(FPrimitiveSceneInfo_CacheMeshDrawCommand, FColor::Green);
+
+        struct FMeshInfoAndIndex
+        &#123;
+            int32 InfoIndex;
+            int32 MeshIndex;
+        &#125;;
+
+        TArray&lt;FMeshInfoAndIndex, SceneRenderingAllocator&gt; MeshBatches;
+        MeshBatches.Reserve(3 * BATCH_SIZE);
+
+        &#x2F;&#x2F; 遍历当前线程的范围，逐个处理PrimitiveSceneInfo
+        int LocalNum &#x3D; FMath::Min((Index * BATCH_SIZE) + BATCH_SIZE, SceneInfos.Num());
+        for (int LocalIndex &#x3D; (Index * BATCH_SIZE); LocalIndex &lt; LocalNum; LocalIndex++)
+        &#123;
+            FPrimitiveSceneInfo* SceneInfo &#x3D; SceneInfos[LocalIndex];
+            check(SceneInfo-&gt;StaticMeshCommandInfos.Num() &#x3D;&#x3D; 0);
+            SceneInfo-&gt;StaticMeshCommandInfos.AddDefaulted(EMeshPass::Num * SceneInfo-&gt;StaticMeshes.Num());
+            FPrimitiveSceneProxy* SceneProxy &#x3D; SceneInfo-&gt;Proxy;
+
+            &#x2F;&#x2F; 体积透明阴影需要每帧更新，不能缓存
+            if (!SceneProxy-&gt;CastsVolumetricTranslucentShadow())
+            &#123;
+                &#x2F;&#x2F; 将PrimitiveSceneInfo的所有静态网格添加到MeshBatch列表
+                for (int32 MeshIndex &#x3D; 0; MeshIndex &lt; SceneInfo-&gt;StaticMeshes.Num(); MeshIndex++)
+                &#123;
+                    FStaticMeshBatch&amp; Mesh &#x3D; SceneInfo-&gt;StaticMeshes[MeshIndex];
+                    &#x2F;&#x2F; 检测是否支持缓存MeshDrawCommand
+                    if (SupportsCachingMeshDrawCommands(Mesh))
+                    &#123;
+                        MeshBatches.Add(FMeshInfoAndIndex&#123; LocalIndex, MeshIndex &#125;);
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+
+        &#x2F;&#x2F; 遍历所有MeshPass，将每个静态元素生成的MeshDrawCommand添加到对应Pass的缓存列表中
+        for (int32 PassIndex &#x3D; 0; PassIndex &lt; EMeshPass::Num; PassIndex++)
+        &#123;
+            const EShadingPath ShadingPath &#x3D; GetFeatureLevelShadingPath(Scene-&gt;GetFeatureLevel());
+            EMeshPass::Type PassType &#x3D; (EMeshPass::Type)PassIndex;
+
+            if ((FPassProcessorManager::GetPassFlags(ShadingPath, PassType) &amp; EMeshPassFlags::CachedMeshCommands) !&#x3D; EMeshPassFlags::None)
+            &#123;
+                &#x2F;&#x2F; 构建FCachedPassMeshDrawListContext
+                FCachedPassMeshDrawListContext::FMeshPassScope MeshPassScope(DrawListContext, PassType);
+                &#x2F;&#x2F; 创建Pass的FMeshPassProcessor
+                FMeshPassProcessor* PassMeshProcessor &#x3D; FPassProcessorManager::CreateMeshPassProcessor(ShadingPath, PassType, Scene-&gt;GetFeatureLevel(), Scene, nullptr, &amp;DrawListContext);
+
+                if (PassMeshProcessor !&#x3D; nullptr)
+                &#123;
+                    for (const FMeshInfoAndIndex&amp; MeshAndInfo : MeshBatches)
+                    &#123;
+                        FPrimitiveSceneInfo* SceneInfo &#x3D; SceneInfos[MeshAndInfo.InfoIndex];
+                        FStaticMeshBatch&amp; Mesh &#x3D; SceneInfo-&gt;StaticMeshes[MeshAndInfo.MeshIndex];
+
+                        FStaticMeshBatchRelevance&amp; MeshRelevance &#x3D; SceneInfo-&gt;StaticMeshRelevances[MeshAndInfo.MeshIndex];
+
+                        check(!MeshRelevance.CommandInfosMask.Get(PassType));
+
+                        uint64 BatchElementMask &#x3D; ~0ull;
+
+                        &#x2F;&#x2F; 添加MeshBatch到PassMeshProcessor，内部会将FMeshBatch转换到FMeshDrawCommand
+                        PassMeshProcessor-&gt;AddMeshBatch(Mesh, BatchElementMask, SceneInfo-&gt;Proxy);
+
+                        FCachedMeshDrawCommandInfo CommandInfo &#x3D; DrawListContext.GetCommandInfoAndReset();
+                        if (CommandInfo.CommandIndex !&#x3D; -1 || CommandInfo.StateBucketId !&#x3D; -1)
+                        &#123;
+                            static_assert(sizeof(MeshRelevance.CommandInfosMask) * 8 &gt;&#x3D; EMeshPass::Num, &quot;CommandInfosMask is too small to contain all mesh passes.&quot;);
+                            MeshRelevance.CommandInfosMask.Set(PassType);
+                            MeshRelevance.CommandInfosBase++;
+
+                            int CommandInfoIndex &#x3D; MeshAndInfo.MeshIndex * EMeshPass::Num + PassType;
+                            &#x2F;&#x2F; 将CommandInfo缓存到PrimitiveSceneInfo中
+                            FCachedMeshDrawCommandInfo&amp; CurrentCommandInfo &#x3D; SceneInfo-&gt;StaticMeshCommandInfos[CommandInfoIndex];
+                            checkf(CurrentCommandInfo.MeshPass &#x3D;&#x3D; EMeshPass::Num,
+                                TEXT(&quot;SceneInfo-&gt;StaticMeshCommandInfos[%d] is not expected to be initialized yet. MeshPass is %d, but expected EMeshPass::Num (%d).&quot;),
+                                CommandInfoIndex, (int32)EMeshPass::Num, CurrentCommandInfo.MeshPass);
+                            CurrentCommandInfo &#x3D; CommandInfo;
+                        &#125;
+                    &#125;
+                    &#x2F;&#x2F; 销毁FMeshPassProcessor
+                    delete PassMeshProcessor;
+                &#125;
+            &#125;
+        &#125;
+
+        (...)
+    &#125;;
+
+    &#x2F;&#x2F; 并行
+    bool bAnyLooseParameterBuffers &#x3D; false;
+    if (GMeshDrawCommandsCacheMultithreaded &amp;&amp; FApp::ShouldUseThreadingForPerformance())
+    &#123;
+        (...)
+
+        ParallelForTemplate(
+            NumBatches, 
+            [&amp;DrawListContexts, &amp;DoWorkLambda](int32 Index)
+            &#123;
+                FOptionalTaskTagScope Scope(ETaskTag::EParallelRenderingThread);
+                DoWorkLambda(DrawListContexts[Index], Index);
+            &#125;,
+            EParallelForFlags::Unbalanced
+        );
+
+        (...)
+    &#125;
+    &#x2F;&#x2F; 单线程
+    else
+    &#123;
+        (...)
+    &#125;
+
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="dynamic"><a class="markdownIt-Anchor" href="#dynamic"></a> Dynamic</h4>
+<p>在上一阶段，FVisibilityTaskData::SetupMeshPasses中，在ComputeDynamicMeshRelevance调用中完成了PassMask.Set。</p>
+<p>FVisibilityTaskData::SetupMeshPasses继续往下执行至最后，会调用FSceneRenderer::SetupMeshPass。</p>
+<p>在FSceneRenderer::SetupMeshPass中，会针对每个View，分别调用SetupMeshPass处理View对应的FMeshPassProcessor（FMobileSceneRenderer::InitViews中调用ProcessRenderThreadTasks完成MeshBatch创建后会继续调用FinishGatherDynamicMeshElements函数进行MeshDrawCommand的收集，在其中先调用调用了FVisibilityTaskData::SetupMeshPass函数，并在其中调用FSceneRenderer::SetupMeshPass）。</p>
+<p>FSceneRenderer::SetupMeshPass中进行的操作是：遍历每种MeshPass，创建对应的FMeshPassProcessor，而后获取指定Pass的FParallelMeshDrawCommandPass对象，使用FParallelMeshDrawCommandPass::DispatchPassSetup并行地处理Pass，创建此Pass的所有FMeshDrawCommand。其中，FParallelMeshDrawCommandPass对象是DispatchPassSetup传入的参数之一。</p>
+<p><img src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/DynamicMeshDrawCommand.png" alt="DynamicMeshDrawCommand" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/DynamicMeshDrawCommand.png" class="lozad post-image"></p>
+<p>需要注意的是，AddMeshBatch由FMeshPassProcessor子类各自实现，其中会完成GetShader（有些子类多封装了一个Process函数进行嵌套调用），并最后调用基类的BuildMeshDrawCommands函数（将MeshBatch, Material, Shader等作为参数传入），完成MeshDrawCommand的创建。</p>
+<p><img src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/MeshBatchToMeshDrawCommand.png" alt="MeshBatchToMeshDrawCommand" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/MeshBatchToMeshDrawCommand.png" class="lozad post-image"></p>
+<h4 id="meshdrawcommand-dispatch机制"><a class="markdownIt-Anchor" href="#meshdrawcommand-dispatch机制"></a> MeshDrawCommand Dispatch机制</h4>
+<p>需要注意的是，FSceneRenderer::SetupMeshPass中遍历了所有EMeshPass枚举类型，也正是在此时完成了对于不同MeshPass的Dispatch。具体而言，针对不同的MeshPass，创建其对应的MeshPassProcessor，并获取当前MeshPass对应的FParallelMeshDrawCommandPass对象，最后调用FParallelMeshDrawCommandPass对象的DispatchPassSetup方法（MeshPass类型和对应的MeshPassProcessor都是需要传入的参数），完成对不同MeshPass对应的MeshDrawCommand的分发。</p>
+<h4 id="重要函数"><a class="markdownIt-Anchor" href="#重要函数"></a> <em>重要函数</em></h4>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneVisibility.cpp
+
+void FVisibilityTaskData::FinishGatherDynamicMeshElements(FExclusiveDepthStencil::Type BasePassDepthStencilAccess, FInstanceCullingManager&amp; InstanceCullingManager, FVirtualTextureUpdater* VirtualTextureUpdater)
+&#123;
+    (...)
+    Tasks.MeshPassSetup &#x3D; UE::Tasks::Launch(UE_SOURCE_LOCATION, [this, BasePassDepthStencilAccess, &amp;InstanceCullingManager]
+    &#123;
+        FOptionalTaskTagScope Scope(ETaskTag::EParallelRenderingThread);
+        SetupMeshPasses(BasePassDepthStencilAccess, InstanceCullingManager);
+    &#125;, TaskConfig.TaskPriority);
+
+    FSceneRenderer::DynamicReadBufferForInitViews.Commit(RHICmdList);
+&#125;
+
+void FVisibilityTaskData::SetupMeshPasses(FExclusiveDepthStencil::Type BasePassDepthStencilAccess, FInstanceCullingManager&amp; InstanceCullingManager)
+&#123;
+    (...)
+    for (int32 ViewIndex &#x3D; 0; ViewIndex &lt; Views.Num(); ViewIndex++)
+    &#123;
+        (...)
+        SceneRenderer.SetupMeshPass(View, BasePassDepthStencilAccess, ViewCommands, InstanceCullingManager);
+    &#125;
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneRendering.cpp
+
+void FSceneRenderer::SetupMeshPass(FViewInfo&amp; View, FExclusiveDepthStencil::Type BasePassDepthStencilAccess, FViewCommands&amp; ViewCommands, FInstanceCullingManager&amp; InstanceCullingManager)
+&#123;
+    (...)
+
+    for (int32 PassIndex &#x3D; 0; PassIndex &lt; EMeshPass::Num; PassIndex++)
+    &#123;
+        const EMeshPass::Type PassType &#x3D; (EMeshPass::Type)PassIndex;
+
+        if ((FPassProcessorManager::GetPassFlags(ShadingPath, PassType) &amp; EMeshPassFlags::MainView) !&#x3D; EMeshPassFlags::None)
+        &#123;
+            &#x2F;&#x2F; Mobile: BasePass and MobileBasePassCSM lists need to be merged and sorted after shadow pass.
+            if (ShadingPath &#x3D;&#x3D; EShadingPath::Mobile &amp;&amp; (PassType &#x3D;&#x3D; EMeshPass::BasePass || PassType &#x3D;&#x3D; EMeshPass::MobileBasePassCSM))
+            &#123;
+                continue;
+            &#125;
+
+            if (ViewFamily.UseDebugViewPS() &amp;&amp; ShadingPath &#x3D;&#x3D; EShadingPath::Deferred)
+            &#123;
+                switch (PassType)
+                &#123;
+                    (...)
+                &#125;
+            &#125;
+
+            FMeshPassProcessor* MeshPassProcessor &#x3D; FPassProcessorManager::CreateMeshPassProcessor(ShadingPath, PassType, Scene-&gt;GetFeatureLevel(), Scene, &amp;View, nullptr);
+
+            FParallelMeshDrawCommandPass&amp; Pass &#x3D; View.ParallelMeshDrawCommandPasses[PassIndex];
+
+            if (ShouldDumpMeshDrawCommandInstancingStats())
+            &#123;
+                Pass.SetDumpInstancingStats(GetMeshPassName(PassType));
+            &#125;
+
+            (...)
+
+            FName PassName(GetMeshPassName(PassType));
+            Pass.DispatchPassSetup(
+                Scene,
+                View,
+                FInstanceCullingContext(PassName, ShaderPlatform, &amp;InstanceCullingManager, ViewIds, View.PrevViewInfo.HZB, InstanceCullingMode, CullingFlags),
+                PassType,
+                BasePassDepthStencilAccess,
+                MeshPassProcessor,
+                View.DynamicMeshElements,
+                &amp;View.DynamicMeshElementsPassRelevance,
+                View.NumVisibleDynamicMeshElements[PassType],
+                ViewCommands.DynamicMeshCommandBuildRequests[PassType],
+                ViewCommands.DynamicMeshCommandBuildFlags[PassType],
+                ViewCommands.NumDynamicMeshCommandBuildRequestElements[PassType],
+                ViewCommands.MeshCommands[PassIndex]);
+        &#125;
+    &#125;
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MeshDrawCommands.cpp
+
+void FParallelMeshDrawCommandPass::DispatchPassSetup(
+    FScene* Scene,
+    const FViewInfo&amp; View,
+    FInstanceCullingContext&amp;&amp; InstanceCullingContext,
+    EMeshPass::Type PassType,
+    FExclusiveDepthStencil::Type BasePassDepthStencilAccess,
+    FMeshPassProcessor* MeshPassProcessor,
+    const TArray&lt;FMeshBatchAndRelevance, SceneRenderingAllocator&gt;&amp; DynamicMeshElements,
+    const TArray&lt;FMeshPassMask, SceneRenderingAllocator&gt;* DynamicMeshElementsPassRelevance,
+    int32 NumDynamicMeshElements,
+    TArray&lt;const FStaticMeshBatch*, SceneRenderingAllocator&gt;&amp; InOutDynamicMeshCommandBuildRequests,
+    TArray&lt;EMeshDrawCommandCullingPayloadFlags, SceneRenderingAllocator&gt; InOutDynamicMeshCommandBuildFlags,
+    int32 NumDynamicMeshCommandBuildRequestElements,
+    FMeshCommandOneFrameArray&amp; InOutMeshDrawCommands,
+    FMeshPassProcessor* MobileBasePassCSMMeshPassProcessor,
+    FMeshCommandOneFrameArray* InOutMobileBasePassCSMMeshDrawCommands
+)
+&#123;
+    TRACE_CPUPROFILER_EVENT_SCOPE(ParallelMdcDispatchPassSetup);
+    check(!TaskEventRef.IsValid() &amp;&amp; MeshPassProcessor !&#x3D; nullptr &amp;&amp; TaskContext.PrimitiveIdBufferData &#x3D;&#x3D; nullptr);
+    check((PassType &#x3D;&#x3D; EMeshPass::Num) &#x3D;&#x3D; (DynamicMeshElementsPassRelevance &#x3D;&#x3D; nullptr));
+
+    MaxNumDraws &#x3D; InOutMeshDrawCommands.Num() + NumDynamicMeshElements + NumDynamicMeshCommandBuildRequestElements;
+
+    &#x2F;&#x2F; 设置TaskContext的数据，收集生成MeshCommand所需的数据。
+    (...)
+
+    &#x2F;&#x2F; Only apply instancing for ISR to main view passes
+
+    const bool bIsMainViewPass &#x3D; PassType !&#x3D; EMeshPass::Num &amp;&amp; (FPassProcessorManager::GetPassFlags(TaskContext.ShadingPath, TaskContext.PassType) &amp; EMeshPassFlags::MainView) !&#x3D; EMeshPassFlags::None;
+    &#x2F;&#x2F; GPUCULL_TODO: Note the InstanceFactor is ignored by the GPU-Scene supported instances, but is used for legacy primitives.
+    TaskContext.InstanceFactor &#x3D; (bIsMainViewPass &amp;&amp; View.IsInstancedStereoPass()) ? 2 : 1;
+
+    TaskContext.InstanceCullingContext &#x3D; MoveTemp(InstanceCullingContext); 
+
+    &#x2F;&#x2F; 设置基于view的透明排序键
+    (...)
+
+    switch (PassType)
+    &#123;
+        case EMeshPass::TranslucencyStandard: TaskContext.TranslucencyPass &#x3D; ETranslucencyPass::TPT_TranslucencyStandard; break;
+        case EMeshPass::TranslucencyStandardModulate: TaskContext.TranslucencyPass &#x3D; ETranslucencyPass::TPT_TranslucencyStandardModulate; break;
+        case EMeshPass::TranslucencyAfterDOF: TaskContext.TranslucencyPass &#x3D; ETranslucencyPass::TPT_TranslucencyAfterDOF; break;
+        case EMeshPass::TranslucencyAfterDOFModulate: TaskContext.TranslucencyPass &#x3D; ETranslucencyPass::TPT_TranslucencyAfterDOFModulate; break;
+        case EMeshPass::TranslucencyAfterMotionBlur: TaskContext.TranslucencyPass &#x3D; ETranslucencyPass::TPT_TranslucencyAfterMotionBlur; break;
+        case EMeshPass::TranslucencyAll: TaskContext.TranslucencyPass &#x3D; ETranslucencyPass::TPT_AllTranslucency; break;
+    &#125;
+
+    &#x2F;&#x2F; 交换命令列表
+    (...)
+
+    if (MaxNumDraws &gt; 0)
+    &#123;
+        &#x2F;&#x2F; 根据最大绘制数量(MaxNumDraws)在渲染线程预分配资源.
+        (...)
+
+        &#x2F;&#x2F; 如果是并行方式, 便创建并行任务实例并加入TaskGraph系统执行.
+        if (bExecuteInParallel)
+        &#123;
+            if (IsOnDemandShaderCreationEnabled())
+            &#123;
+                TaskEventRef &#x3D; TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask().ConstructAndDispatchWhenReady(TaskContext);
+            &#125;
+            else
+            &#123;
+                FGraphEventArray DependentGraphEvents;
+                DependentGraphEvents.Add(TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask().ConstructAndDispatchWhenReady(TaskContext));
+                TaskEventRef &#x3D; TGraphTask&lt;FMeshDrawCommandInitResourcesTask&gt;::CreateTask(&amp;DependentGraphEvents).ConstructAndDispatchWhenReady(TaskContext);
+            &#125;
+        &#125;
+        else
+        &#123;
+            QUICK_SCOPE_CYCLE_COUNTER(STAT_MeshPassSetupImmediate);
+            FMeshDrawCommandPassSetupTask Task(TaskContext);
+            Task.AnyThreadTask();
+            if (!IsOnDemandShaderCreationEnabled())
+            &#123;
+                FMeshDrawCommandInitResourcesTask DependentTask(TaskContext);
+                DependentTask.AnyThreadTask();
+            &#125;
+        &#125;
+        (...)
+    &#125;
+&#125;
+
+class FMeshDrawCommandPassSetupTask
+&#123;
+public:
+    (...)
+
+    void AnyThreadTask()
+    &#123;
+        (...)
+
+        if (bMobileShadingBasePass)
+        &#123;
+            MergeMobileBasePassMeshDrawCommands(
+                Context.View-&gt;MobileCSMVisibilityInfo,
+                Context.PrimitiveBounds-&gt;Num(),
+                Context.MeshDrawCommands,
+                Context.MobileBasePassCSMMeshDrawCommands
+            );
+
+            GenerateMobileBasePassDynamicMeshDrawCommands(
+                *Context.View,
+                Context.ShadingPath,
+                Context.PassType,
+                Context.MeshPassProcessor,
+                Context.MobileBasePassCSMMeshPassProcessor,
+                *Context.DynamicMeshElements,
+                Context.DynamicMeshElementsPassRelevance,
+                Context.NumDynamicMeshElements,
+                Context.DynamicMeshCommandBuildRequests,
+                Context.DynamicMeshCommandBuildFlags,
+                Context.NumDynamicMeshCommandBuildRequestElements,
+                Context.MeshDrawCommands,
+                Context.MeshDrawCommandStorage,
+                Context.MinimalPipelineStatePassSet,
+                Context.NeedsShaderInitialisation
+            );
+        &#125;
+        else
+        &#123;
+            GenerateDynamicMeshDrawCommands(
+                *Context.View,
+                Context.ShadingPath,
+                Context.PassType,
+                Context.MeshPassProcessor,
+                *Context.DynamicMeshElements,
+                Context.DynamicMeshElementsPassRelevance,
+                Context.NumDynamicMeshElements,
+                Context.DynamicMeshCommandBuildRequests,
+                Context.DynamicMeshCommandBuildFlags,
+                Context.NumDynamicMeshCommandBuildRequestElements,
+                Context.MeshDrawCommands,
+                Context.MeshDrawCommandStorage,
+                Context.MinimalPipelineStatePassSet,
+                Context.NeedsShaderInitialisation
+            );
+        &#125;
+
+        if (Context.MeshDrawCommands.Num() &gt; 0)
+        &#123;
+            if (Context.PassType !&#x3D; EMeshPass::Num)
+            &#123;
+                ApplyViewOverridesToMeshDrawCommands(
+                    Context.ShadingPath,
+                    Context.PassType,
+                    Context.bReverseCulling,
+                    Context.bRenderSceneTwoSided,
+                    Context.BasePassDepthStencilAccess,
+                    Context.DefaultBasePassDepthStencilAccess,
+                    Context.MeshDrawCommands,
+                    Context.MeshDrawCommandStorage,
+                    Context.MinimalPipelineStatePassSet,
+                    Context.NeedsShaderInitialisation,
+                    Context.TempVisibleMeshDrawCommands
+                );
+            &#125;
+
+            &#x2F;&#x2F; Update sort keys.
+            if (bNeedsUpdateMobilePassMeshSortKeys)
+            &#123;
+                UpdateMobilePassMeshSortKeys(
+                    Context.ViewOrigin,
+                    *Context.PrimitiveBounds,
+                    Context.MeshDrawCommands
+                    );
+            &#125;
+            else if (Context.TranslucencyPass !&#x3D; ETranslucencyPass::TPT_MAX)
+            &#123;
+                (...)
+            &#125;
+
+            &#123;
+                QUICK_SCOPE_CYCLE_COUNTER(STAT_SortVisibleMeshDrawCommands);
+                Context.MeshDrawCommands.Sort(FCompareFMeshDrawCommands());
+            &#125;
+
+            if (Context.bUseGPUScene)
+            &#123;
+                Context.InstanceCullingContext.SetupDrawCommands(
+                    Context.MeshDrawCommands, 
+                    true, 
+                    Context.Scene,
+                    Context.MaxInstances, 
+                    Context.VisibleMeshDrawCommandsNum, 
+                    Context.NewPassVisibleMeshDrawCommandsNum);
+
+                CollectMeshDrawCommandPassStats(Context.MeshDrawCommands, Context.InstanceCullingContext);
+            &#125;
+        &#125;
+    &#125;
+
+    (...)
+&#125;
+
+void GenerateDynamicMeshDrawCommands(
+    const FViewInfo&amp; View,
+    EShadingPath ShadingPath,
+    EMeshPass::Type PassType,
+    FMeshPassProcessor* PassMeshProcessor,
+    const TArray&lt;FMeshBatchAndRelevance, SceneRenderingAllocator&gt;&amp; DynamicMeshElements,
+    const TArray&lt;FMeshPassMask, SceneRenderingAllocator&gt;* DynamicMeshElementsPassRelevance,
+    int32 MaxNumDynamicMeshElements,
+    const TArray&lt;const FStaticMeshBatch*, SceneRenderingAllocator&gt;&amp; DynamicMeshCommandBuildRequests,
+    const TArray&lt;EMeshDrawCommandCullingPayloadFlags, SceneRenderingAllocator&gt; DynamicMeshCommandBuildFlags,
+    int32 MaxNumBuildRequestElements,
+    FMeshCommandOneFrameArray&amp; VisibleCommands,
+    FDynamicMeshDrawCommandStorage&amp; MeshDrawCommandStorage,
+    FGraphicsMinimalPipelineStateSet&amp; MinimalPipelineStatePassSet,
+    bool&amp; NeedsShaderInitialisation
+)
+&#123;
+    (...)
+
+    &#123;
+        const int32 NumCommandsBefore &#x3D; VisibleCommands.Num();
+        const int32 NumDynamicMeshBatches &#x3D; DynamicMeshElements.Num();
+
+        for (int32 MeshIndex &#x3D; 0; MeshIndex &lt; NumDynamicMeshBatches; MeshIndex++)
+        &#123;
+            if (!DynamicMeshElementsPassRelevance || (*DynamicMeshElementsPassRelevance)[MeshIndex].Get(PassType))
+            &#123;
+                const FMeshBatchAndRelevance&amp; MeshAndRelevance &#x3D; DynamicMeshElements[MeshIndex];
+                const uint64 BatchElementMask &#x3D; ~0ull;
+
+                PassMeshProcessor-&gt;AddMeshBatch(*MeshAndRelevance.Mesh, BatchElementMask, MeshAndRelevance.PrimitiveSceneProxy);
+            &#125;
+        &#125;
+
+        const int32 NumCommandsGenerated &#x3D; VisibleCommands.Num() - NumCommandsBefore;
+        checkf(NumCommandsGenerated &lt;&#x3D; MaxNumDynamicMeshElements,
+            TEXT(&quot;Generated %d mesh draw commands for DynamicMeshElements, while preallocating resources only for %d of them.&quot;), NumCommandsGenerated, MaxNumDynamicMeshElements);
+    &#125;
+
+    &#123;
+        const int32 NumCommandsBefore &#x3D; VisibleCommands.Num();
+        const int32 NumStaticMeshBatches &#x3D; DynamicMeshCommandBuildRequests.Num();
+
+        for (int32 MeshIndex &#x3D; 0; MeshIndex &lt; NumStaticMeshBatches; MeshIndex++)
+        &#123;
+            const FStaticMeshBatch* StaticMeshBatch &#x3D; DynamicMeshCommandBuildRequests[MeshIndex];
+            const uint64 DefaultBatchElementMask &#x3D; ~0ul;
+            const int32 StartCommandIndex &#x3D; VisibleCommands.Num();
+
+            if (StaticMeshBatch-&gt;bViewDependentArguments)
+            &#123;
+                FMeshBatch ViewDepenedentMeshBatch(*StaticMeshBatch);
+                StaticMeshBatch-&gt;PrimitiveSceneInfo-&gt;Proxy-&gt;ApplyViewDependentMeshArguments(View, ViewDepenedentMeshBatch);
+                PassMeshProcessor-&gt;AddMeshBatch(ViewDepenedentMeshBatch, DefaultBatchElementMask, StaticMeshBatch-&gt;PrimitiveSceneInfo-&gt;Proxy, StaticMeshBatch-&gt;Id);
+            &#125;
+            else
+            &#123;
+                PassMeshProcessor-&gt;AddMeshBatch(*StaticMeshBatch, DefaultBatchElementMask, StaticMeshBatch-&gt;PrimitiveSceneInfo-&gt;Proxy, StaticMeshBatch-&gt;Id);
+            &#125;
+
+            &#x2F;&#x2F; Patch the culling payload flags for the generated visible mesh commands.
+            &#x2F;&#x2F; Might be better to pass CullingPayloadFlags through AddMeshBatch() but that will involve a lot of plumbing.
+            const EMeshDrawCommandCullingPayloadFlags CullingPayloadFlags &#x3D; DynamicMeshCommandBuildFlags.IsValidIndex(MeshIndex) ? DynamicMeshCommandBuildFlags[MeshIndex] : EMeshDrawCommandCullingPayloadFlags::NoScreenSizeCull;
+            if (CullingPayloadFlags !&#x3D; EMeshDrawCommandCullingPayloadFlags::NoScreenSizeCull)
+            &#123;
+                const int32 EndCommandIndex &#x3D; VisibleCommands.Num();
+                for (int32 CommandIndex &#x3D; StartCommandIndex; CommandIndex &lt; EndCommandIndex; ++CommandIndex)
+                &#123;
+                    VisibleCommands[CommandIndex].CullingPayloadFlags &#x3D; CullingPayloadFlags;
+                &#125;
+            &#125;
+        &#125;
+
+        const int32 NumCommandsGenerated &#x3D; VisibleCommands.Num() - NumCommandsBefore;
+        checkf(NumCommandsGenerated &lt;&#x3D; MaxNumBuildRequestElements,
+            TEXT(&quot;Generated %d mesh draw commands for DynamicMeshCommandBuildRequests, while preallocating resources only for %d of them.&quot;), NumCommandsGenerated, MaxNumBuildRequestElements);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="生成rhicommandlist"><a class="markdownIt-Anchor" href="#生成rhicommandlist"></a> 生成RHICommandList</h2>
+<p>FMeshBatch转换成FMeshDrawCommand后，每个Pass都对应了一个FMeshPassProcessor，每个FMeshPassProcessor保存了该Pass需要绘制的所有FMeshDrawCommand，以便渲染器在合适的时间触发并渲染。</p>
+<p>以DeferredShadingRenderer的深度Pass为例<br>
+FDeferredShadingSceneRenderer::Render --&gt; FDeferredShadingSceneRenderer::RenderPrePass --&gt; FParallelMeshDrawCommandPass::DispatchDraw --&gt; FDrawVisibleMeshCommandsAnyThreadTask::DoTask --&gt; FInstanceCullingContext::SubmitDrawCommands</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\DeferredShadingRenderer.cpp
+
+void FDeferredShadingSceneRenderer::Render(FRDGBuilder&amp; GraphBuilder)
+&#123;
+    (...)
+
+    auto RenderPrepassAndVelocity &#x3D; [&amp;](auto&amp; InViews, auto&amp; InNaniteBasePassVisibility, auto&amp; NaniteRasterResults, auto&amp; PrimaryNaniteViews)
+    &#123;
+        FRDGTextureRef FirstStageDepthBuffer &#x3D; nullptr;
+        &#123;
+            (...)
+
+            &#x2F;&#x2F; Draw the scene pre-pass &#x2F; early z pass, populating the scene depth buffer and HiZ
+            if (bNeedsPrePass)
+            &#123;
+                RenderPrePass(GraphBuilder, InViews, SceneTextures.Depth.Target, InstanceCullingManager, &amp;FirstStageDepthBuffer);
+            &#125;
+            else
+            &#123;
+                &#x2F;&#x2F; We didn&#39;t do the prepass, but we still want the HMD mask if there is one
+                RenderPrePassHMD(GraphBuilder, InViews, SceneTextures.Depth.Target);
+            &#125;
+            (...)
+        &#125;
+
+        (...)
+    &#125;;
+
+    (...)
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\DepthRendering.cpp
+
+void FDeferredShadingSceneRenderer::RenderPrePass(FRDGBuilder&amp; GraphBuilder, TArrayView&lt;FViewInfo&gt; InViews, FRDGTextureRef SceneDepthTexture, FInstanceCullingManager&amp; InstanceCullingManager, FRDGTextureRef* FirstStageDepthBuffer)
+&#123;
+    (...)
+
+    const bool bParallelDepthPass &#x3D; GRHICommandList.UseParallelAlgorithms() &amp;&amp; CVarParallelPrePass.GetValueOnRenderThread();
+
+    (...)
+
+    auto RenderDepthPass &#x3D; [&amp;](uint8 DepthMeshPass)
+    &#123;
+        check(DepthMeshPass &#x3D;&#x3D; EMeshPass::DepthPass || DepthMeshPass &#x3D;&#x3D; EMeshPass::SecondStageDepthPass);
+        const bool bSecondStageDepthPass &#x3D; DepthMeshPass &#x3D;&#x3D; EMeshPass::SecondStageDepthPass;
+
+        if (bParallelDepthPass)
+        &#123;
+            RDG_WAIT_FOR_TASKS_CONDITIONAL(GraphBuilder, IsDepthPassWaitForTasksEnabled());
+
+            &#x2F;&#x2F; 遍历所有view，每个view都渲染一次深度Pass
+            for (int32 ViewIndex &#x3D; 0; ViewIndex &lt; InViews.Num(); ++ViewIndex)
+            &#123;
+                FViewInfo&amp; View &#x3D; InViews[ViewIndex];
+
+                &#x2F;&#x2F; 处理深度Pass的渲染资源和状态。
+                RDG_GPU_MASK_SCOPE(GraphBuilder, View.GPUMask);
+                RDG_EVENT_SCOPE_CONDITIONAL(GraphBuilder, InViews.Num() &gt; 1, &quot;View%d&quot;, ViewIndex);
+
+                FMeshPassProcessorRenderState DrawRenderState;
+                SetupDepthPassState(DrawRenderState);
+
+                const bool bShouldRenderView &#x3D; View.ShouldRenderView() &amp;&amp; (bSecondStageDepthPass ? View.bUsesSecondStageDepthPass : true);
+                if (bShouldRenderView)
+                &#123;
+                    View.BeginRenderView();
+
+                    FDepthPassParameters* PassParameters &#x3D; GetDepthPassParameters(GraphBuilder, View, SceneDepthTexture);
+                    View.ParallelMeshDrawCommandPasses[DepthMeshPass].BuildRenderingCommands(GraphBuilder, Scene-&gt;GPUScene, PassParameters-&gt;InstanceCullingDrawParams);
+
+                    GraphBuilder.AddPass(
+                        bSecondStageDepthPass ? RDG_EVENT_NAME(&quot;SecondStageDepthPassParallel&quot;) : RDG_EVENT_NAME(&quot;DepthPassParallel&quot;),
+                        PassParameters,
+                        ERDGPassFlags::Raster | ERDGPassFlags::SkipRenderPass,
+                        [this, &amp;View, PassParameters, DepthMeshPass](const FRDGPass* InPass, FRHICommandListImmediate&amp; RHICmdList)
+                    &#123;
+                        &#x2F;&#x2F; 构造绘制指令存储容器
+                        FRDGParallelCommandListSet ParallelCommandListSet(InPass, RHICmdList, GET_STATID(STAT_CLP_Prepass), View, FParallelCommandListBindings(PassParameters));
+                        ParallelCommandListSet.SetHighPriority();
+                        &#x2F;&#x2F; 触发并行绘制
+                        View.ParallelMeshDrawCommandPasses[DepthMeshPass].DispatchDraw(&amp;ParallelCommandListSet, RHICmdList, &amp;PassParameters-&gt;InstanceCullingDrawParams);
+                    &#125;);
+
+                    RenderPrePassEditorPrimitives(GraphBuilder, View, PassParameters, DrawRenderState, DepthPass.EarlyZPassMode, InstanceCullingManager);
+                &#125;
+            &#125;
+        &#125;
+        else
+        &#123;
+            for (int32 ViewIndex &#x3D; 0; ViewIndex &lt; InViews.Num(); ++ViewIndex)
+            &#123;
+                FViewInfo&amp; View &#x3D; InViews[ViewIndex];
+                RDG_GPU_MASK_SCOPE(GraphBuilder, View.GPUMask);
+                RDG_EVENT_SCOPE_CONDITIONAL(GraphBuilder, InViews.Num() &gt; 1, &quot;View%d&quot;, ViewIndex);
+
+                FMeshPassProcessorRenderState DrawRenderState;
+                SetupDepthPassState(DrawRenderState);
+
+                const bool bShouldRenderView &#x3D; View.ShouldRenderView() &amp;&amp; (bSecondStageDepthPass ? View.bUsesSecondStageDepthPass : true);
+                if (bShouldRenderView)
+                &#123;
+                    View.BeginRenderView();
+
+                    FDepthPassParameters* PassParameters &#x3D; GetDepthPassParameters(GraphBuilder, View, SceneDepthTexture);
+                    View.ParallelMeshDrawCommandPasses[DepthMeshPass].BuildRenderingCommands(GraphBuilder, Scene-&gt;GPUScene, PassParameters-&gt;InstanceCullingDrawParams);
+
+                    GraphBuilder.AddPass(
+                        bSecondStageDepthPass ? RDG_EVENT_NAME(&quot;SecondStageDepthPass&quot;) : RDG_EVENT_NAME(&quot;DepthPass&quot;),
+                        PassParameters,
+                        ERDGPassFlags::Raster,
+                        [this, &amp;View, PassParameters, DepthMeshPass](FRHICommandList&amp; RHICmdList)
+                    &#123;
+                        SetStereoViewport(RHICmdList, View, 1.0f);
+                        View.ParallelMeshDrawCommandPasses[DepthMeshPass].DispatchDraw(nullptr, RHICmdList, &amp;PassParameters-&gt;InstanceCullingDrawParams);
+                    &#125;);
+
+                    RenderPrePassEditorPrimitives(GraphBuilder, View, PassParameters, DrawRenderState, DepthPass.EarlyZPassMode, InstanceCullingManager);
+                &#125;
+            &#125;
+        &#125;
+    &#125;;
+
+    (...)
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MeshDrawCommands.cpp
+
+void FParallelMeshDrawCommandPass::DispatchDraw(FParallelCommandListSet* ParallelCommandListSet, FRHICommandList&amp; RHICmdList, const FInstanceCullingDrawParams* InstanceCullingDrawParams) const
+&#123;
+    (...)
+
+    if (ParallelCommandListSet)
+    &#123;
+        const ENamedThreads::Type RenderThread &#x3D; ENamedThreads::GetRenderThread();
+
+        &#x2F;&#x2F; 处理前序任务
+        FGraphEventArray Prereqs;
+        if (ParallelCommandListSet-&gt;GetPrereqs())
+        &#123;
+            Prereqs.Append(*ParallelCommandListSet-&gt;GetPrereqs());
+        &#125;
+        if (TaskEventRef.IsValid())
+        &#123;
+            Prereqs.Add(TaskEventRef);
+        &#125;
+
+        &#x2F;&#x2F; 构造与工作线程数量相同的并行绘制任务数
+        const int32 NumThreads &#x3D; FMath::Min&lt;int32&gt;(FTaskGraphInterface::Get().GetNumWorkerThreads(), ParallelCommandListSet-&gt;Width);
+        const int32 NumTasks &#x3D; FMath::Min&lt;int32&gt;(NumThreads, FMath::DivideAndRoundUp(MaxNumDraws, ParallelCommandListSet-&gt;MinDrawsPerCommandList));
+        const int32 NumDrawsPerTask &#x3D; FMath::DivideAndRoundUp(MaxNumDraws, NumTasks);
+
+        &#x2F;&#x2F; 遍历NumTasks次，构造NumTasks个绘制任务（FDrawVisibleMeshCommandsAnyThreadTask）实例
+        for (int32 TaskIndex &#x3D; 0; TaskIndex &lt; NumTasks; TaskIndex++)
+        &#123;
+            const int32 StartIndex &#x3D; TaskIndex * NumDrawsPerTask;
+            const int32 NumDraws &#x3D; FMath::Min(NumDrawsPerTask, MaxNumDraws - StartIndex);
+            checkSlow(NumDraws &gt; 0);
+
+            FRHICommandList* CmdList &#x3D; ParallelCommandListSet-&gt;NewParallelCommandList();
+
+            &#x2F;&#x2F; 构造FDrawVisibleMeshCommandsAnyThreadTask实例并加入TaskGraph中
+            &#x2F;&#x2F; 其中TaskContext.MeshDrawCommands就是上一部分由FMeshPassProcessor生成的
+            FGraphEventRef AnyThreadCompletionEvent &#x3D; TGraphTask&lt;FDrawVisibleMeshCommandsAnyThreadTask&gt;::CreateTask(&amp;Prereqs, RenderThread)
+                .ConstructAndDispatchWhenReady(*CmdList, TaskContext.InstanceCullingContext, TaskContext.MeshDrawCommands, TaskContext.MinimalPipelineStatePassSet,
+                    OverrideArgs,
+                    TaskContext.InstanceFactor,
+                    TaskIndex, NumTasks);
+
+            &#x2F;&#x2F; 将事件加入ParallelCommandListSet，以便追踪深度Pass的并行绘制是否完成。
+            ParallelCommandListSet-&gt;AddParallelCommandList(CmdList, AnyThreadCompletionEvent, NumDraws);
+        &#125;
+    &#125;
+    else
+    &#123;
+        (...)
+    &#125;
+&#125;
+
+class FDrawVisibleMeshCommandsAnyThreadTask : public FRenderTask
+&#123;
+    FRHICommandList&amp; RHICmdList;
+    const FInstanceCullingContext&amp; InstanceCullingContext;
+    const FMeshCommandOneFrameArray&amp; VisibleMeshDrawCommands;
+    const FGraphicsMinimalPipelineStateSet&amp; GraphicsMinimalPipelineStateSet;
+    const FMeshDrawCommandOverrideArgs OverrideArgs;
+    uint32 InstanceFactor;
+    int32 TaskIndex;
+    int32 TaskNum;
+
+    public:
+    (...)
+
+    void DoTask(ENamedThreads::Type CurrentThread, const FGraphEventRef&amp; MyCompletionGraphEvent)
+    &#123;
+        FOptionalTaskTagScope Scope(ETaskTag::EParallelRenderingThread);
+        SCOPED_NAMED_EVENT_TEXT(&quot;DrawVisibleMeshCommandsAnyThreadTask&quot;, FColor::Magenta);
+        checkSlow(RHICmdList.IsInsideRenderPass());
+
+        &#x2F;&#x2F; 计算绘制的范围
+        const int32 DrawNum &#x3D; VisibleMeshDrawCommands.Num();
+        const int32 NumDrawsPerTask &#x3D; TaskIndex &lt; DrawNum ? FMath::DivideAndRoundUp(DrawNum, TaskNum) : 0;
+        const int32 StartIndex &#x3D; TaskIndex * NumDrawsPerTask;
+        const int32 NumDraws &#x3D; FMath::Min(NumDrawsPerTask, DrawNum - StartIndex);
+
+        &#x2F;&#x2F; 将绘制所需的数据传递到绘制接口
+        InstanceCullingContext.SubmitDrawCommands(
+            VisibleMeshDrawCommands,
+            GraphicsMinimalPipelineStateSet,
+            OverrideArgs,
+            StartIndex,
+            NumDraws,
+            InstanceFactor,
+            RHICmdList);
+        RHICmdList.EndRenderPass();
+        RHICmdList.FinishRecording();
+    &#125;
+&#125;;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\InstanceCulling\InstanceCullingContext.cpp
+
+void FInstanceCullingContext::SubmitDrawCommands(
+    const FMeshCommandOneFrameArray&amp; VisibleMeshDrawCommands,
+    const FGraphicsMinimalPipelineStateSet&amp; GraphicsMinimalPipelineStateSet,
+    const FMeshDrawCommandOverrideArgs&amp; OverrideArgs,
+    int32 StartIndex,
+    int32 NumMeshDrawCommands,
+    uint32 InInstanceFactor,
+    FRHICommandList&amp; RHICmdList) const
+&#123;
+    (...)
+
+    if (IsEnabled())
+    &#123;
+        (...)
+
+        &#x2F;&#x2F; 遍历给定范围的绘制指令，一个一个提交。
+        for (int32 DrawCommandIndex &#x3D; StartIndex; DrawCommandIndex &lt; StartIndex + NumMeshDrawCommands; DrawCommandIndex++)
+        &#123;
+            (...)
+            
+            SceneArgs.PrimitiveIdOffset &#x3D; OverrideArgs.InstanceDataByteOffset + DrawCommandInfo.InstanceDataByteOffset;
+            &#x2F;&#x2F; 提交单个MeshDrawCommand.
+            FMeshDrawCommand::SubmitDraw(*VisibleMeshDrawCommand.MeshDrawCommand, GraphicsMinimalPipelineStateSet, SceneArgs, InstanceFactor, RHICmdList, StateCache);
+            
+            &#x2F;&#x2F; If MDC was split to a more than one batch, submit them without changing state
+            for (uint32 BatchIdx &#x3D; 1; BatchIdx &lt; DrawCommandInfo.NumBatches; ++BatchIdx)
+            &#123;
+                SceneArgs.PrimitiveIdOffset +&#x3D; DrawCommandInfo.BatchDataStride;
+                SceneArgs.IndirectArgsByteOffset +&#x3D; sizeof(FRHIDrawIndexedIndirectParameters);
+                FMeshDrawCommand::SubmitDrawEnd(*VisibleMeshDrawCommand.MeshDrawCommand, SceneArgs, InstanceFactor, RHICmdList);
+            &#125;
+        &#125;
+    &#125;
+    else
+    &#123;
+        FMeshDrawCommandSceneArgs SceneArgs;
+        SubmitMeshDrawCommandsRange(VisibleMeshDrawCommands, GraphicsMinimalPipelineStateSet, SceneArgs, 0, false, StartIndex, NumMeshDrawCommands, InInstanceFactor, RHICmdList);
+    &#125;
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MeshPassProcessor.cpp
+
+void FMeshDrawCommand::SubmitDraw(
+    const FMeshDrawCommand&amp; RESTRICT MeshDrawCommand,
+    const FGraphicsMinimalPipelineStateSet&amp; GraphicsMinimalPipelineStateSet,
+    const FMeshDrawCommandSceneArgs&amp; SceneArgs,
+    uint32 InstanceFactor,
+    FRHICommandList&amp; RHICmdList,
+    FMeshDrawCommandStateCache&amp; RESTRICT StateCache)
+&#123;
+#if MESH_DRAW_COMMAND_DEBUG_DATA &amp;&amp; RHI_WANT_BREADCRUMB_EVENTS
+    if (MeshDrawCommand.DebugData.ResourceName.IsValid())
+    &#123;
+        TCHAR NameBuffer[FName::StringBufferSize];
+        const uint32 NameLen &#x3D; MeshDrawCommand.DebugData.ResourceName.ToString(NameBuffer);
+        BREADCRUMB_EVENTF(RHICmdList, MeshDrawCommand, TEXT(&quot;%s %.*s&quot;), *MeshDrawCommand.DebugData.MaterialName, NameLen, NameBuffer);
+    &#125;
+    else
+    &#123;
+        BREADCRUMB_EVENTF(RHICmdList, MeshDrawCommand, TEXT(&quot;%s&quot;), *MeshDrawCommand.DebugData.MaterialName);
+    &#125;
+#endif
+#if WANTS_DRAW_MESH_EVENTS
+    FMeshDrawEvent MeshEvent(MeshDrawCommand, InstanceFactor, RHICmdList);
+#endif
+    bool bAllowSkipDrawCommand &#x3D; true;
+    if (SubmitDrawBegin(MeshDrawCommand, GraphicsMinimalPipelineStateSet, SceneArgs, InstanceFactor, RHICmdList, StateCache, bAllowSkipDrawCommand))
+    &#123;
+        SubmitDrawEnd(MeshDrawCommand, SceneArgs, InstanceFactor, RHICmdList);
+    &#125;
+&#125;
+
+&#x2F;&#x2F; UE4中SubmitDraw的工作被拆分到了FMeshDrawCommand::SubmitDrawBegin和FMeshDrawCommand::SubmitDrawEnd
+
+bool FMeshDrawCommand::SubmitDrawBegin(
+    const FMeshDrawCommand&amp; RESTRICT MeshDrawCommand, 
+    const FGraphicsMinimalPipelineStateSet&amp; GraphicsMinimalPipelineStateSet,
+    const FMeshDrawCommandSceneArgs&amp; SceneArgs,
+    uint32 InstanceFactor,
+    FRHICommandList&amp; RHICmdList,
+    FMeshDrawCommandStateCache&amp; RESTRICT StateCache,
+    bool bAllowSkipDrawCommand)
+&#123;
+    (...)
+
+    &#x2F;&#x2F; 设置和缓存PSO
+    if (MeshDrawCommand.CachedPipelineId.GetId() !&#x3D; StateCache.PipelineId)
+    &#123;
+        FGraphicsPipelineStateInitializer GraphicsPSOInit &#x3D; MeshPipelineState.AsGraphicsPipelineStateInitializer();
+        RHICmdList.ApplyCachedRenderTargets(GraphicsPSOInit);
+
+        EPSOPrecacheResult PSOPrecacheResult &#x3D; RetrieveAndCachePSOPrecacheResult(MeshPipelineState, GraphicsPSOInit, bAllowSkipDrawCommand);
+
+        (...)
+        &#x2F;&#x2F; We can set the new StencilRef here to avoid the set below
+        bool bApplyAdditionalState &#x3D; true;
+        SetGraphicsPipelineState(RHICmdList, GraphicsPSOInit, MeshDrawCommand.StencilRef, EApplyRendertargetOption::CheckApply, bApplyAdditionalState, PSOPrecacheResult);
+        StateCache.SetPipelineState(MeshDrawCommand.CachedPipelineId.GetId());
+        StateCache.StencilRef &#x3D; MeshDrawCommand.StencilRef;
+    &#125;
+
+    &#x2F;&#x2F; 设置和缓存模板值
+    if (MeshDrawCommand.StencilRef !&#x3D; StateCache.StencilRef)
+    &#123;
+        RHICmdList.SetStencilRef(MeshDrawCommand.StencilRef);
+        StateCache.StencilRef &#x3D; MeshDrawCommand.StencilRef;
+    &#125;
+
+    &#x2F;&#x2F; Platforms that use global UB binding don&#39;t need to set PrimitiveIdStream
+    const int8 PrimitiveIdStreamIndex &#x3D; (IsUniformBufferStaticSlotValid(SceneArgs.BatchedPrimitiveSlot) ? -1 : MeshDrawCommand.PrimitiveIdStreamIndex);
+
+    &#x2F;&#x2F; 设置顶点数据
+    for (int32 VertexBindingIndex &#x3D; 0; VertexBindingIndex &lt; MeshDrawCommand.VertexStreams.Num(); VertexBindingIndex++)
+    &#123;
+        const FVertexInputStream&amp; Stream &#x3D; MeshDrawCommand.VertexStreams[VertexBindingIndex];
+
+        if (PrimitiveIdStreamIndex !&#x3D; -1 &amp;&amp; Stream.StreamIndex &#x3D;&#x3D; PrimitiveIdStreamIndex)
+        &#123;
+            RHICmdList.SetStreamSource(Stream.StreamIndex, SceneArgs.PrimitiveIdsBuffer, SceneArgs.PrimitiveIdOffset);
+            StateCache.VertexStreams[Stream.StreamIndex] &#x3D; Stream;
+        &#125;
+        else if (StateCache.VertexStreams[Stream.StreamIndex] !&#x3D; Stream)
+        &#123;
+            RHICmdList.SetStreamSource(Stream.StreamIndex, Stream.VertexBuffer, Stream.Offset);
+            StateCache.VertexStreams[Stream.StreamIndex] &#x3D; Stream;
+        &#125;
+    &#125;
+
+    &#x2F;&#x2F; 设置shader绑定的资源
+    MeshDrawCommand.ShaderBindings.SetOnCommandList(RHICmdList, MeshPipelineState.BoundShaderState.AsBoundShaderState(), StateCache.ShaderBindings);
+
+    return true;
+&#125;
+
+void FMeshDrawCommand::SubmitDrawEnd(const FMeshDrawCommand&amp; MeshDrawCommand, const FMeshDrawCommandSceneArgs&amp; SceneArgs, uint32 InstanceFactor, FRHICommandList&amp; RHICmdList)
+&#123;
+    (...)
+
+    &#x2F;&#x2F; 根据不同的数据调用不同类型的绘制指令到RHICommandList
+    if (MeshDrawCommand.IndexBuffer)
+    &#123;
+        if (MeshDrawCommand.NumPrimitives &gt; 0 &amp;&amp; !bDoOverrideArgs)
+        &#123;
+            RHICmdList.DrawIndexedPrimitive(
+                MeshDrawCommand.IndexBuffer,
+                MeshDrawCommand.VertexParams.BaseVertexIndex,
+                0,
+                MeshDrawCommand.VertexParams.NumVertices,
+                MeshDrawCommand.FirstIndex,
+                MeshDrawCommand.NumPrimitives,
+                MeshDrawCommand.NumInstances * InstanceFactor
+            );
+        &#125;
+        else
+        &#123;
+            RHICmdList.DrawIndexedPrimitiveIndirect(
+                MeshDrawCommand.IndexBuffer,
+                bDoOverrideArgs ? SceneArgs.IndirectArgsBuffer : MeshDrawCommand.IndirectArgs.Buffer,
+                bDoOverrideArgs ? SceneArgs.IndirectArgsByteOffset : MeshDrawCommand.IndirectArgs.Offset
+            );
+        &#125;
+    &#125;
+    else
+    &#123;
+        if (MeshDrawCommand.NumPrimitives &gt; 0 &amp;&amp; !bDoOverrideArgs)
+        &#123;
+            RHICmdList.DrawPrimitive(
+                MeshDrawCommand.VertexParams.BaseVertexIndex + MeshDrawCommand.FirstIndex,
+                MeshDrawCommand.NumPrimitives,
+                MeshDrawCommand.NumInstances * InstanceFactor);
+        &#125;
+        else
+        &#123;
+            RHICmdList.DrawPrimitiveIndirect(
+                bDoOverrideArgs ? SceneArgs.IndirectArgsBuffer : MeshDrawCommand.IndirectArgs.Buffer,
+                bDoOverrideArgs ? SceneArgs.IndirectArgsByteOffset : MeshDrawCommand.IndirectArgs.Offset
+            );
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/mesh-drawing-pipeline-in-unreal-engine">Unreal Engine Documentation: Mesh Drawing Pipeline in Unreal Engine</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/14588598.html">剖析虚幻渲染体系（03）- 渲染机制</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/564066505">【UE4 C++】渲染流水线笔记：从MeshBatch到DrawCommand</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/61464613">虚幻4渲染编程(Shader篇)【第十二卷：MeshDrawPipline】</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/94463182">虚幻4渲染编程(Shader篇)【第十五卷：MeshDrawCommand的派发机制】</a></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/">
+            https://suikasan111.github.io/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2024/07/02/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-RDG%E6%9C%BA%E5%88%B6/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">UE5-RDG机制 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/06/21/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89GlobalShader/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">UE5-添加自定义GlobalShader </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#overview"><span class="toc-text"> Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#fprimitivesceneproxy%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="toc-text"> FPrimitiveSceneProxy的创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90meshbatch"><span class="toc-text"> 生成MeshBatch</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#emeshbatch"><span class="toc-text"> EMeshBatch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B6%E9%9B%86fmeshbatches"><span class="toc-text"> 收集FMeshBatches</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#staticcached-mesh-batches"><span class="toc-text"> Static&#x2F;Cached Mesh Batches</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dynamic-mesh-batches"><span class="toc-text"> Dynamic Mesh Batches</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#fmobilescenerenderer"><span class="toc-text"> FMobileSceneRenderer</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fdeferredshadingscenerenderer"><span class="toc-text"> FDeferredShadingSceneRenderer</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90meshdrawcommand"><span class="toc-text"> 生成MeshDrawCommand</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 基本类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fmeshdrawcommand"><span class="toc-text"> FMeshDrawCommand</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fmeshpassprocessor"><span class="toc-text"> FMeshPassProcessor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fmeshdrawcommandpasssetuptask"><span class="toc-text"> FMeshDrawCommandPassSetupTask</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fmeshbatch%E8%BD%AC%E6%8D%A2%E4%B8%BAfmeshdrawcommand"><span class="toc-text"> FMeshBatch转换为FMeshDrawCommand</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#staticcached"><span class="toc-text"> Static&#x2F;Cached</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dynamic"><span class="toc-text"> Dynamic</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#meshdrawcommand-dispatch%E6%9C%BA%E5%88%B6"><span class="toc-text"> MeshDrawCommand Dispatch机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0"><span class="toc-text"> 重要函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90rhicommandlist"><span class="toc-text"> 生成RHICommandList</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#overview"><span class="toc-text"> Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#fprimitivesceneproxy%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="toc-text"> FPrimitiveSceneProxy的创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90meshbatch"><span class="toc-text"> 生成MeshBatch</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#emeshbatch"><span class="toc-text"> EMeshBatch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B6%E9%9B%86fmeshbatches"><span class="toc-text"> 收集FMeshBatches</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#staticcached-mesh-batches"><span class="toc-text"> Static&#x2F;Cached Mesh Batches</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dynamic-mesh-batches"><span class="toc-text"> Dynamic Mesh Batches</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#fmobilescenerenderer"><span class="toc-text"> FMobileSceneRenderer</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#fdeferredshadingscenerenderer"><span class="toc-text"> FDeferredShadingSceneRenderer</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90meshdrawcommand"><span class="toc-text"> 生成MeshDrawCommand</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 基本类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#fmeshdrawcommand"><span class="toc-text"> FMeshDrawCommand</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fmeshpassprocessor"><span class="toc-text"> FMeshPassProcessor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fmeshdrawcommandpasssetuptask"><span class="toc-text"> FMeshDrawCommandPassSetupTask</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fmeshbatch%E8%BD%AC%E6%8D%A2%E4%B8%BAfmeshdrawcommand"><span class="toc-text"> FMeshBatch转换为FMeshDrawCommand</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#staticcached"><span class="toc-text"> Static&#x2F;Cached</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dynamic"><span class="toc-text"> Dynamic</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#meshdrawcommand-dispatch%E6%9C%BA%E5%88%B6"><span class="toc-text"> MeshDrawCommand Dispatch机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0"><span class="toc-text"> 重要函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90rhicommandlist"><span class="toc-text"> 生成RHICommandList</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-18</div>
+        <a href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/"><div class="recent-posts-item-content">Frostbite Terrain Procedural Tools</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-17</div>
+        <a href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/"><div class="recent-posts-item-content">UE5-渲染线程中多线程任务分发简析</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-15</div>
+        <a href="/2024/07/15/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-4%EF%BC%9A%E6%80%BB%E7%BB%93/"><div class="recent-posts-item-content">UE5-地形系统-4：总结</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

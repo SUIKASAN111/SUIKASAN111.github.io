@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>UE5-材质及其编译</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="UE5-材质及其编译">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/06/15/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%9D%90%E8%B4%A8%E5%8F%8A%E5%85%B6%E7%BC%96%E8%AF%91/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-06-15">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5源码">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5材质">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>43</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>9</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>16</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%9A%84%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-text"> 材质的基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterial-umaterialinterface-umaterialinstance"><span class="toc-text"> UMaterial, UMaterialInterface, UMaterialInstance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fmaterialrenderproxy"><span class="toc-text"> FMaterialRenderProxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fmaterial-fmaterialresource"><span class="toc-text"> FMaterial, FMaterialResource</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%B1%BB%E5%9E%8B%E4%BD%93%E7%B3%BB%E6%80%BB%E7%BB%93"><span class="toc-text"> 材质类型体系总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E6%B8%B2%E6%9F%93"><span class="toc-text"> 材质渲染</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%BC%96%E8%AF%91"><span class="toc-text"> 材质编译</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterialexpression"><span class="toc-text"> UMaterialExpression</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterialgraphnode"><span class="toc-text"> UMaterialGraphNode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterialgraph"><span class="toc-text"> UMaterialGraph</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fhlslmaterialtranslator"><span class="toc-text"> FHLSLMaterialTranslator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#materialtemplateush"><span class="toc-text"> MaterialTemplate.ush</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B"><span class="toc-text"> 材质编译流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-text"> 材质编译流程图</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GDC/">
+        <div class="categories-list-item">
+          GDC
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">7</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+        <div class="categories-list-item">
+          UE5地形系统
+          <span class="categories-list-item-badge">4</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+        title="地形系统">
+        <div class="tags-list-item">地形系统</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+        title="UE5地形">
+        <div class="tags-list-item">UE5地形</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+        title="UE5多线程">
+        <div class="tags-list-item">UE5多线程</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-RDG/" 
+        title="UE5 RDG">
+        <div class="tags-list-item">UE5 RDG</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+        title="游戏引擎">
+        <div class="tags-list-item">游戏引擎</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      UE5-材质及其编译
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-06-15T14:51:39.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-06-15</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+          class="post-meta-link">
+          UE5渲染架构
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.8k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/UE5/" 
+            class="post-meta-link">
+            UE5
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+            class="post-meta-link">
+            UE5源码
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+            class="post-meta-link">
+            UE5材质
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="材质的基础概念"><a class="markdownIt-Anchor" href="#材质的基础概念"></a> 材质的基础概念</h2>
+<h3 id="umaterial-umaterialinterface-umaterialinstance"><a class="markdownIt-Anchor" href="#umaterial-umaterialinterface-umaterialinstance"></a> UMaterial, UMaterialInterface, UMaterialInstance</h3>
+<p>UMaterial是属于引擎层的概念，对应着材质编辑器编辑的uasset资源文件，可以被应用到网格上，以便控制它在场景中的视觉效果。</p>
+<p>UMaterial继承自UMaterialInterface。UMaterialInterface是材质的基础接口类，定义了大量材质相关的数据和接口， 部分接口是空实现或未实现的接口。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">class UMaterialInterface : public UObject, public IBlendableInterface, public IInterface_AssetUserData
+
+class UMaterial : public UMaterialInterface<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>UMaterialInstance是材质实例，不能单独存在，而需要依赖UMaterialInterface类型的父类，其父类可以是UMaterialInterface的任意一个子类，但最上层的父类必须是UMaterial。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">class UMaterialInstance : public UMaterialInterface<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>它只能覆盖UMaterial的一小部分参数，通常不会被单独创建，而是以它的两个子类UMaterialInstanceConstant和UMaterialInstanceDynamic被创建</p>
+<p>UMaterialInstanceConstant是用于编辑器预先创建和编辑好的材质实例资源，它是为了避免运行时修改材质参数引起重新编译而存在的。如果不重新编译，就无法支持对材质的常规修改，因此实例只能更改预定义的材质参数的值。 这里的参数就是在材质编辑器内定义的唯一的名称、类型和默认值静态定义。</p>
+<p>UMaterialInstanceDynamic与UMaterialInstanceConstant不同，它提供了可以在运行时代码动态创建和修改材质属性的功能，并且同样不会引起材质重新编译。</p>
+<h3 id="fmaterialrenderproxy"><a class="markdownIt-Anchor" href="#fmaterialrenderproxy"></a> FMaterialRenderProxy</h3>
+<p>图元、网格、光源等场景的类型都有其相应的GameThread代表和RenderThread代表，材质也是如此。<br>
+UMaterialInterface对应的渲染线程代表便是FMaterialRenderProxy。FMaterialRenderProxy负责接收游戏线程代表的数据，然后传递给渲染器去处理和渲染。</p>
+<p>FMaterialRenderProxy是个抽象类，定义了一个静态全局的材质渲染代理映射表和获取FMaterial渲染实例的接口。具体的逻辑由子类完成，它的子类有：</p>
+<ul>
+<li>FDefaultMaterialInstance：渲染UMaterial的默认代表实例。</li>
+<li>FMaterialInstanceResource：渲染UMaterialInstance实例的代表。</li>
+<li>FColoredMaterialRenderProxy：覆盖材质颜色向量参数的材质渲染代表。</li>
+<li>FLandscapeMaskMaterialRenderProxy：地貌遮罩材质渲染代表。</li>
+<li>FLightmassMaterialProxy：Lightmass材质渲染代理。</li>
+<li>…</li>
+</ul>
+<p>FMaterialRenderProxy既会被GameThread处理，又会被RenderThread处理，需要小心注意它们之间的数据访问和接口调用。带有GameThread的属性和接口是专用于游戏线程，带有RenderThread的专用于渲染线程，如果没有特别说明，一般（非绝对）用于渲染线程。</p>
+<h3 id="fmaterial-fmaterialresource"><a class="markdownIt-Anchor" href="#fmaterial-fmaterialresource"></a> FMaterial, FMaterialResource</h3>
+<p>FMaterial有3个功能：</p>
+<ul>
+<li>表示材质到材质的编译过程，并提供可扩展性钩子(CompileProperty等) 。</li>
+<li>将材质数据传递到渲染器，并使用函数访问材质属性。</li>
+<li>存储缓存的shader map，和其他来自编译的瞬态输出，这对异步着色器编译是必要的。</li>
+</ul>
+<p>FMaterial包括了材质、Shader、VertexFactory、ShaderPipeline、ShaderMap等各种数据和操作接口。FMaterial是个抽象类，它的子类只有FMaterialResource。</p>
+<p>FMaterialResource只是实现了FMaterial未实现的接口，用于渲染UMaterial或UMaterialInstance，它存储了UMaterial或UMaterialInstance的实例。如果UMaterialInstance和UMaterial的实例都有效的情况下，那么它们重叠的数据会优先取UMaterialInstance的数据。</p>
+<p>渲染资源除了FMaterial之外，还有个比较核心的概念就是FMaterialRenderContext，它保存了FMaterialRenderProxy和FMaterial之间的关联配对。</p>
+<h3 id="材质类型体系总结"><a class="markdownIt-Anchor" href="#材质类型体系总结"></a> 材质类型体系总结</h3>
+<p><img src="/2024/06/15/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%9D%90%E8%B4%A8%E5%8F%8A%E5%85%B6%E7%BC%96%E8%AF%91/MaterialSystemClasses.png" alt="MaterialSystemClasses" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/06/15/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%9D%90%E8%B4%A8%E5%8F%8A%E5%85%B6%E7%BC%96%E8%AF%91/MaterialSystemClasses.png" class="lozad post-image"></p>
+<p>UMaterialInterface和它的子类是引擎模块在游戏线程的代表。UMaterialInterface继承UOjbect，提供了材质的抽象接口，为子类提供了一致的行为和规范，也好统一不同类型的子类之间的差异。</p>
+<p>子类UMaterial则对应着用材质编辑器生成的材质蓝图的资源，保存了各种表达式节点及各种参数。</p>
+<p>另一个子类UMaterialInstance则抽象了材质实例的接口，是为了支持修改材质参数后不引发材质重新编译而存在的，同时统一和规范固定实例（UMaterialInstanceConstant）和动态实例（UMaterialInstanceDynamic）两种子类的数据和行为。</p>
+<p>UMaterialInstanceConstant在编辑器期间创建和修改好材质参数，运行时不可修改，提升数据更新和渲染的性能；UMaterialInstanceDynamic则可以运行时创建实例和修改数据，提升材质的扩展性和可定制性，但性能较UMaterialInstanceConstant差一些。UMaterialInstance需要指定一个父类，最顶层的父类要求是UMaterial实例。</p>
+<p>FMaterialRenderProxy是UMaterialInterface的渲染线程的代表，类似于UPrimitiveComponent和FPrimitiveSceneProxy的关系。</p>
+<p>FMaterialRenderProxy将UMaterialInterface实例的数据搬运（拷贝）到渲染线程，但同时也会在游戏线程被访问到，是两个线程的耦合类型，需要谨慎处理它们的数据和接口调用。FMaterialRenderProxy的子类对应着UMaterialInterface的子类，以便将UMaterialInterface的子类数据被精准地搬运（拷贝）到渲染线程，避免游戏线程和渲染线程的竞争。FMaterialRenderProxy及其子类都是引擎模块的类型。</p>
+<p>既然已经有了FMaterialRenderProxy的渲染线程代表，为什么还要存在FMaterial和FMaterialResource呢？答案有两点：</p>
+<ul>
+<li>FMaterialRenderProxy及其子类是引擎模块的类型，是游戏线程和渲染线程的胶囊类，需要谨慎处理两个线程的数据和接口调用，渲染模块无法真正完全拥有它的管辖权。</li>
+<li>FMaterialRenderProxy的数据由UMaterialInterface传递而来，意味着FMaterialRenderProxy的信息有限，无法包含使用了材质的网格的其它信息，如顶点工厂、ShaderMap、ShaderPipelineline、FShader及各种着色器参数等。</li>
+</ul>
+<p>FMaterial同是引擎模块的类型，但存储了游戏线程和渲染线程的两个ShaderMap，意味着渲染模块可以自由地访问渲染线程的ShaderMap，而又不影响游戏线程的访问。而且FMaterial包含了渲染材质所需的所有数据，渲染器的其它地方，只要拿到网格的FMaterial，便可以正常地获取材质数据，从而提交绘制指令。</p>
+<h2 id="材质渲染"><a class="markdownIt-Anchor" href="#材质渲染"></a> 材质渲染</h2>
+<p>材质数据的发起者是GameThread的资源，一般是从磁盘加载的二进制资源，然后序列化成UMaterialInterface实例，或者由运行时动态创建并设置材质数据。不过绝大多数是由磁盘加载而来。在GameThread阶段，材质的各种类型的实例已经被加载、设置和创建。</p>
+<p>ProcessSerializedInlineShaderMaps函数以及UMaterial和UMaterialInterface中的部分接口会触发FMaterialResource的创建，而ProcessSerializedInlineShaderMaps和FMaterial中的部分接口会触发RenderingThreadShaderMap的设置。而一旦RenderingThreadShaderMap被设置，材质相关的其它众多数据将被渲染线程和渲染器自由地读取，从而完成渲染。</p>
+<h2 id="材质编译"><a class="markdownIt-Anchor" href="#材质编译"></a> 材质编译</h2>
+<h3 id="umaterialexpression"><a class="markdownIt-Anchor" href="#umaterialexpression"></a> UMaterialExpression</h3>
+<p>UMaterialExpression就是表达式，每个材质节点UMaterialGraphNode都有一个UMaterialExpression实例。</p>
+<p>UE内置了很多材质节点，因此继承自UMaterialExpression的子类非常多。</p>
+<p>UMaterialExpression对象在Compile时，会调用传入的FMaterialCompiler对象的对应方法。FMaterialCompiler是一个抽象类，其中对应的方法由其子类实现。例如：UMaterialExpressionAdd::Compile会调用FHLSLMaterialTranslator中的Add。</p>
+<p>总而言之，材质表达式的编译，实际上就是对参数和对应的函数序列化成HLSL片段。</p>
+<h3 id="umaterialgraphnode"><a class="markdownIt-Anchor" href="#umaterialgraphnode"></a> UMaterialGraphNode</h3>
+<p>UMaterialGraphNode即在材质编辑器中创建的材质节点，包含了图形界面的信息和对应的表达式。</p>
+<p>UMaterialGraphNode继承自UMaterialGraphNode_Base、UEdGraphNode。</p>
+<h3 id="umaterialgraph"><a class="markdownIt-Anchor" href="#umaterialgraph"></a> UMaterialGraph</h3>
+<p>UMaterialGraph是UMaterial的一个成员，用来存储编辑器产生的材质节点和参数。</p>
+<p>UMaterialGraph中包含指向其对应的材质实例、材质函数以及根节点的指针。</p>
+<h3 id="fhlslmaterialtranslator"><a class="markdownIt-Anchor" href="#fhlslmaterialtranslator"></a> FHLSLMaterialTranslator</h3>
+<p>FHLSLMaterialTranslator继承自FMaterialCompiler，作用就是将材质的表达式转译成HLSL代码，填充到MaterialTemplate.ush的宏和空缺代码段。</p>
+<p>FHLSLMaterialTranslator实现了FMaterialCompiler的所有抽象接口，它的核心核心成员和接口如下：</p>
+<p>-FMaterial* Material：编译的目标材质。<br>
+-FMaterialCompilationOutput&amp; MaterialCompilationOutput：编译后的结果。<br>
+-FString MaterialTemplate：待填充或填充后的MaterialTemplate.ush字符串。<br>
+-Translate()：执行HLSL转译，将表达式转译成代码块保存到对应的属性槽中。<br>
+-GetMaterialShaderCode()：将材质的宏、属性、表达式等数据填充到MaterialTemplate.ush并返回结果。</p>
+<h3 id="materialtemplateush"><a class="markdownIt-Anchor" href="#materialtemplateush"></a> MaterialTemplate.ush</h3>
+<p>MaterialTemplate.usf是材质shader模板，内涵大量%s的空缺和待替换的宏，由FHLSLMaterialTranslator::GetMaterialShaderCode负责填充。</p>
+<p>MaterialTemplate.ush包含了大量的数据和接口，主要有几类：</p>
+<ul>
+<li>基础shader模块引用。</li>
+<li>待填充的宏定义。</li>
+<li>待填充的接口实现。</li>
+<li>顶点、像素、材质属性等结构体定义。部分结构体待填充。</li>
+<li>材质属性、数据处理、表达式、工具类接口定义。部分接口待填充。</li>
+</ul>
+<h3 id="材质编译流程"><a class="markdownIt-Anchor" href="#材质编译流程"></a> 材质编译流程</h3>
+<p>材质ShaderMap的编译入口在FMaterial的以下两个接口：</p>
+<ul>
+<li>FMaterial::BeginCompileShaderMap</li>
+<li>FMaterial::GetMaterialExpressionSource</li>
+</ul>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Engine\Private\Materials\MaterialShared.cpp
+
+bool FMaterial::BeginCompileShaderMap(const FMaterialShaderMapId&amp; ShaderMapId, const FStaticParameterSet &amp;StaticParameterSet,
+ EShaderPlatform Platform, TRefCountPtr&lt;FMaterialShaderMap&gt;&amp; OutShaderMap, const ITargetPlatform* TargetPlatform)
+&#123;
+    &#x2F;&#x2F; 注意只在编辑器期间才会执行.
+#if WITH_EDITORONLY_DATA
+    bool bSuccess &#x3D; false;
+    &#x2F;&#x2F; 新建shader map.
+    TRefCountPtr&lt;FMaterialShaderMap&gt; NewShaderMap &#x3D; new FMaterialShaderMap();
+
+#if WITH_EDITOR
+    NewShaderMap-&gt;AssociateWithAsset(GetAssetPath());
+#endif
+    
+    &#x2F;&#x2F; 生成材质shader代码.
+    &#x2F;&#x2F; 输出结果.
+    FMaterialCompilationOutput NewCompilationOutput;
+    &#x2F;&#x2F; 转换器.
+    FHLSLMaterialTranslator MaterialTranslator(this, NewCompilationOutput, StaticParameterSet, Platform,GetQualityLevel(), ShaderMapId.FeatureLevel, TargetPlatform);
+    &#x2F;&#x2F; 执行表达式转换, 填充到MaterialTemplate.ush.
+    bSuccess &#x3D; MaterialTranslator.Translate();
+
+    &#x2F;&#x2F; 表达式转换成功才需要执行后续操作.
+    if(bSuccess)
+    &#123;
+        &#x2F;&#x2F; 为材质创建一个着色器编译环境，所有的编译作业将共享此材质.
+        TRefCountPtr&lt;FShaderCompilerEnvironment&gt; MaterialEnvironment &#x3D; new FShaderCompilerEnvironment();
+        MaterialEnvironment-&gt;TargetPlatform &#x3D; TargetPlatform;
+        &#x2F;&#x2F; 获取材质环境.
+        MaterialTranslator.GetMaterialEnvironment(Platform, *MaterialEnvironment);
+        &#x2F;&#x2F; 获取材质shader代码.
+        const FString MaterialShaderCode &#x3D; MaterialTranslator.GetMaterialShaderCode();
+        
+        const bool bSynchronousCompile &#x3D; RequiresSynchronousCompilation() || !GShaderCompilingManager-&gt;AllowAsynchronousShaderCompiling();
+
+        &#x2F;&#x2F; 包含虚拟的材质文件路径.
+        MaterialEnvironment-&gt;IncludeVirtualPathToContentsMap.Add(TEXT(&quot;&#x2F;Engine&#x2F;Generated&#x2F;Material.ush&quot;), MaterialShaderCode);
+
+        &#x2F;&#x2F; 编译材质的shader代码.
+        NewShaderMap-&gt;Compile(this, ShaderMapId, MaterialEnvironment, NewCompilationOutput, Platform, bSynchronousCompile);
+
+        if (bSynchronousCompile) &#x2F;&#x2F; 同步编译
+        &#123;
+            &#x2F;&#x2F; 同步模式, 直接赋值给OutShaderMap.
+            OutShaderMap &#x3D; NewShaderMap-&gt;CompiledSuccessfully() ? NewShaderMap : nullptr;
+        &#125;
+        else &#x2F;&#x2F; 异步编译
+        &#123;
+            &#x2F;&#x2F; 先将NewShaderMap放到等待编译结束的列表.
+            OutstandingCompileShaderMapIds.AddUnique( NewShaderMap-&gt;GetCompilingId() );
+            &#x2F;&#x2F; 异步模式, OutShaderMap先设为null, 会回退到默认的材质.
+            OutShaderMap &#x3D; nullptr;
+        &#125;
+    &#125;
+
+    return bSuccess;
+#else
+    UE_LOG(LogMaterial, Fatal,TEXT(&quot;Not supported.&quot;));
+    return false;
+#endif
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中使用的FHLSLMaterialTranslator的重要接口：</p>
+<ul>
+<li>Translate：转译材质蓝图的材质节点表达式，将所有材质属性的编译结果填充到格子的FShaderCodeChunk中。</li>
+<li>GetMaterialEnvironment：处理材质蓝图的编译环境（宏定义）。</li>
+<li>GetMaterialShaderCode：填充MaterialTemplate.ush的空缺代码，根据Translate编译的FShaderCodeChunk对应的材质属性接口，以及其它的宏定义、结构体、工具类接口。</li>
+</ul>
+<p>经过FHLSLMaterialTranslator的编译之后，将获得完整的材质Shader代码，便会送入FMaterialShaderMap::Compile接口进行编译，编译后的shader代码保存到FMaterialShaderMap之中。</p>
+<p>编译不同类型的shader时，需要的数据不完全一样：</p>
+<table>
+<thead>
+<tr>
+<th>Shader类型</th>
+<th>所需的数据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GlobalShader</td>
+<td>Shader_x.usf</td>
+</tr>
+<tr>
+<td>MaterialShader</td>
+<td>Shader_x.usf + MaterialTemplate_x.usf</td>
+</tr>
+<tr>
+<td>MeshMaterialShader</td>
+<td>Shader_x.usf + MaterialTemplate_x.usf + VertexFactory_x.usf</td>
+</tr>
+</tbody>
+</table>
+<p>其中：</p>
+<ul>
+<li>Shader_x.usf：引擎Shader目录下的已有文件，如DeferredLightVertexShaders.usf、DeferredLightPixelShaders.usf。</li>
+<li>MaterialTemplate_x.usf：FHLSLMaterialTranslator编译材质蓝图后填充MaterialTemplate.ush的代码。</li>
+<li>VertexFactory_x.usf：引擎Shader目录下的已有顶点工厂文件代码，如LocalVertexFactory.ush、GpuSkinVertexFactory.ush。</li>
+</ul>
+<h4 id="材质编译流程图"><a class="markdownIt-Anchor" href="#材质编译流程图"></a> 材质编译流程图</h4>
+<p><img src="/2024/06/15/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%9D%90%E8%B4%A8%E5%8F%8A%E5%85%B6%E7%BC%96%E8%AF%91/MaterialCompileDiagram1.png" alt="MaterialCompileDiagram1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/06/15/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%9D%90%E8%B4%A8%E5%8F%8A%E5%85%B6%E7%BC%96%E8%AF%91/MaterialCompileDiagram1.png" class="lozad post-image"></p>
+<p><img src="/2024/06/15/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%9D%90%E8%B4%A8%E5%8F%8A%E5%85%B6%E7%BC%96%E8%AF%91/MaterialCompileDiagram2.png" alt="MaterialCompileDiagram2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/06/15/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%9D%90%E8%B4%A8%E5%8F%8A%E5%85%B6%E7%BC%96%E8%AF%91/MaterialCompileDiagram2.png" class="lozad post-image"></p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-materials">Unreal Engine Documentation: Materials</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/15109132.html">剖析虚幻渲染体系（09）- 材质体系</a></p>
+<p><a target="_blank" rel="noopener" href="https://papalqi.cn/ue4%E6%9D%90%E8%B4%A8%E7%B3%BB%E7%BB%9F/">UE4材质系统源码剖析</a></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/06/15/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%9D%90%E8%B4%A8%E5%8F%8A%E5%85%B6%E7%BC%96%E8%AF%91/">
+            https://suikasan111.github.io/2024/06/15/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%9D%90%E8%B4%A8%E5%8F%8A%E5%85%B6%E7%BC%96%E8%AF%91/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2024/06/17/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%90%E8%B4%A8%E8%8A%82%E7%82%B9/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">UE5-添加自定义材质节点 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">Head First设计模式-精炼整理 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%9A%84%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-text"> 材质的基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterial-umaterialinterface-umaterialinstance"><span class="toc-text"> UMaterial, UMaterialInterface, UMaterialInstance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fmaterialrenderproxy"><span class="toc-text"> FMaterialRenderProxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fmaterial-fmaterialresource"><span class="toc-text"> FMaterial, FMaterialResource</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%B1%BB%E5%9E%8B%E4%BD%93%E7%B3%BB%E6%80%BB%E7%BB%93"><span class="toc-text"> 材质类型体系总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E6%B8%B2%E6%9F%93"><span class="toc-text"> 材质渲染</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%BC%96%E8%AF%91"><span class="toc-text"> 材质编译</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterialexpression"><span class="toc-text"> UMaterialExpression</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterialgraphnode"><span class="toc-text"> UMaterialGraphNode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterialgraph"><span class="toc-text"> UMaterialGraph</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fhlslmaterialtranslator"><span class="toc-text"> FHLSLMaterialTranslator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#materialtemplateush"><span class="toc-text"> MaterialTemplate.ush</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B"><span class="toc-text"> 材质编译流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-text"> 材质编译流程图</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%9A%84%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-text"> 材质的基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterial-umaterialinterface-umaterialinstance"><span class="toc-text"> UMaterial, UMaterialInterface, UMaterialInstance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fmaterialrenderproxy"><span class="toc-text"> FMaterialRenderProxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fmaterial-fmaterialresource"><span class="toc-text"> FMaterial, FMaterialResource</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%B1%BB%E5%9E%8B%E4%BD%93%E7%B3%BB%E6%80%BB%E7%BB%93"><span class="toc-text"> 材质类型体系总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E6%B8%B2%E6%9F%93"><span class="toc-text"> 材质渲染</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%BC%96%E8%AF%91"><span class="toc-text"> 材质编译</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterialexpression"><span class="toc-text"> UMaterialExpression</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterialgraphnode"><span class="toc-text"> UMaterialGraphNode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#umaterialgraph"><span class="toc-text"> UMaterialGraph</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fhlslmaterialtranslator"><span class="toc-text"> FHLSLMaterialTranslator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#materialtemplateush"><span class="toc-text"> MaterialTemplate.ush</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B"><span class="toc-text"> 材质编译流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9D%90%E8%B4%A8%E7%BC%96%E8%AF%91%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-text"> 材质编译流程图</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-18</div>
+        <a href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/"><div class="recent-posts-item-content">Frostbite Terrain Procedural Tools</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-17</div>
+        <a href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/"><div class="recent-posts-item-content">UE5-渲染线程中多线程任务分发简析</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-15</div>
+        <a href="/2024/07/15/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-4%EF%BC%9A%E6%80%BB%E7%BB%93/"><div class="recent-posts-item-content">UE5-地形系统-4：总结</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>UE5-添加自定义MeshPass</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="UE5-添加自定义MeshPass">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/07/07/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89MeshPass/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/2024/07/07/UE5/源码实战/UE5-添加自定义MeshPass/banner.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-07-07">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5源码">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>43</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>9</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>16</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#todo"><span class="toc-text"> TODO</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%AD%A5%E9%AA%A4"><span class="toc-text"> 具体步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9Emeshpass%E5%A3%B0%E6%98%8E"><span class="toc-text"> 新增MeshPass声明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89meshpass%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8%E7%9A%84meshmaterialshader"><span class="toc-text"> 创建自定义MeshPass需要使用的MeshMaterialShader</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fmeshmaterialshader%E5%AD%90%E7%B1%BB%E5%A3%B0%E6%98%8E%E5%8F%8A%E5%AE%9E%E7%8E%B0"><span class="toc-text"> FMeshMaterialShader子类声明及实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E"><span class="toc-text"> 声明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hlsl%E4%BB%A3%E7%A0%81"><span class="toc-text"> HLSL代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAmeshpassprocessor"><span class="toc-text"> 创建MeshPassProcessor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#meshpassprocessor%E5%A3%B0%E6%98%8E"><span class="toc-text"> MeshPassProcessor声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%BD%BDaddmeshbatch%E5%87%BD%E6%95%B0"><span class="toc-text"> 重载AddMeshBatch函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0process%E5%87%BD%E6%95%B0%E5%8F%AF%E9%80%89"><span class="toc-text"> 实现Process函数（可选）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E5%BC%95%E6%93%8E%E6%B3%A8%E5%86%8C%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0"><span class="toc-text"> 向引擎注册创建函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEpassmask"><span class="toc-text"> 设置PassMask</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamic"><span class="toc-text"> Dynamic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#static"><span class="toc-text"> Static</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9fscenerenderer"><span class="toc-text"> 修改FSceneRenderer</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B6%E9%9B%86meshdrawcommand"><span class="toc-text"> 收集MeshDrawCommand</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8basepass%E5%90%8E%E8%AE%BE%E7%BD%AE%E7%BB%98%E5%88%B6"><span class="toc-text"> 在BasePass后设置绘制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#toonshadingmodel%E6%8F%8F%E8%BE%B9%E6%95%88%E6%9E%9C"><span class="toc-text"> ToonShadingModel描边效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#renderdoc%E6%88%AA%E5%B8%A7"><span class="toc-text"> RenderDoc截帧</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GDC/">
+        <div class="categories-list-item">
+          GDC
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">7</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+        <div class="categories-list-item">
+          UE5地形系统
+          <span class="categories-list-item-badge">4</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+        title="地形系统">
+        <div class="tags-list-item">地形系统</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+        title="UE5地形">
+        <div class="tags-list-item">UE5地形</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+        title="UE5多线程">
+        <div class="tags-list-item">UE5多线程</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-RDG/" 
+        title="UE5 RDG">
+        <div class="tags-list-item">UE5 RDG</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+        title="游戏引擎">
+        <div class="tags-list-item">游戏引擎</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+  <div class="image-wrapper">
+    <img 
+      src="/2024/07/07/UE5/源码实战/UE5-添加自定义MeshPass/banner.jpg" 
+      data-src="/2024/07/07/UE5/源码实战/UE5-添加自定义MeshPass/banner.jpg"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="UE5-添加自定义MeshPass thumbnail">
+  </div>
+
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      UE5-添加自定义MeshPass
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-07-07T15:18:43.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-07-07</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/" 
+          class="post-meta-link">
+          UE5源码修改实战
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.7k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/UE5/" 
+            class="post-meta-link">
+            UE5
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+            class="post-meta-link">
+            UE5源码
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="说明"><a class="markdownIt-Anchor" href="#说明"></a> 说明</h2>
+<p>本例中，使用添加自定义MeshPass的方式，在<a href="https://suikasan111.github.io/2024/06/18/UE5/UE5-%E6%B7%BB%E5%8A%A0ShadingModel/">添加Shading Model</a>的基础上，对Toon Shading Model增加描边效果。</p>
+<h3 id="todo"><a class="markdownIt-Anchor" href="#todo"></a> TODO</h3>
+<p>根据UE Mesh Drawing Pipeline中对MeshPass的总结，可以知道新增自定义MeshPass需要在Pipeline的进行如下方面的修改：</p>
+<ul>
+<li>新增MeshPass声明</li>
+<li>创建自定义MeshPass需要使用的MeshMaterialShader
+<ul>
+<li>FMeshMaterialShader子类声明及实现</li>
+<li>Shader代码</li>
+</ul>
+</li>
+<li>创建自定义MeshPass对应的MeshPassProcessor
+<ul>
+<li>重载AddMeshBatch函数</li>
+<li>实现Process函数（可选，仅为调用的封装，全都写在AddMeshBatch里也可以，内置MeshPassProcessor使用两种做法的都有）</li>
+<li>向引擎注册创建函数</li>
+</ul>
+</li>
+<li>设置PassMask，将MeshBatch加入自定义MeshPass（Cached &amp; Dynamic）</li>
+<li>修改FSceneRenderer
+<ul>
+<li>加入自定义MeshPass对应的MeshDrawCommand的收集</li>
+<li>在合适的位置使用RDG设置绘制</li>
+</ul>
+</li>
+</ul>
+<p>总结来说，实际上需要做的就是准备好生成MeshDrawCommand所需的各种资源，并在FSceneRenderer中加入对自定义MeshPass的Dispatch，并在该Dispatch逻辑中创建对应的MeshPassProcessor，在其重载的AddMeshBatch函数（Process函数非必需，只是某些MeshPassProcessor多加一层调用的封装，并非从FMeshPassProcessor继承而来）中完成资源的收集，并送给基类FMeshPassProcessor的BuildMeshDrawCommands函数完成MeshDrawCommand的创建收集。</p>
+<h2 id="具体步骤"><a class="markdownIt-Anchor" href="#具体步骤"></a> 具体步骤</h2>
+<h3 id="新增meshpass声明"><a class="markdownIt-Anchor" href="#新增meshpass声明"></a> 新增MeshPass声明</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Public\MeshPassProcessor.h
+
+namespace EMeshPass
+&#123;
+    enum Type : uint8
+    &#123;
+        DepthPass,
+        SecondStageDepthPass,
+        (...)
+        WaterInfoTextureDepthPass,
+        WaterInfoTexturePass,
+        &#x2F;********** MyDrawBorderMeshPass *****&#x2F;
+        MyDrawBorderMeshPass,
+        &#x2F;*************************************&#x2F;
+
+#if WITH_EDITOR
+        HitProxy,
+        HitProxyOpaqueOnly,
+        EditorLevelInstance,
+        EditorSelection,
+#endif
+
+        Num,
+        NumBits &#x3D; 6,
+    &#125;;
+&#125;
+
+inline const TCHAR* GetMeshPassName(EMeshPass::Type MeshPass)
+&#123;
+    switch (MeshPass)
+    &#123;
+    case EMeshPass::DepthPass: return TEXT(&quot;DepthPass&quot;);
+    (...)
+    case EMeshPass::WaterInfoTextureDepthPass: return TEXT(&quot;WaterInfoTextureDepthPass&quot;);
+    case EMeshPass::WaterInfoTexturePass: return TEXT(&quot;WaterInfoTexturePass&quot;);
+    &#x2F;********** MyDrawBorderMeshPass *****&#x2F;
+    case EMeshPass::MyDrawBorderMeshPass: return TEXT(&quot;MyDrawBorderMeshPass&quot;);
+    &#x2F;*************************************&#x2F;
+#if WITH_EDITOR
+    case EMeshPass::HitProxy: return TEXT(&quot;HitProxy&quot;);
+    case EMeshPass::HitProxyOpaqueOnly: return TEXT(&quot;HitProxyOpaqueOnly&quot;);
+    case EMeshPass::EditorLevelInstance: return TEXT(&quot;EditorLevelInstance&quot;);
+    case EMeshPass::EditorSelection: return TEXT(&quot;EditorSelection&quot;);
+#endif
+    &#125;
+
+&#x2F;********** MyDrawBorderMeshPass *****&#x2F;
+#if WITH_EDITOR
+  static_assert(EMeshPass::Num &#x3D;&#x3D; 33 + 4, &quot;Need to update switch(MeshPass) after changing EMeshPass&quot;); &#x2F;&#x2F; GUID to prevent incorrect auto-resolves, please change when changing the expression: &#123;674D7D62-CFD8-4971-9A8D-CD91E5612CD8&#125;
+#else
+  static_assert(EMeshPass::Num &#x3D;&#x3D; 33, &quot;Need to update switch(MeshPass) after changing EMeshPass&quot;); &#x2F;&#x2F; GUID to prevent incorrect auto-resolves, please change when changing the expression: &#123;674D7D62-CFD8-4971-9A8D-CD91E5612CD8&#125;
+#endif
+&#x2F;*************************************&#x2F;
+  checkf(0, TEXT(&quot;Missing case for EMeshPass %u&quot;), (uint32)MeshPass);
+  return nullptr;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="创建自定义meshpass需要使用的meshmaterialshader"><a class="markdownIt-Anchor" href="#创建自定义meshpass需要使用的meshmaterialshader"></a> 创建自定义MeshPass需要使用的MeshMaterialShader</h2>
+<h3 id="fmeshmaterialshader子类声明及实现"><a class="markdownIt-Anchor" href="#fmeshmaterialshader子类声明及实现"></a> FMeshMaterialShader子类声明及实现</h3>
+<h4 id="声明"><a class="markdownIt-Anchor" href="#声明"></a> 声明</h4>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Public\MyDrawBorderMeshPassRendering.h
+&#x2F;&#x2F; ilyaxu
+
+#pragma once
+ 
+#include &quot;CoreMinimal.h&quot;
+#include &quot;MeshMaterialShader.h&quot;
+#include &quot;MeshMaterialShaderType.h&quot;
+#include &quot;MeshPassProcessor.h&quot;
+
+class FMyDrawBorderMeshPassVS : public FMeshMaterialShader
+&#123;
+public:
+  DECLARE_SHADER_TYPE(FMyDrawBorderMeshPassVS, MeshMaterial);
+
+  FMyDrawBorderMeshPassVS() &#123;&#125;;
+
+  FMyDrawBorderMeshPassVS(const FMeshMaterialShaderType::CompiledShaderInitializerType&amp; Initializer)
+    : FMeshMaterialShader(Initializer)
+  &#123;
+    BorderThickness.Bind(Initializer.ParameterMap, TEXT(&quot;BorderThickness&quot;));
+  &#125;
+ 
+  static bool ShouldCompilePermutation(const FShaderPermutationParameters&amp; Parameters)
+  &#123;
+    return true;
+  &#125;
+
+  &#x2F;&#x2F; static void ModifyCompilationEnvironment(const FMaterialShaderPermutationParameters&amp; Parameters, FShaderCompilerEnvironment&amp; OutEnvironment)
+  &#x2F;&#x2F; &#123;
+  &#x2F;&#x2F; FMeshMaterialShader::ModifyCompilationEnvironment(Parameters, OutEnvironment);
+  &#x2F;&#x2F; &#125;
+ 
+  void GetShaderBindings(const FScene* Scene,
+    ERHIFeatureLevel::Type FeatureLevel, 
+    const FPrimitiveSceneProxy* PrimitiveSceneProxy, 
+    const FMaterialRenderProxy&amp; MaterialRenderProxy, 
+    const FMaterial&amp; Material, 
+    const FMeshPassProcessorRenderState&amp; DrawRenderState, 
+    const FMeshMaterialShaderElementData&amp; ShaderElementData, 
+    FMeshDrawSingleShaderBindings&amp; ShaderBindings) const
+  &#123;
+    FMeshMaterialShader::GetShaderBindings(Scene, FeatureLevel, PrimitiveSceneProxy, MaterialRenderProxy, Material, DrawRenderState, ShaderElementData, ShaderBindings);
+  &#125;
+ 
+private:
+  LAYOUT_FIELD(FShaderParameter, BorderThickness);
+&#125;;
+ 
+ 
+class FMyDrawBorderMeshPassPS : public FMeshMaterialShader
+&#123;
+public:
+  DECLARE_SHADER_TYPE(FMyDrawBorderMeshPassPS, MeshMaterial);
+
+  FMyDrawBorderMeshPassPS() &#123;&#125;;
+
+  FMyDrawBorderMeshPassPS(const FMeshMaterialShaderType::CompiledShaderInitializerType&amp; Initializer)
+    : FMeshMaterialShader(Initializer)
+  &#123;
+    BorderColor.Bind(Initializer.ParameterMap, TEXT(&quot;BorderColor&quot;));
+  &#125;
+
+  static bool ShouldCompilePermutation(const FShaderPermutationParameters&amp; Parameters)
+  &#123;
+    return true;
+  &#125;
+
+  &#x2F;&#x2F; static void ModifyCompilationEnvironment(const FMaterialShaderPermutationParameters&amp; Parameters, FShaderCompilerEnvironment&amp; OutEnvironment)
+  &#x2F;&#x2F; &#123;
+  &#x2F;&#x2F; FMeshMaterialShader::ModifyCompilationEnvironment(Parameters, OutEnvironment);
+  &#x2F;&#x2F; &#125;
+ 
+  void GetShaderBindings(const FScene* Scene,
+    ERHIFeatureLevel::Type FeatureLevel,
+    const FPrimitiveSceneProxy* PrimitiveSceneProxy,
+    const FMaterialRenderProxy&amp; MaterialRenderProxy,
+    const FMaterial&amp; Material,
+    const FMeshPassProcessorRenderState&amp; DrawRenderState,
+    const FMeshMaterialShaderElementData&amp; ShaderElementData,
+    FMeshDrawSingleShaderBindings&amp; ShaderBindings) const
+  &#123;
+    FMeshMaterialShader::GetShaderBindings(Scene, FeatureLevel, PrimitiveSceneProxy, MaterialRenderProxy, Material, DrawRenderState, ShaderElementData, ShaderBindings);
+  &#125;
+ 
+private:
+  LAYOUT_FIELD(FShaderParameter, BorderColor);
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="实现"><a class="markdownIt-Anchor" href="#实现"></a> 实现</h4>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MyDrawBorderMeshPassRendering.cpp
+
+IMPLEMENT_MATERIAL_SHADER_TYPE(, FMyDrawBorderMeshPassVS, TEXT(&quot;&#x2F;Engine&#x2F;Private&#x2F;FMyDrawBorderMeshPassShader.usf&quot;), TEXT(&quot;MainVS&quot;), SF_Vertex);
+IMPLEMENT_MATERIAL_SHADER_TYPE(, FMyDrawBorderMeshPassPS, TEXT(&quot;&#x2F;Engine&#x2F;Private&#x2F;FMyDrawBorderMeshPassShader.usf&quot;), TEXT(&quot;MainPS&quot;), SF_Pixel);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="hlsl代码"><a class="markdownIt-Anchor" href="#hlsl代码"></a> HLSL代码</h3>
+<pre class="line-numbers language-hlsl" data-language="hlsl"><code class="language-hlsl">&#x2F;&#x2F; Engine\Shaders\Private\FMyDrawBorderMeshPassShader.usf
+&#x2F;&#x2F; ilyaxu
+
+#include &quot;Common.ush&quot;
+#include &quot;MobileBasePassCommon.ush&quot;
+#include &quot;&#x2F;Engine&#x2F;Generated&#x2F;Material.ush&quot;
+#include &quot;&#x2F;Engine&#x2F;Generated&#x2F;VertexFactory.ush&quot;
+
+
+struct FMyDrawBorderMeshPassShaderVStoPS
+&#123;
+  FVertexFactoryInterpolantsVSToPS FactoryInterpolants;
+  FMobileBasePassInterpolantsVSToPS BasePassInterpolants;
+  float4 Position : SV_POSITION;
+&#125;;
+
+void MainVS(
+  FVertexFactoryInput Input,
+  out FMyDrawBorderMeshPassShaderVStoPS Output)
+&#123;
+  ResolvedView &#x3D; ResolveView();
+  FVertexFactoryIntermediates VFIntermediates &#x3D; GetVertexFactoryIntermediates(Input);
+  float4 WorldPositionExcludingWPO &#x3D; VertexFactoryGetWorldPosition(Input, VFIntermediates);
+  float4 WorldPosition &#x3D; WorldPositionExcludingWPO;
+  half3x3 TangentToLocal &#x3D; VertexFactoryGetTangentToLocal(Input, VFIntermediates);
+  FMaterialVertexParameters VertexParameters &#x3D; GetMaterialVertexParameters(Input, VFIntermediates, WorldPosition.xyz, TangentToLocal);
+#if MATERIAL_SHADINGMODEL_TOON
+  half3 WorldPositionOffset &#x3D; GetMaterialWorldPositionOffset(VertexParameters);
+#else
+  half3 WorldPositionOffset &#x3D; 0;
+#endif
+  WorldPosition.xyz +&#x3D; WorldPositionOffset;
+  float4 RasterizedWorldPosition &#x3D; VertexFactoryGetRasterizedWorldPosition(Input, VFIntermediates, WorldPosition);
+  Output.Position &#x3D; mul(RasterizedWorldPosition, ResolvedView.TranslatedWorldToClip);
+&#125;
+
+void MainPS(
+  FVertexFactoryInterpolantsVSToPS Interpolants
+  , FMobileBasePassInterpolantsVSToPS BasePassInterpolants
+  , in float4 SvPosition : SV_Position
+  , out half4 OutColor : SV_Target0)
+&#123;
+  const bool bIsFrontFace &#x3D; false;
+  FMaterialPixelParameters MaterialParameters &#x3D; GetMaterialPixelParameters(Interpolants, SvPosition);
+  FPixelMaterialInputs PixelMaterialInputs;
+  &#123;
+    float4 ScreenPosition &#x3D; SvPositionToResolvedScreenPosition(SvPosition);
+    float3 WorldPosition &#x3D; BasePassInterpolants.PixelPosition.xyz;
+    float3 WorldPositionExcludingWPO &#x3D; BasePassInterpolants.PixelPosition.xyz;
+#if USE_WORLD_POSITION_EXCLUDING_SHADER_OFFSETS
+    WorldPositionExcludingWPO &#x3D; BasePassInterpolants.PixelPositionExcludingWPO;
+#endif
+    CalcMaterialParametersEx(MaterialParameters, PixelMaterialInputs, SvPosition, ScreenPosition, bIsFrontFace, WorldPosition, WorldPositionExcludingWPO);
+
+#if FORCE_VERTEX_NORMAL
+    &#x2F;&#x2F; Quality level override of material&#39;s normal calculation, can be used to avoid normal map reads etc.
+    MaterialParameters.WorldNormal &#x3D; MaterialParameters.TangentToWorld[2];
+    MaterialParameters.ReflectionVector &#x3D; ReflectionAboutCustomWorldNormal(MaterialParameters, MaterialParameters.WorldNormal, false);
+#endif
+  &#125;
+ 
+#if !EARLY_Z_PASS_ONLY_MATERIAL_MASKING
+  &#x2F;&#x2F;Clip if the blend mode requires it.
+  GetMaterialCoverageAndClipping(MaterialParameters, PixelMaterialInputs);
+#endif
+
+  half3 OutlineColor &#x3D; half3(0.0, 0.0, 0.0);
+
+&#x2F;&#x2F; #if NUM_MATERIAL_OUTPUTS_GETOUTLINECOLOR &gt; 0 &amp;&amp; MATERIAL_SHADINGMODEL_TOON
+&#x2F;&#x2F; OutlineColor &#x3D; GetBorderColor0(MaterialParameters);
+&#x2F;&#x2F; #endif
+
+#if MATERIAL_SHADINGMODEL_TOON
+  OutlineColor &#x3D; half3(1.0, 1.0, 1.0);
+#endif
+
+  OutColor &#x3D; half4(OutlineColor, 1.0);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-hlsl" data-language="hlsl"><code class="language-hlsl">&#x2F;&#x2F; Engine\Shaders\Private\MobileBasePassVertexShader.usf
+
+void Main(
+  FVertexFactoryInput Input
+  , out FMobileShadingBasePassVSOutput Output
+#if INSTANCED_STEREO
+  , out uint LayerIndex : SV_RenderTargetArrayIndex
+#elif MOBILE_MULTI_VIEW
+  , in uint ViewId : SV_ViewID
+#endif
+  )
+&#123;
+  (...)
+  &#x2F;&#x2F; float3 WorldPositionOffset &#x3D; GetMaterialWorldPositionOffset(VertexParameters);
+#if MATERIAL_SHADINGMODEL_TOON
+  float3 WorldPositionOffset &#x3D; float3(0.0, 0.0, 0.0);
+#else
+  float3 WorldPositionOffset &#x3D; GetMaterialWorldPositionOffset(VertexParameters);
+#endif
+  (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="创建meshpassprocessor"><a class="markdownIt-Anchor" href="#创建meshpassprocessor"></a> 创建MeshPassProcessor</h2>
+<h3 id="meshpassprocessor声明"><a class="markdownIt-Anchor" href="#meshpassprocessor声明"></a> MeshPassProcessor声明</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Public\MyDrawBorderMeshPassRendering.h
+&#x2F;&#x2F; ilyaxu
+
+#pragma once
+ 
+#include &quot;CoreMinimal.h&quot;
+#include &quot;MeshMaterialShader.h&quot;
+#include &quot;MeshMaterialShaderType.h&quot;
+#include &quot;MeshPassProcessor.h&quot;
+ 
+class FMyDrawBorderMeshPassProcessor : public FMeshPassProcessor
+&#123;
+public:
+
+  &#x2F;&#x2F; UE5.4建议使用如下形式的Ctor，增加一个参数EMeshPass::Type
+  FMyDrawBorderMeshPassProcessor(
+    EMeshPass::Type InMeshPassType,
+    const FScene* Scene,
+    const FSceneView* InViewIfDynamicMeshCommand,
+    const FMeshPassProcessorRenderState&amp; InPassDrawRenderState,
+    FMeshPassDrawListContext* InDrawListContext);
+
+  virtual void AddMeshBatch(const FMeshBatch&amp; RESTRICT MeshBatch, uint64 BatchElementMask, const FPrimitiveSceneProxy* RESTRICT PrimitiveSceneProxy, int32 StaticMeshId &#x3D; -1) override final;
+ 
+public:
+  FMeshPassProcessorRenderState PassDrawRenderState;
+ 
+private:
+  void Process(
+    const FMeshBatch&amp; MeshBatch,
+    uint64 BatchElementMask,
+    const FPrimitiveSceneProxy* RESTRICT PrimitiveSceneProxy,
+    int32 StaticMeshId,
+    const FMaterialRenderProxy&amp; RESTRICT MaterialRenderProxy,
+    const FMaterial&amp; RESTRICT MaterialResource,
+    ERasterizerFillMode MeshFillMode,
+    ERasterizerCullMode MeshCullMode);
+&#125;;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MyDrawBorderMeshPassRendering.cpp
+
+FMyDrawBorderMeshPassProcessor::FMyDrawBorderMeshPassProcessor(
+  EMeshPass::Type InMeshPassType,
+  const FScene* Scene, 
+  const FSceneView* InViewIfDynamicMeshCommand, 
+  const FMeshPassProcessorRenderState&amp; InPassDrawRenderState, 
+  FMeshPassDrawListContext* InDrawListContext)
+  : FMeshPassProcessor(InMeshPassType, Scene, Scene-&gt;GetFeatureLevel(), InViewIfDynamicMeshCommand, InDrawListContext)
+  , PassDrawRenderState(InPassDrawRenderState)
+&#123;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="重载addmeshbatch函数"><a class="markdownIt-Anchor" href="#重载addmeshbatch函数"></a> 重载AddMeshBatch函数</h3>
+<p>在AddMeshBatch函数中对当前Material所用的ShadingModel进行判断，仅对自定义的Toon Shading Model进行描边</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MyDrawBorderMeshPassRendering.cpp
+
+void FMyDrawBorderMeshPassProcessor::AddMeshBatch(const FMeshBatch&amp; MeshBatch, uint64 BatchElementMask, const FPrimitiveSceneProxy* PrimitiveSceneProxy, int32 StaticMeshId)
+&#123;
+  const FMaterialRenderProxy* FallbackMaterialRenderProxyPtr &#x3D; nullptr;
+  const FMaterial&amp; Material &#x3D; MeshBatch.MaterialRenderProxy-&gt;GetMaterialWithFallback(FeatureLevel, FallbackMaterialRenderProxyPtr);
+
+  if (Material.GetShadingModels().HasShadingModel(MSM_Toon))
+  &#123;
+    const FMeshDrawingPolicyOverrideSettings OverrideSettings &#x3D; ComputeMeshOverrideSettings(MeshBatch);
+    const ERasterizerFillMode MeshFillMode &#x3D; ComputeMeshFillMode(Material, OverrideSettings);
+    const ERasterizerCullMode MeshCullMode &#x3D; ComputeMeshCullMode(Material, OverrideSettings);
+    const FMaterialRenderProxy&amp; MaterialRenderProxy &#x3D; FallbackMaterialRenderProxyPtr ? *FallbackMaterialRenderProxyPtr : *MeshBatch.MaterialRenderProxy;
+    Process(MeshBatch, BatchElementMask, PrimitiveSceneProxy, StaticMeshId, MaterialRenderProxy, Material, MeshFillMode, MeshCullMode);
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="实现process函数可选"><a class="markdownIt-Anchor" href="#实现process函数可选"></a> 实现Process函数（可选）</h4>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MyDrawBorderMeshPassRendering.cpp
+
+void FMyDrawBorderMeshPassProcessor::Process(const FMeshBatch&amp; MeshBatch, uint64 BatchElementMask, const FPrimitiveSceneProxy* PrimitiveSceneProxy, int32 StaticMeshId, const FMaterialRenderProxy&amp; MaterialRenderProxy, const FMaterial&amp; MaterialResource, ERasterizerFillMode MeshFillMode, ERasterizerCullMode MeshCullMode)
+&#123;
+  const FVertexFactory* VertexFactory &#x3D; MeshBatch.VertexFactory;
+
+  TMeshProcessorShaders&lt;
+    FMyDrawBorderMeshPassVS,
+    FMyDrawBorderMeshPassPS&gt; BorderGlowPassShaders;
+
+  if (!GetMyDrawBorderMeshPassShaders(MaterialResource, VertexFactory-&gt;GetType(), BorderGlowPassShaders.VertexShader, BorderGlowPassShaders.PixelShader))
+    return;
+
+  FMeshMaterialShaderElementData ShaderElementData;
+  ShaderElementData.InitializeMeshMaterialData(ViewIfDynamicMeshCommand, PrimitiveSceneProxy, MeshBatch, StaticMeshId, false);
+
+  const FMeshDrawCommandSortKey SortKey &#x3D; CalculateMeshStaticSortKey(BorderGlowPassShaders.VertexShader, BorderGlowPassShaders.PixelShader);
+  MeshCullMode &#x3D; ERasterizerCullMode::CM_CCW;
+ 
+  BuildMeshDrawCommands(
+    MeshBatch,
+    BatchElementMask,
+    PrimitiveSceneProxy,
+    MaterialRenderProxy,
+    MaterialResource,
+    PassDrawRenderState,
+    BorderGlowPassShaders,
+    MeshFillMode,
+    MeshCullMode,
+    SortKey,
+    EMeshPassFeatures::Default,
+    ShaderElementData);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="向引擎注册创建函数"><a class="markdownIt-Anchor" href="#向引擎注册创建函数"></a> 向引擎注册创建函数</h3>
+<p>定义MeshProcessor创建函数，并向引擎注册，以便后续可通过FPassProcessorManager::CreateMeshPassProcessor来创建</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Public\MyDrawBorderMeshPassRendering.h
+
+FMeshPassProcessor* CreateMyDrawBorderMeshPassProcessor(ERHIFeatureLevel::Type FeatureLevel, const FScene* Scene, const FSceneView* InViewIfDynamicMeshCommand, FMeshPassDrawListContext* InDrawListContext)
+&#123;
+  FMeshPassProcessorRenderState PassDrawRenderState;
+  PassDrawRenderState.SetBlendState(TStaticBlendStateWriteMask&lt;CW_RGBA&gt;::GetRHI());
+  PassDrawRenderState.SetDepthStencilAccess(Scene-&gt;DefaultBasePassDepthStencilAccess);
+  PassDrawRenderState.SetDepthStencilState(TStaticDepthStencilState&lt;true, CF_DepthNearOrEqual&gt;::GetRHI());
+
+  return new FMyDrawBorderMeshPassProcessor(EMeshPass::MyDrawBorderMeshPass, Scene, InViewIfDynamicMeshCommand, PassDrawRenderState, InDrawListContext);
+&#125;
+
+&#x2F;&#x2F; UE5 使用下列宏来将MeshPassProcessor注册进FPassProcessorManager和FPSOCollectorCreateManager
+REGISTER_MESHPASSPROCESSOR_AND_PSOCOLLECTOR(MyDrawBorderMeshPass, CreateMyDrawBorderMeshPassProcessor, EShadingPath::Mobile, EMeshPass::MyDrawBorderMeshPass, EMeshPassFlags::CachedMeshCommands | EMeshPassFlags::MainView);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="设置passmask"><a class="markdownIt-Anchor" href="#设置passmask"></a> 设置PassMask</h2>
+<h3 id="dynamic"><a class="markdownIt-Anchor" href="#dynamic"></a> Dynamic</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneVisibility.cpp
+
+static void ComputeDynamicMeshRelevance(
+  EShadingPath ShadingPath,
+  bool bAddLightmapDensityCommands,
+  const FPrimitiveViewRelevance&amp; ViewRelevance,
+  const FMeshBatchAndRelevance&amp; MeshBatch,
+  FViewInfo&amp; View,
+  FMeshPassMask&amp; PassMask,
+  FPrimitiveSceneInfo* PrimitiveSceneInfo,
+  const FPrimitiveBounds&amp; Bounds)
+&#123;
+  const int32 NumElements &#x3D; MeshBatch.Mesh-&gt;Elements.Num();
+  if (ViewRelevance.bDrawRelevance &amp;&amp; (ViewRelevance.bRenderInMainPass || ViewRelevance.bRenderCustomDepth || ViewRelevance.bRenderInDepthPass))
+  &#123;
+    (...)
+    if (ViewRelevance.bRenderInMainPass || ViewRelevance.bRenderCustomDepth)
+    &#123;
+      (...)
+      if (ShadingPath &#x3D;&#x3D; EShadingPath::Mobile)
+      &#123;
+        PassMask.Set(EMeshPass::MobileBasePassCSM);
+        View.NumVisibleDynamicMeshElements[EMeshPass::MobileBasePassCSM] +&#x3D; NumElements;
+
+        PassMask.Set(EMeshPass::MyDrawBorderMeshPass);
+        View.NumVisibleDynamicMeshElements[EMeshPass::MyDrawBorderMeshPass] +&#x3D; NumElements;
+      &#125;
+      (...)
+    &#125;
+  &#125;
+  (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="static"><a class="markdownIt-Anchor" href="#static"></a> Static</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneVisibility.cpp
+
+void FRelevancePacket::ComputeRelevance(FDynamicPrimitiveIndexList&amp; DynamicPrimitiveIndexList)
+&#123;
+    (...)    
+    
+            if ((StaticMeshRelevance.bUseForMaterial || StaticMeshRelevance.bUseAsOccluder)
+              &amp;&amp; (ViewRelevance.bRenderInMainPass || ViewRelevance.bRenderCustomDepth || ViewRelevance.bRenderInDepthPass)
+              &amp;&amp; !bHiddenByHLODFade)
+            &#123;
+              (...)
+
+              &#x2F;&#x2F; Mark static mesh as visible for rendering
+              if (StaticMeshRelevance.bUseForMaterial &amp;&amp; (ViewRelevance.bRenderInMainPass || ViewRelevance.bRenderCustomDepth))
+              &#123;
+                &#x2F;&#x2F; Specific logic for mobile packets
+                if (ShadingPath &#x3D;&#x3D; EShadingPath::Mobile)
+                &#123;
+                  &#x2F;&#x2F; Skydome must not be added to base pass bucket
+                  if (!StaticMeshRelevance.bUseSkyMaterial)
+                  &#123;
+                    DrawCommandPacket.AddCommandsForMesh(PrimitiveIndex, PrimitiveSceneInfo, StaticMeshRelevance, StaticMesh, CullingPayloadFlags, Scene, bCanCache, EMeshPass::BasePass);
+                    if (!bMobileBasePassAlwaysUsesCSM)
+                    &#123;
+                      DrawCommandPacket.AddCommandsForMesh(PrimitiveIndex, PrimitiveSceneInfo, StaticMeshRelevance, StaticMesh, CullingPayloadFlags, Scene, bCanCache, EMeshPass::MobileBasePassCSM);
+                      DrawCommandPacket.AddCommandsForMesh(PrimitiveIndex, PrimitiveSceneInfo, StaticMeshRelevance, StaticMesh, CullingPayloadFlags, Scene, bCanCache, EMeshPass::MyDrawBorderMeshPass);
+                    &#125;
+                  &#125;
+
+                  (...)
+                &#125;
+
+                (...)
+              &#125;
+              (...)
+            &#125;
+
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="修改fscenerenderer"><a class="markdownIt-Anchor" href="#修改fscenerenderer"></a> 修改FSceneRenderer</h2>
+<p>描边的MeshPass需要加载BasePass之后，需要进行的主要有两项：收集MeshDrawCommand，以及在BasePass之后进行绘制。</p>
+<h3 id="收集meshdrawcommand"><a class="markdownIt-Anchor" href="#收集meshdrawcommand"></a> 收集MeshDrawCommand</h3>
+<p>在BasePass入队生成MeshDrawCommand任务之后添加</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MobileShadingRenderer.cpp
+
+void FMobileSceneRenderer::SetupMobileBasePassAfterShadowInit(FExclusiveDepthStencil::Type BasePassDepthStencilAccess, TArrayView&lt;FViewCommands&gt; ViewCommandsPerView, FInstanceCullingManager&amp; InstanceCullingManager)
+&#123;
+  for (int32 ViewIndex &#x3D; 0; ViewIndex &lt; AllViews.Num(); ++ViewIndex)
+  &#123;
+    (...)
+
+    FName PassName(GetMeshPassName(EMeshPass::BasePass));
+    Pass.DispatchPassSetup(
+      Scene,
+      View,
+      FInstanceCullingContext(PassName, ShaderPlatform, &amp;InstanceCullingManager, ViewIds, nullptr, InstanceCullingMode),
+      EMeshPass::BasePass,
+      BasePassDepthStencilAccess,
+      MeshPassProcessor,
+      View.DynamicMeshElements,
+      &amp;View.DynamicMeshElementsPassRelevance,
+      View.NumVisibleDynamicMeshElements[EMeshPass::BasePass],
+      ViewCommands.DynamicMeshCommandBuildRequests[EMeshPass::BasePass],
+      ViewCommands.DynamicMeshCommandBuildFlags[EMeshPass::BasePass],
+      ViewCommands.NumDynamicMeshCommandBuildRequestElements[EMeshPass::BasePass],
+      ViewCommands.MeshCommands[EMeshPass::BasePass],
+      BasePassCSMMeshPassProcessor,
+      &amp;ViewCommands.MeshCommands[EMeshPass::MobileBasePassCSM]);
+
+    &#x2F;********** MyDrawBorderMeshPass *****&#x2F;
+    FMeshPassProcessor* MyDrawBorderMeshPassProcessor &#x3D; FPassProcessorManager::CreateMeshPassProcessor(EShadingPath::Mobile, EMeshPass::MyDrawBorderMeshPass, Scene-&gt;GetFeatureLevel(), Scene, &amp;View, nullptr);
+    FParallelMeshDrawCommandPass&amp; MyDrawBorderPass &#x3D; View.ParallelMeshDrawCommandPasses[EMeshPass::MyDrawBorderMeshPass];
+    
+    FName MyDrawBorderPassName(GetMeshPassName(EMeshPass::MyDrawBorderMeshPass));
+
+    MyDrawBorderPass.DispatchPassSetup(
+      Scene,
+      View,
+      FInstanceCullingContext(MyDrawBorderPassName, ShaderPlatform, &amp;InstanceCullingManager, ViewIds, nullptr, InstanceCullingMode),
+      EMeshPass::MyDrawBorderMeshPass,
+      BasePassDepthStencilAccess,
+      MeshPassProcessor,
+      View.DynamicMeshElements,
+      &amp;View.DynamicMeshElementsPassRelevance,
+      View.NumVisibleDynamicMeshElements[EMeshPass::MyDrawBorderMeshPass],
+      ViewCommands.DynamicMeshCommandBuildRequests[EMeshPass::MyDrawBorderMeshPass],
+      ViewCommands.DynamicMeshCommandBuildFlags[EMeshPass::MyDrawBorderMeshPass],
+      ViewCommands.NumDynamicMeshCommandBuildRequestElements[EMeshPass::MyDrawBorderMeshPass],
+      ViewCommands.MeshCommands[EMeshPass::MyDrawBorderMeshPass]);
+    &#x2F;*************************************&#x2F;
+  &#125;
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneRendering.cpp
+
+void FSceneRenderer::SetupMeshPass(FViewInfo&amp; View, FExclusiveDepthStencil::Type BasePassDepthStencilAccess, FViewCommands&amp; ViewCommands, FInstanceCullingManager&amp; InstanceCullingManager)
+&#123;
+  SCOPE_CYCLE_COUNTER(STAT_SetupMeshPass);
+
+  const EShadingPath ShadingPath &#x3D; GetFeatureLevelShadingPath(Scene-&gt;GetFeatureLevel());
+
+  for (int32 PassIndex &#x3D; 0; PassIndex &lt; EMeshPass::Num; PassIndex++)
+  &#123;
+    const EMeshPass::Type PassType &#x3D; (EMeshPass::Type)PassIndex;
+
+    if ((FPassProcessorManager::GetPassFlags(ShadingPath, PassType) &amp; EMeshPassFlags::MainView) !&#x3D; EMeshPassFlags::None)
+    &#123;
+      &#x2F;&#x2F; Mobile: BasePass and MobileBasePassCSM lists need to be merged and sorted after shadow pass.
+      if (ShadingPath &#x3D;&#x3D; EShadingPath::Mobile &amp;&amp; (PassType &#x3D;&#x3D; EMeshPass::BasePass || PassType &#x3D;&#x3D; EMeshPass::MobileBasePassCSM || PassType &#x3D;&#x3D; EMeshPass::MyDrawBorderMeshPass))
+      &#123;
+        continue;
+      &#125;
+
+      (...)
+    &#125;
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="在basepass后设置绘制"><a class="markdownIt-Anchor" href="#在basepass后设置绘制"></a> 在BasePass后设置绘制</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MobileShadingRenderer.cpp
+
+void FMobileSceneRenderer::RenderMyDrawBorderMeshPass(FRHICommandListImmediate&amp; RHICmdList, const TArrayView&lt;const FViewInfo*&gt; PassViews)
+&#123;
+  for (int32 ViewIndex &#x3D; 0; ViewIndex &lt; PassViews.Num(); ViewIndex++)
+  &#123;
+    SCOPED_CONDITIONAL_DRAW_EVENTF(RHICmdList, EventView, Views.Num() &gt; 1, TEXT(&quot;View%d&quot;), ViewIndex);
+    const FViewInfo&amp; View &#x3D; *PassViews[ViewIndex];
+    if (!View.ShouldRenderView())
+    &#123;
+      continue;
+    &#125;
+
+    RHICmdList.SetViewport(View.ViewRect.Min.X, View.ViewRect.Min.Y, 0, View.ViewRect.Max.X, View.ViewRect.Max.Y, 1);
+    View.ParallelMeshDrawCommandPasses[EMeshPass::MyDrawBorderMeshPass].DispatchDraw(nullptr, RHICmdList);
+  &#125;
+&#125;
+
+
+void FMobileSceneRenderer::RenderForwardSinglePass(FRDGBuilder&amp; GraphBuilder, FMobileRenderPassParameters* PassParameters, FRenderViewContext&amp; ViewContext, FSceneTextures&amp; SceneTextures)
+&#123;
+  (...)
+
+  GraphBuilder.AddPass(
+    RDG_EVENT_NAME(&quot;SceneColorRendering&quot;),
+    PassParameters,
+    &#x2F;&#x2F; the second view pass should not be merged with the first view pass on mobile since the subpass would not work properly.
+    ERDGPassFlags::Raster | ERDGPassFlags::NeverMerge,
+    [this, PassParameters, ViewContext, bDoOcclusionQueries, &amp;SceneTextures](FRHICommandList&amp; RHICmdList)
+  &#123;
+    (...)
+
+    &#x2F;&#x2F; Depth pre-pass
+    RHICmdList.SetCurrentStat(GET_STATID(STAT_CLM_MobilePrePass));
+    RenderMaskedPrePass(RHICmdList, View);
+    &#x2F;&#x2F; Opaque and masked
+    RHICmdList.SetCurrentStat(GET_STATID(STAT_CLMM_Opaque));
+    RenderMobileBasePass(RHICmdList, View, &amp;PassParameters-&gt;InstanceCullingDrawParams);
+    &#x2F;********** MyDrawBorderMeshPass *****&#x2F;
+    RenderMyDrawBorderMeshPass(RHICmdList, View);
+    &#x2F;*************************************&#x2F;
+
+    (...)
+  &#125;);
+
+  (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="效果"><a class="markdownIt-Anchor" href="#效果"></a> 效果</h2>
+<h3 id="toonshadingmodel描边效果"><a class="markdownIt-Anchor" href="#toonshadingmodel描边效果"></a> ToonShadingModel描边效果</h3>
+<p><img src="/2024/07/07/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89MeshPass/result.png" alt="result" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/07/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89MeshPass/result.png" class="lozad post-image"></p>
+<h3 id="renderdoc截帧"><a class="markdownIt-Anchor" href="#renderdoc截帧"></a> RenderDoc截帧</h3>
+<p>使用宏添加统计数据以使自定义MeshPass能被RenderDoc捕获</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Public\RenderCore.h
+
+(...)
+
+DECLARE_CYCLE_STAT_EXTERN(TEXT(&quot;Depth drawing&quot;),STAT_DepthDrawTime,STATGROUP_SceneRendering, RENDERCORE_API);
+DECLARE_CYCLE_STAT_EXTERN(TEXT(&quot;Base pass drawing&quot;),STAT_BasePassDrawTime,STATGROUP_SceneRendering, RENDERCORE_API);
+&#x2F;********************&#x2F;
+DECLARE_CYCLE_STAT_EXTERN(TEXT(&quot;My draw border pass drawing&quot;),STAT_MyDrawBorderPassDrawTime,STATGROUP_SceneRendering, RENDERCORE_API);
+&#x2F;********************&#x2F;
+DECLARE_CYCLE_STAT_EXTERN(TEXT(&quot;Anisotropy pass drawing&quot;), STAT_AnisotropyPassDrawTime, STATGROUP_SceneRendering, RENDERCORE_API);
+DECLARE_CYCLE_STAT_EXTERN(TEXT(&quot;Water pass drawing&quot;), STAT_WaterPassDrawTime, STATGROUP_SceneRendering, RENDERCORE_API);
+
+(...)
+
+&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Private\RenderCore.cpp
+
+(...)
+
+DEFINE_STAT(STAT_StaticDrawListDrawTime);
+DEFINE_STAT(STAT_BasePassDrawTime);
+&#x2F;********************&#x2F;
+DEFINE_STAT(STAT_MyDrawBorderPassDrawTime);
+&#x2F;********************&#x2F;
+DEFINE_STAT(STAT_AnisotropyPassDrawTime);
+DEFINE_STAT(STAT_DepthDrawTime);
+
+(...)
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MobileBasePassRendering.cpp
+
+void FMobileSceneRenderer::RenderMyDrawBorderMeshPass(FRHICommandList&amp; RHICmdList, const FViewInfo&amp; View)
+&#123;
+  CSV_SCOPED_TIMING_STAT_EXCLUSIVE(RenderMyDrawBorderMeshPass);
+  SCOPED_DRAW_EVENT(RHICmdList, MyDrawBorderMeshPass);
+  SCOPE_CYCLE_COUNTER(STAT_MyDrawBorderPassDrawTime);
+
+  RHICmdList.SetViewport(View.ViewRect.Min.X, View.ViewRect.Min.Y, 0, View.ViewRect.Max.X, View.ViewRect.Max.Y, 1);
+  View.ParallelMeshDrawCommandPasses[EMeshPass::MyDrawBorderMeshPass].DispatchDraw(nullptr, RHICmdList);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/2024/07/07/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89MeshPass/renderdoc.png" alt="renderdoc" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/07/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89MeshPass/renderdoc.png" class="lozad post-image"></p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/render-dependency-graph-in-unreal-engine">Unreal Engine Documentation: Render Dependency Graph</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29523119/article/details/121026939">（UE4 4.27）UE4添加一次自定义的MeshPass实现移动端边缘发光</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qjh5606/article/details/118178498">虚幻引擎之自定义MeshPass</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/547444128">UE5 添加自定义MeshPass</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/14588598.html">剖析虚幻渲染体系（03）- 渲染机制</a></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/07/07/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89MeshPass/">
+            https://suikasan111.github.io/2024/07/07/UE5/%E6%BA%90%E7%A0%81%E5%AE%9E%E6%88%98/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89MeshPass/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2024/07/08/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8A%EF%BC%9A%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">UE5-TaskGraph系统-上：基本类型 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/07/06/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-RHIThread/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">UE5-RHIThread </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#todo"><span class="toc-text"> TODO</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%AD%A5%E9%AA%A4"><span class="toc-text"> 具体步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9Emeshpass%E5%A3%B0%E6%98%8E"><span class="toc-text"> 新增MeshPass声明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89meshpass%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8%E7%9A%84meshmaterialshader"><span class="toc-text"> 创建自定义MeshPass需要使用的MeshMaterialShader</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fmeshmaterialshader%E5%AD%90%E7%B1%BB%E5%A3%B0%E6%98%8E%E5%8F%8A%E5%AE%9E%E7%8E%B0"><span class="toc-text"> FMeshMaterialShader子类声明及实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E"><span class="toc-text"> 声明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hlsl%E4%BB%A3%E7%A0%81"><span class="toc-text"> HLSL代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAmeshpassprocessor"><span class="toc-text"> 创建MeshPassProcessor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#meshpassprocessor%E5%A3%B0%E6%98%8E"><span class="toc-text"> MeshPassProcessor声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%BD%BDaddmeshbatch%E5%87%BD%E6%95%B0"><span class="toc-text"> 重载AddMeshBatch函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0process%E5%87%BD%E6%95%B0%E5%8F%AF%E9%80%89"><span class="toc-text"> 实现Process函数（可选）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E5%BC%95%E6%93%8E%E6%B3%A8%E5%86%8C%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0"><span class="toc-text"> 向引擎注册创建函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEpassmask"><span class="toc-text"> 设置PassMask</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamic"><span class="toc-text"> Dynamic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#static"><span class="toc-text"> Static</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9fscenerenderer"><span class="toc-text"> 修改FSceneRenderer</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B6%E9%9B%86meshdrawcommand"><span class="toc-text"> 收集MeshDrawCommand</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8basepass%E5%90%8E%E8%AE%BE%E7%BD%AE%E7%BB%98%E5%88%B6"><span class="toc-text"> 在BasePass后设置绘制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#toonshadingmodel%E6%8F%8F%E8%BE%B9%E6%95%88%E6%9E%9C"><span class="toc-text"> ToonShadingModel描边效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#renderdoc%E6%88%AA%E5%B8%A7"><span class="toc-text"> RenderDoc截帧</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#todo"><span class="toc-text"> TODO</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%AD%A5%E9%AA%A4"><span class="toc-text"> 具体步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9Emeshpass%E5%A3%B0%E6%98%8E"><span class="toc-text"> 新增MeshPass声明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89meshpass%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8%E7%9A%84meshmaterialshader"><span class="toc-text"> 创建自定义MeshPass需要使用的MeshMaterialShader</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fmeshmaterialshader%E5%AD%90%E7%B1%BB%E5%A3%B0%E6%98%8E%E5%8F%8A%E5%AE%9E%E7%8E%B0"><span class="toc-text"> FMeshMaterialShader子类声明及实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E"><span class="toc-text"> 声明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hlsl%E4%BB%A3%E7%A0%81"><span class="toc-text"> HLSL代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAmeshpassprocessor"><span class="toc-text"> 创建MeshPassProcessor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#meshpassprocessor%E5%A3%B0%E6%98%8E"><span class="toc-text"> MeshPassProcessor声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%BD%BDaddmeshbatch%E5%87%BD%E6%95%B0"><span class="toc-text"> 重载AddMeshBatch函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0process%E5%87%BD%E6%95%B0%E5%8F%AF%E9%80%89"><span class="toc-text"> 实现Process函数（可选）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E5%BC%95%E6%93%8E%E6%B3%A8%E5%86%8C%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0"><span class="toc-text"> 向引擎注册创建函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEpassmask"><span class="toc-text"> 设置PassMask</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamic"><span class="toc-text"> Dynamic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#static"><span class="toc-text"> Static</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9fscenerenderer"><span class="toc-text"> 修改FSceneRenderer</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B6%E9%9B%86meshdrawcommand"><span class="toc-text"> 收集MeshDrawCommand</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8basepass%E5%90%8E%E8%AE%BE%E7%BD%AE%E7%BB%98%E5%88%B6"><span class="toc-text"> 在BasePass后设置绘制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-text"> 效果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#toonshadingmodel%E6%8F%8F%E8%BE%B9%E6%95%88%E6%9E%9C"><span class="toc-text"> ToonShadingModel描边效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#renderdoc%E6%88%AA%E5%B8%A7"><span class="toc-text"> RenderDoc截帧</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-18</div>
+        <a href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/"><div class="recent-posts-item-content">Frostbite Terrain Procedural Tools</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-17</div>
+        <a href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/"><div class="recent-posts-item-content">UE5-渲染线程中多线程任务分发简析</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-15</div>
+        <a href="/2024/07/15/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-4%EF%BC%9A%E6%80%BB%E7%BB%93/"><div class="recent-posts-item-content">UE5-地形系统-4：总结</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

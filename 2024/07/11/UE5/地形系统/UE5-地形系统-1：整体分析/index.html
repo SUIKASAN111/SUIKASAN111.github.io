@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>UE5-地形系统-1：整体分析</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="UE5-地形系统-1：整体分析">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-07-11">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="地形系统">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5地形">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>43</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>9</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>16</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 主要类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#alandscapeproxy"><span class="toc-text"> ALandscapeProxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#alandscape"><span class="toc-text"> ALandscape</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ulandscapecomponent"><span class="toc-text"> ULandscapeComponent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flandscapecomponentsceneproxy"><span class="toc-text"> FLandscapeComponentSceneProxy</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#flandscapesharedbuffers"><span class="toc-text"> FLandscapeSharedBuffers</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%B0%E5%BD%A2%E6%B8%B2%E6%9F%93"><span class="toc-text"> 地形渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#heightmap%E6%A0%BC%E5%BC%8F"><span class="toc-text"> HeightMap格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E4%B8%ADvertex%E5%92%8Cindex%E7%9A%84%E7%BB%84%E7%BB%87%E5%BD%A2%E5%BC%8F"><span class="toc-text"> 组件中Vertex和Index的组织形式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#index"><span class="toc-text"> Index</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#vertex"><span class="toc-text"> Vertex</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#landscape%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B"><span class="toc-text"> Landscape渲染过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAflandscapecomponentsceneproxy"><span class="toc-text"> 创建FLandscapeComponentSceneProxy</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E8%B5%84%E6%BA%90%E5%88%9B%E5%BB%BA"><span class="toc-text"> 渲染资源创建</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#sharedbuffers"><span class="toc-text"> SharedBuffers</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9C%B0%E5%BD%A2%E6%9D%90%E8%B4%A8"><span class="toc-text"> 地形材质</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#mesh-drawing"><span class="toc-text"> Mesh Drawing</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E6%B5%81%E7%A8%8B%E6%80%BB%E7%BB%93"><span class="toc-text"> 渲染流程总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GDC/">
+        <div class="categories-list-item">
+          GDC
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">7</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+        <div class="categories-list-item">
+          UE5地形系统
+          <span class="categories-list-item-badge">4</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+        title="地形系统">
+        <div class="tags-list-item">地形系统</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+        title="UE5地形">
+        <div class="tags-list-item">UE5地形</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+        title="UE5多线程">
+        <div class="tags-list-item">UE5多线程</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-RDG/" 
+        title="UE5 RDG">
+        <div class="tags-list-item">UE5 RDG</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+        title="游戏引擎">
+        <div class="tags-list-item">游戏引擎</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      UE5-地形系统-1：整体分析
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-07-11T12:14:27.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-07-11</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+          class="post-meta-link">
+          UE5地形系统
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>4k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+            class="post-meta-link">
+            地形系统
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5/" 
+            class="post-meta-link">
+            UE5
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+            class="post-meta-link">
+            UE5地形
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="说明"><a class="markdownIt-Anchor" href="#说明"></a> 说明</h2>
+<p>本文为<a href="TODO">UE5-地形系统系列</a>的第一篇文章，主要是对UE5地形系统进行初步的整体分析</p>
+<h2 id="主要类型"><a class="markdownIt-Anchor" href="#主要类型"></a> 主要类型</h2>
+<h3 id="alandscapeproxy"><a class="markdownIt-Anchor" href="#alandscapeproxy"></a> ALandscapeProxy</h3>
+<p>继承体系如下：</p>
+<ul>
+<li>UObjectBase
+<ul>
+<li>UObjectBaseUtility
+<ul>
+<li>UObject
+<ul>
+<li>AActor
+<ul>
+<li>APartitionActor
+<ul>
+<li>ALandscapeProxy</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Detail 面板上显示的属性变量都存放在 ALandscapeProxy 类中，这个类主要用来保存地形的详细信息和属性设定值。</p>
+<p>例如在 bEnableNanite 开启时，Detail 面板 Nanite 类目下 Advanced 选项就会变为可编辑</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Landscape\Classes\LandscapeProxy.h
+
+class ALandscapeProxy : public APartitionActor, public ILandscapeSplineInterface
+&#123;
+    GENERATED_BODY()
+public:
+    (...)
+    UPROPERTY(EditAnywhere, Category &#x3D; Nanite, AdvancedDisplay, meta &#x3D; (EditCondition &#x3D; &quot;bEnableNanite&quot;, LandscapeInherited))
+    int32 NaniteLODIndex &#x3D; 0;
+
+    UPROPERTY(EditAnywhere, Category &#x3D; Nanite, AdvancedDisplay, meta &#x3D; (EditCondition &#x3D; &quot;bEnableNanite&quot;, LandscapeInherited))
+    bool bNaniteSkirtEnabled &#x3D; false;
+
+    UPROPERTY(EditAnywhere, Category &#x3D; Nanite, AdvancedDisplay, meta &#x3D; (EditCondition &#x3D; &quot;bEnableNanite&quot;, LandscapeInherited))
+    float NaniteSkirtDepth &#x3D; 0.1f;
+
+    UPROPERTY(EditAnywhere, Category &#x3D; Nanite, AdvancedDisplay, meta &#x3D; (EditCondition &#x3D; &quot;bEnableNanite&quot;, LandscapeInherited))
+    int32 NanitePositionPrecision &#x3D; 0;
+
+    UPROPERTY(EditAnywhere, Category &#x3D; Nanite, AdvancedDisplay, meta &#x3D; (EditCondition &#x3D; &quot;bEnableNanite&quot;, LandscapeInherited))
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/LandscapeDetailPanel.png" alt="LandscapeDetailPanel" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/LandscapeDetailPanel.png" class="lozad post-image"></p>
+<h3 id="alandscape"><a class="markdownIt-Anchor" href="#alandscape"></a> ALandscape</h3>
+<p>ALandscape 继承自 ALandscapeProxy，在此基础上实现了更多功能。<br>
+ALanscape的主要作用是管理LandscapeComponent，地形相关的真正的渲染数据在ULandscapeComponent，地形渲染流程也是以ULandscapeComponent为基础单元。</p>
+<h3 id="ulandscapecomponent"><a class="markdownIt-Anchor" href="#ulandscapecomponent"></a> ULandscapeComponent</h3>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/LandscapeComponentClassDiagram.png" alt="LandscapeComponentClassDiagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/LandscapeComponentClassDiagram.png" class="lozad post-image"></p>
+<p>每个地形都会被划分成多个地形组件。<br>
+地形组件是虚幻引擎在渲染地形、计算地形可视性和处理地形碰撞时采用的基本单位。</p>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/LandscapeWireframeInEditor.png" alt="LandscapeWireframeInEditor" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/LandscapeWireframeInEditor.png" class="lozad post-image"></p>
+<p>地形中的所有地形组件都具有相同的大小，并且始终为正方形。地形组件尺寸是在创建地形时决定的，取决于地形的大小和细节设置。</p>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/LandscapeComponentSettings.png" alt="LandscapeComponentSettings" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/LandscapeComponentSettings.png" class="lozad post-image"></p>
+<p>每个 Component 可以被分为 2*2个 Sections，也可以只有一个 Section ，每个 Section 可以由不同数量的 Quads 组成，Section 每个方向上的 Quads 数量皆为 Log N - 1，比如7, 15, 31…，最大为255。</p>
+<p>因此，每个 Section 单个方向上的顶点数一定为2的指数。</p>
+<p>每个 LandscapeComponent 的高度数据存储在一张HeightMap纹理中。因此，纹理的大小必定是2的指数。</p>
+<p>组件数、分段数、四边形数、定点数 计算示例：</p>
+<table>
+<thead>
+<tr>
+<th>总体大小（顶点数）</th>
+<th>四边形数/分段</th>
+<th>分段数/组件</th>
+<th>地形组件尺寸</th>
+<th>地形组件总数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8129 x 8129</td>
+<td>127</td>
+<td>4 (2x2)</td>
+<td>254x254</td>
+<td>1024 (32x32)</td>
+</tr>
+<tr>
+<td>4033 x 4033</td>
+<td>63</td>
+<td>4 (2x2)</td>
+<td>126x126</td>
+<td>1024 (32x32)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="flandscapecomponentsceneproxy"><a class="markdownIt-Anchor" href="#flandscapecomponentsceneproxy"></a> FLandscapeComponentSceneProxy</h3>
+<p>FLandscapeComponentSceneProxy 继承自 FPrimitiveSceneProxy，是 ULandscapeComponent 在渲染线程的代表，镜像了 ULandscapeComponent 在渲染线程的状态，其中包含了 Landscape 的 VertexBuffer, IndexBuffer, VertexFactory 等数据。</p>
+<p>类似UE Mesh Drawing Pipeline中所述，对于 Landscape 的渲染也是从构建其 FLandscapeComponentSceneProxy 开始的。</p>
+<h4 id="flandscapesharedbuffers"><a class="markdownIt-Anchor" href="#flandscapesharedbuffers"></a> FLandscapeSharedBuffers</h4>
+<p>FLandscapeComponentSceneProxy 中包含一个 FLandscapeSharedBuffers， 上面提到的FLandscapeComponentSceneProxy 中的 VertexBuffer, IndexBuffer 等渲染所必需的数据，实际上就是在 FLandscapeSharedBuffers 之中。</p>
+<p>FLandscapeComponentSceneProxy类的静态成员，TMap&lt;uint32, FLandscapeSharedBuffers*&gt; SharedBuffersMap 管理所有的FLandscapeSharedBuffers。</p>
+<p>SharedBuffersKey 是 SharedBuffersMap 中的键，对应着各自的 SharedBuffers。在 FLandscapeComponentSceneProxy 创建时也会计算其 SharedBuffers所对应的 SharedBuffersKey</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">FLandscapeComponentSceneProxy::FLandscapeComponentSceneProxy(ULandscapeComponent* InComponent)
+    : (...)
+&#123;
+    (...)
+    const int8 SubsectionSizeLog2 &#x3D; static_cast&lt;int8&gt;(FMath::CeilLogTwo(InComponent-&gt;SubsectionSizeQuads + 1));
+    SharedBuffersKey &#x3D; (SubsectionSizeLog2 &amp; 0xf) | ((NumSubsections &amp; 0xf) &lt;&lt; 4) | (XYOffsetmapTexture &#x3D;&#x3D; nullptr ? 0 : 1 &lt;&lt; 31);
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可见 SharedBuffersKey 是由 SubsectionSizeQuads、NumSubsections、XYOffsetmapTexture 唯一确定的。也就是说，同属于一个 ALandscape 的不同 LandscapeComponent 有可能共用一个 SharedBuffers</p>
+<p>FLandscapeSharedBuffers 在构造过程中会创建并设置其中的 VertexBuffer(FLandscapeVertexBuffer 类型)，IndexBuffer(FIndexBuffer[] 类型)</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Landscape\Private\LandscapeRender.cpp
+
+FLandscapeSharedBuffers::FLandscapeSharedBuffers(FRHICommandListBase&amp; RHICmdList, const int32 InSharedBuffersKey, const int32 InSubsectionSizeQuads, const int32 InNumSubsections, const ERHIFeatureLevel::Type InFeatureLevel, const FName&amp; InOwnerName)
+    : SharedBuffersKey(InSharedBuffersKey)
+    , NumIndexBuffers(FMath::CeilLogTwo(InSubsectionSizeQuads + 1))
+    , SubsectionSizeVerts(InSubsectionSizeQuads + 1)
+    , NumSubsections(InNumSubsections)
+    , VertexFactory(nullptr)
+    , FixedGridVertexFactory(nullptr)
+    , VertexBuffer(nullptr)
+    , TileMesh(nullptr)
+    , TileVertexFactory(nullptr)
+    , TileDataBuffer(nullptr)
+    , bUse32BitIndices(false)
+    , GrassIndexBuffer(nullptr)
+&#123;
+    NumVertices &#x3D; FMath::Square(SubsectionSizeVerts) * FMath::Square(NumSubsections);
+
+    VertexBuffer &#x3D; new FLandscapeVertexBuffer(RHICmdList, InFeatureLevel, NumVertices, SubsectionSizeVerts, NumSubsections, InOwnerName);
+
+    IndexBuffers &#x3D; new FIndexBuffer * [NumIndexBuffers];
+    FMemory::Memzero(IndexBuffers, sizeof(FIndexBuffer*) * NumIndexBuffers);
+    IndexRanges &#x3D; new FLandscapeIndexRanges[NumIndexBuffers]();
+
+    (...)
+
+    &#x2F;&#x2F; See if we need to use 16 or 32-bit index buffers
+    if (NumVertices &gt; 65535)
+    &#123;
+        bUse32BitIndices &#x3D; true;
+        CreateIndexBuffers&lt;uint32&gt;(RHICmdList, InOwnerName);
+        if (UE::Landscape::ShouldBuildGrassMapRenderingResources())
+        &#123;
+            CreateGrassIndexBuffer&lt;uint32&gt;(RHICmdList, InOwnerName);
+        &#125;
+    &#125;
+    else
+    &#123;
+        CreateIndexBuffers&lt;uint16&gt;(RHICmdList, InOwnerName);
+        if (UE::Landscape::ShouldBuildGrassMapRenderingResources())
+        &#123;
+            CreateGrassIndexBuffer&lt;uint16&gt;(RHICmdList, InOwnerName);
+        &#125;
+    &#125;
+&#125;
+
+template &lt;typename INDEX_TYPE&gt;
+void FLandscapeSharedBuffers::CreateIndexBuffers(FRHICommandListBase&amp; RHICmdList, const FName&amp; InOwnerName)
+&#123;
+    TArray&lt;INDEX_TYPE&gt; VertexToIndexMap;
+    VertexToIndexMap.AddUninitialized(FMath::Square(SubsectionSizeVerts * NumSubsections));
+    FMemory::Memset(VertexToIndexMap.GetData(), 0xff, NumVertices * sizeof(INDEX_TYPE));
+
+    INDEX_TYPE VertexCount &#x3D; 0;
+    int32 SubsectionSizeQuads &#x3D; SubsectionSizeVerts - 1;
+
+    &#x2F;&#x2F; 对各Lod创建不同大小的IndexBuffer
+    int32 MaxLOD &#x3D; NumIndexBuffers - 1;
+    for (int32 Mip &#x3D; MaxLOD; Mip &gt;&#x3D; 0; Mip--)
+    &#123;
+        int32 LodSubsectionSizeQuads &#x3D; (SubsectionSizeVerts &gt;&gt; Mip) - 1;
+
+        TArray&lt;INDEX_TYPE&gt; NewIndices;
+        int32 ExpectedNumIndices &#x3D; FMath::Square(NumSubsections) * FMath::Square(LodSubsectionSizeQuads) * 6;
+        NewIndices.Empty(ExpectedNumIndices);
+
+        int32&amp; MaxIndexFull &#x3D; IndexRanges[Mip].MaxIndexFull;
+        int32&amp; MinIndexFull &#x3D; IndexRanges[Mip].MinIndexFull;
+        MaxIndexFull &#x3D; 0;
+        MinIndexFull &#x3D; MAX_int32;
+        &#123;
+            int32 SubOffset &#x3D; 0;
+            for (int32 SubY &#x3D; 0; SubY &lt; NumSubsections; SubY++)
+            &#123;
+                for (int32 SubX &#x3D; 0; SubX &lt; NumSubsections; SubX++)
+                &#123;
+                    int32&amp; MaxIndex &#x3D; IndexRanges[Mip].MaxIndex[SubX][SubY];
+                    int32&amp; MinIndex &#x3D; IndexRanges[Mip].MinIndex[SubX][SubY];
+                    MaxIndex &#x3D; 0;
+                    MinIndex &#x3D; MAX_int32;
+
+                    for (int32 y &#x3D; 0; y &lt; LodSubsectionSizeQuads; y++)
+                    &#123;
+                        for (int32 x &#x3D; 0; x &lt; LodSubsectionSizeQuads; x++)
+                        &#123;
+                            INDEX_TYPE i00 &#x3D; static_cast&lt;INDEX_TYPE&gt;((x + 0) + (y + 0) * SubsectionSizeVerts + SubOffset);
+                            INDEX_TYPE i10 &#x3D; static_cast&lt;INDEX_TYPE&gt;((x + 1) + (y + 0) * SubsectionSizeVerts + SubOffset);
+                            INDEX_TYPE i11 &#x3D; static_cast&lt;INDEX_TYPE&gt;((x + 1) + (y + 1) * SubsectionSizeVerts + SubOffset);
+                            INDEX_TYPE i01 &#x3D; static_cast&lt;INDEX_TYPE&gt;((x + 0) + (y + 1) * SubsectionSizeVerts + SubOffset);
+
+                            NewIndices.Add(i00);
+                            NewIndices.Add(i11);
+                            NewIndices.Add(i10);
+
+                            NewIndices.Add(i00);
+                            NewIndices.Add(i01);
+                            NewIndices.Add(i11);
+
+                            &#x2F;&#x2F; Update the min&#x2F;max index ranges
+                            MaxIndex &#x3D; FMath::Max&lt;int32&gt;(MaxIndex, i00);
+                            MinIndex &#x3D; FMath::Min&lt;int32&gt;(MinIndex, i00);
+                            MaxIndex &#x3D; FMath::Max&lt;int32&gt;(MaxIndex, i10);
+                            MinIndex &#x3D; FMath::Min&lt;int32&gt;(MinIndex, i10);
+                            MaxIndex &#x3D; FMath::Max&lt;int32&gt;(MaxIndex, i11);
+                            MinIndex &#x3D; FMath::Min&lt;int32&gt;(MinIndex, i11);
+                            MaxIndex &#x3D; FMath::Max&lt;int32&gt;(MaxIndex, i01);
+                            MinIndex &#x3D; FMath::Min&lt;int32&gt;(MinIndex, i01);
+                        &#125;
+                    &#125;
+
+                    &#x2F;&#x2F; update min&#x2F;max for full subsection
+                    MaxIndexFull &#x3D; FMath::Max&lt;int32&gt;(MaxIndexFull, MaxIndex);
+                    MinIndexFull &#x3D; FMath::Min&lt;int32&gt;(MinIndexFull, MinIndex);
+
+                    SubOffset +&#x3D; FMath::Square(SubsectionSizeVerts);
+                &#125;
+            &#125;
+
+            check(MinIndexFull &lt;&#x3D; (uint32)((INDEX_TYPE)(~(INDEX_TYPE)0)));
+            check(NewIndices.Num() &#x3D;&#x3D; ExpectedNumIndices);
+        &#125;
+
+        &#x2F;&#x2F; Create and init new index buffer with index data
+        (...)
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="地形渲染"><a class="markdownIt-Anchor" href="#地形渲染"></a> 地形渲染</h2>
+<h3 id="heightmap格式"><a class="markdownIt-Anchor" href="#heightmap格式"></a> HeightMap格式</h3>
+<p>HeightMap的格式为RGBA8，RG存储顶点的高度值，R为高8位，G为低8位；BA存储了顶点法线。</p>
+<p>高度值、法线向HeightMap数据转换计算方法</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Landscape\Private\LandscapeEditInterface.cpp
+
+TexData.R &#x3D; Height &gt;&gt; 8;
+TexData.G &#x3D; Height &amp; 255;
+
+TexData.B &#x3D; static_cast&lt;uint8&gt;(FMath::RoundToInt32(127.5f * (Normal.X + 1.0f)));
+TexData.A &#x3D; static_cast&lt;uint8&gt;(FMath::RoundToInt32(127.5f * (Normal.Y + 1.0f)));<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="组件中vertex和index的组织形式"><a class="markdownIt-Anchor" href="#组件中vertex和index的组织形式"></a> 组件中Vertex和Index的组织形式</h3>
+<h4 id="index"><a class="markdownIt-Anchor" href="#index"></a> Index</h4>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Landscape\Public\LandscapeRender.h
+
+class FLandscapeSharedBuffers : public FRefCountedObject
+&#123;
+public:
+    (...)
+
+    &#x2F;&#x2F; array per mip level, storing FIndexBuffer pointers
+    FIndexBuffer** IndexBuffers;
+
+    (...)
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>SharedBuffers 中保存的是 IndexBuffer 的数组，其 IndexBuffer 的索引在组件中的排布如下：</p>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/IndexLayout.png" alt="IndexLayout" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/IndexLayout.png" class="lozad post-image"></p>
+<h4 id="vertex"><a class="markdownIt-Anchor" href="#vertex"></a> Vertex</h4>
+<p>Vertex 的创建是在 FLandscapeVertexBuffer::InitRHI 中</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Landscape\Private\LandscapeRender.cpp
+
+void FLandscapeVertexBuffer::InitRHI(FRHICommandListBase&amp; RHICmdList)
+&#123;
+    SCOPED_LOADTIMER(FLandscapeVertexBuffer_InitRHI);
+
+    (...)
+
+    VertexBufferRHI &#x3D; RHICmdList.CreateBuffer(NumVertices * sizeof(FLandscapeVertex), BUF_Static | BUF_VertexBuffer, 0, ERHIAccess::VertexOrIndexBuffer, CreateInfo);
+    FLandscapeVertex* Vertex &#x3D; (FLandscapeVertex*)RHICmdList.LockBuffer(VertexBufferRHI, 0, NumVertices * sizeof(FLandscapeVertex), RLM_WriteOnly);
+    int32 VertexIndex &#x3D; 0;
+    for (int32 SubY &#x3D; 0; SubY &lt; NumSubsections; SubY++)
+    &#123;
+        for (int32 SubX &#x3D; 0; SubX &lt; NumSubsections; SubX++)
+        &#123;
+            for (int32 y &#x3D; 0; y &lt; SubsectionSizeVerts; y++)
+            &#123;
+                for (int32 x &#x3D; 0; x &lt; SubsectionSizeVerts; x++)
+                &#123;
+                    Vertex-&gt;VertexX &#x3D; static_cast&lt;uint8&gt;(x);
+                    Vertex-&gt;VertexY &#x3D; static_cast&lt;uint8&gt;(y);
+                    Vertex-&gt;SubX &#x3D; static_cast&lt;uint8&gt;(SubX);
+                    Vertex-&gt;SubY &#x3D; static_cast&lt;uint8&gt;(SubY);
+                    Vertex++;
+                    VertexIndex++;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+    check(NumVertices &#x3D;&#x3D; VertexIndex);
+    RHICmdList.UnlockBuffer(VertexBufferRHI);
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Landscape\Public\LandscapeRender.h
+
+struct FLandscapeVertex
+&#123;
+    uint8 VertexX; &#x2F;&#x2F; 顶点在所属Section中的X坐标 
+    uint8 VertexY; &#x2F;&#x2F; 顶点在所属Section中的Y坐标
+    uint8 SubX; &#x2F;&#x2F; 顶点所属Section在Component中的X坐标
+    uint8 SubY; &#x2F;&#x2F; 顶点所属Section在Component中的Y坐标
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Vertex 以及 Section 坐标在 Component 中的排布如下：</p>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/VertexLayout.png" alt="VertexLayout" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/VertexLayout.png" class="lozad post-image"></p>
+<h3 id="landscape渲染过程"><a class="markdownIt-Anchor" href="#landscape渲染过程"></a> Landscape渲染过程</h3>
+<h4 id="创建flandscapecomponentsceneproxy"><a class="markdownIt-Anchor" href="#创建flandscapecomponentsceneproxy"></a> 创建FLandscapeComponentSceneProxy</h4>
+<p>首先调用FScene::AddPrimitive，在其中嵌套调用FScene::BatchAddPrimitivesInternal</p>
+<p>FScene::BatchAddPrimitivesInternal 中遍历所有 UPrimitiveComponent 并创建其 FPrimitiveSceneProxy</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\RendererScene.cpp
+
+void FScene::AddPrimitive(UPrimitiveComponent* Primitive)
+&#123;
+    &#x2F;&#x2F; If the bulk reregister flag is set, add &#x2F; remove will be handled in bulk by the FStaticMeshComponentBulkReregisterContext
+    if (Primitive-&gt;bBulkReregister)
+    &#123;
+        return;
+    &#125;
+    BatchAddPrimitivesInternal(MakeArrayView(&amp;Primitive, 1));
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\RendererScene.cpp
+
+template&lt;class T&gt;
+void FScene::BatchAddPrimitivesInternal(TArrayView&lt;T*&gt; InPrimitives)
+&#123;
+    (...)
+
+    for (T* Primitive : InPrimitives)
+    &#123;
+        (...)
+
+        FPrimitiveSceneProxy* PrimitiveSceneProxy  &#x3D; nullptr;
+
+        if (Primitive-&gt;GetPrimitiveComponentInterface())
+        &#123;
+            checkf(!Primitive-&gt;GetSceneProxy(), TEXT(&quot;Primitive has already been added to the scene!&quot;));
+            PrimitiveSceneProxy &#x3D; Primitive-&gt;GetPrimitiveComponentInterface()-&gt;CreateSceneProxy();
+            check(SceneData.SceneProxy &#x3D;&#x3D; PrimitiveSceneProxy); &#x2F;&#x2F; CreateSceneProxy has access to the shared SceneData and should set it properly
+        &#125;
+        else
+        &#123;
+            check(!Primitive-&gt;ShouldRecreateProxyOnUpdateTransform()); &#x2F;&#x2F; recreating proxies when updating the transform requires a IPrimitiveComponentInterface
+            PrimitiveSceneProxy &#x3D; Primitive-&gt;GetSceneProxy();
+        &#125;
+
+        if(!PrimitiveSceneProxy)
+        &#123;
+            &#x2F;&#x2F; Primitives which don&#39;t have a proxy are irrelevant to the scene manager.
+            continue;
+        &#125;
+
+        &#x2F;&#x2F; Create the primitive scene info.
+        FPrimitiveSceneInfo* PrimitiveSceneInfo &#x3D; new FPrimitiveSceneInfo(Primitive, this);
+        PrimitiveSceneProxy-&gt;PrimitiveSceneInfo &#x3D; PrimitiveSceneInfo;
+
+        (...)
+    &#125;
+
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当遍历到的 UPrimitiveComponent 为 ULandscapeComponent，则创建 FPrimitiveSceneProxy 时会调用 ULandscapeComponent::CreateSceneProxy，于是创建出的便是地形的 FLandscapeComponentSceneProxy</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Landscape\Private\Landscape.cpp
+
+FPrimitiveSceneProxy* ULandscapeComponent::CreateSceneProxy()
+&#123;
+    return new FLandscapeComponentSceneProxy(this);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>FLandscapeComponentSceneProxy 的构造函数，在其中主要完成了调用父类 FPrimitiveSceneProxy 的构造函数；完成 Sections、四边形、顶点数量的设置；设置高度图、权重图；设置LOD；地形材质收集；计算SharedBuffersKey等工作。</p>
+<p>需要注意的是，FLandscapeComponentSceneProxy 的构造函数虽然初始化了 SharedBuffers, VertexFactory 等，但是并未真正完成其设置，也就是说此时还未创建 VertexBuffer 和 IndexBuffer 的数据。</p>
+<h4 id="渲染资源创建"><a class="markdownIt-Anchor" href="#渲染资源创建"></a> 渲染资源创建</h4>
+<p>FLandscapeComponentSceneProxy 创建完成后，使用 ENQUEUE_RENDER_COMMAND(AddPrimitiveCommand) 宏向渲染线程入队AddPrimitiveCommand</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\RendererScene.cpp
+
+template&lt;class T&gt;
+void FScene::BatchAddPrimitivesInternal(TArrayView&lt;T*&gt; InPrimitives)
+&#123;
+    (...)
+
+    for (T* Primitive : InPrimitives)
+    &#123;
+        (...)
+
+        CreateCommands.Emplace(
+            PrimitiveSceneInfo,
+            PrimitiveSceneProxy,
+            &#x2F;&#x2F; If this primitive has a simulated previous transform, ensure that the velocity data for the scene representation is correct.
+            FMotionVectorSimulation::Get().GetPreviousTransform(ToUObject(Primitive)),
+            RenderMatrix,
+            Primitive-&gt;Bounds,
+            AttachmentRootPosition,
+            Primitive-&gt;GetLocalBounds()
+        );
+
+        (...)
+    &#125;
+
+    if (!CreateCommands.IsEmpty())
+    &#123;
+        ENQUEUE_RENDER_COMMAND(AddPrimitiveCommand)(
+            [this, CreateCommands &#x3D; MoveTemp(CreateCommands)](FRHICommandListBase&amp; RHICmdList)
+        &#123;
+            for (const FCreateCommand&amp; Command : CreateCommands)
+            &#123;
+                FScopeCycleCounter Context(Command.PrimitiveSceneProxy-&gt;GetStatId());
+                Command.PrimitiveSceneProxy-&gt;SetTransform(RHICmdList, Command.RenderMatrix, Command.WorldBounds, Command.LocalBounds, Command.AttachmentRootPosition);
+                Command.PrimitiveSceneProxy-&gt;CreateRenderThreadResources(RHICmdList);
+
+                AddPrimitiveSceneInfo_RenderThread(Command.PrimitiveSceneInfo, Command.PreviousTransform);
+            &#125;
+        &#125;);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>AddPrimitiveCommand执行时，渲染线程会先调用 FPrimitiveSceneProxy::SetTransform 设置包围盒、变换矩阵，并且创建并设置FLandscapeUniformShaderParams，然后将其加入 FLandscapeComponentSceneProxy::LandscapeUniformShaderParameters（TUniformBuffer类型）</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Engine\Private\PrimitiveSceneProxy.cpp
+
+void FPrimitiveSceneProxy::SetTransform(FRHICommandListBase&amp; RHICmdList, const FMatrix&amp; InLocalToWorld, const FBoxSphereBounds&amp; InBounds, const FBoxSphereBounds&amp; InLocalBounds, FVector InActorPosition)
+&#123;
+    &#x2F;&#x2F; Update the cached transforms.
+    LocalToWorld &#x3D; InLocalToWorld;
+    bIsLocalToWorldDeterminantNegative &#x3D; LocalToWorld.Determinant() &lt; 0.0f;
+
+    &#x2F;&#x2F; Update the cached bounds. Pad them to account for max WPO and material displacement
+    const float PadAmount &#x3D; GetAbsMaxDisplacement();
+    Bounds &#x3D; PadBounds(InBounds, PadAmount);
+    LocalBounds &#x3D; PadLocalBounds(InLocalBounds, LocalToWorld, PadAmount);
+    ActorPosition &#x3D; InActorPosition;
+
+    &#x2F;&#x2F; Update cached reflection capture.
+    if (PrimitiveSceneInfo)
+    &#123;
+        PrimitiveSceneInfo-&gt;bNeedsCachedReflectionCaptureUpdate &#x3D; true;
+        Scene-&gt;RequestUniformBufferUpdate(*PrimitiveSceneInfo);
+    &#125;
+
+    &#x2F;&#x2F; Notify the proxy&#39;s implementation of the change.
+    OnTransformChanged(RHICmdList);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="sharedbuffers"><a class="markdownIt-Anchor" href="#sharedbuffers"></a> SharedBuffers</h5>
+<p>然后调用 FLandscapeComponentSceneProxy::CreateRenderThreadResources。在其中才是真正设置渲染所需的资源。在 FLandscapeSharedBuffers 构造函数中设置 VertexBuffer, IndexBuffer。然后进一步设置 SharedBuffers 中的 VertexFactory，以及Lod相关参数（以UniformBuffer的形式）</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Landscape\Private\LandscapeRender.cpp
+
+void FLandscapeComponentSceneProxy::CreateRenderThreadResources(FRHICommandListBase&amp; RHICmdList)
+&#123;
+    (...)
+
+    &#x2F;&#x2F; 若SharedBuffers已在SharedBuffersMap中，则直接获取；若不在，则根据SharedBufferKey来创建 
+    SharedBuffers &#x3D; FLandscapeComponentSceneProxy::SharedBuffersMap.FindRef(SharedBuffersKey);
+    if (SharedBuffers &#x3D;&#x3D; nullptr)
+    &#123;
+        FName BufferOwnerName;
+
+        SharedBuffers &#x3D; new FLandscapeSharedBuffers(RHICmdList, SharedBuffersKey, SubsectionSizeQuads,
+                                                                NumSubsections, FeatureLevel, BufferOwnerName);
+        FLandscapeComponentSceneProxy::SharedBuffersMap.Add(SharedBuffersKey, SharedBuffers);
+
+        &#x2F;&#x2F; 设置VertexFactory
+        if (!XYOffsetmapTexture)
+        &#123;
+            FLandscapeVertexFactory* LandscapeVertexFactory &#x3D; new FLandscapeVertexFactory(FeatureLevel);
+            LandscapeVertexFactory-&gt;Data.PositionComponent &#x3D; FVertexStreamComponent(SharedBuffers-&gt;VertexBuffer, 0, sizeof(FLandscapeVertex), VET_UByte4);
+            LandscapeVertexFactory-&gt;InitResource(RHICmdList);
+            SharedBuffers-&gt;VertexFactory &#x3D; LandscapeVertexFactory;
+        &#125;
+        else
+        &#123;
+            FLandscapeXYOffsetVertexFactory* LandscapeXYOffsetVertexFactory &#x3D; new FLandscapeXYOffsetVertexFactory(FeatureLevel);
+            LandscapeXYOffsetVertexFactory-&gt;Data.PositionComponent &#x3D; FVertexStreamComponent(SharedBuffers-&gt;VertexBuffer, 0, sizeof(FLandscapeVertex), VET_UByte4);
+            LandscapeXYOffsetVertexFactory-&gt;InitResource(RHICmdList);
+            SharedBuffers-&gt;VertexFactory &#x3D; LandscapeXYOffsetVertexFactory;
+        &#125;
+
+        (...)
+    &#125;
+    SharedBuffers-&gt;AddRef();
+    &#x2F;&#x2F; Assign vertex factory
+    VertexFactory &#x3D; SharedBuffers-&gt;VertexFactory;
+    FixedGridVertexFactory &#x3D; SharedBuffers-&gt;FixedGridVertexFactory;
+
+    (...)
+
+    LandscapeUniformShaderParameters.InitResource(RHICmdList);
+
+    &#x2F;&#x2F; 为每个Lod创建并设置uniform buffer
+    const int32 NumMips &#x3D; FMath::CeilLogTwo(SubsectionSizeVerts);
+    &#x2F;&#x2F; create as many as there are potential mips (even if MaxLOD can be inferior than that), because the grass could need that much :
+    LandscapeFixedGridUniformShaderParameters.AddDefaulted(NumMips);
+    for (int32 LodIndex &#x3D; 0; LodIndex &lt; NumMips; ++LodIndex)
+    &#123;
+        FLandscapeFixedGridUniformShaderParameters Parameters;
+        Parameters.LodValues &#x3D; FVector4f(
+            static_cast&lt;float&gt;(LodIndex),
+            0.f,
+            (float)((SubsectionSizeVerts &gt;&gt; LodIndex) - 1),
+            1.f &#x2F; (float)((SubsectionSizeVerts &gt;&gt; LodIndex) - 1));
+        LandscapeFixedGridUniformShaderParameters[LodIndex].SetContents(RHICmdList, Parameters);
+        LandscapeFixedGridUniformShaderParameters[LodIndex].InitResource(RHICmdList);
+    &#125;
+
+    &#x2F;&#x2F; Create MeshBatch for grass rendering
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>AddPrimitiveCommand 执行的最后，渲染线程调用 AddPrimitiveSceneInfo_RenderThread，进行 Primitive 信息的收集，加入到AddedPrimitiveSceneInfos 中</p>
+<h5 id="地形材质"><a class="markdownIt-Anchor" href="#地形材质"></a> 地形材质</h5>
+<p>地形材质的收集实际上在 FLandscapeComponentSceneProxy 的构造函数中完成，收集并创建的 FMaterialRenderProxy 最终保存在FLandscapeComponentSceneProxy::AvailableMaterials 中</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Landscape\Private\LandscapeRender.cpp
+
+FLandscapeComponentSceneProxy::FLandscapeComponentSceneProxy(ULandscapeComponent* InComponent)
+    : (...)
+&#123;
+    (...)
+
+    TArray&lt;UMaterialInterface*&gt; AvailableMaterialInterfaces;
+    if (FeatureLevel &#x3D;&#x3D; ERHIFeatureLevel::ES3_1)
+    &#123;
+        WeightmapTextures &#x3D; InComponent-&gt;MobileWeightmapTextures;
+        Algo::Transform(InComponent-&gt;MobileMaterialInterfaces, AvailableMaterials, GetRenderProxy);
+        AvailableMaterialInterfaces.Append(InComponent-&gt;MobileMaterialInterfaces);
+        &#x2F;&#x2F;TODO: Add support for bUseDynamicMaterialInstance ?
+    &#125;
+    else
+    &#123;
+        WeightmapTextures &#x3D; InComponent-&gt;GetWeightmapTextures();
+        if (InComponent-&gt;GetLandscapeProxy()-&gt;bUseDynamicMaterialInstance)
+        &#123;
+            Algo::Transform(InComponent-&gt;MaterialInstancesDynamic, AvailableMaterials, GetRenderProxy);
+            AvailableMaterialInterfaces.Append(InComponent-&gt;MaterialInstancesDynamic);
+        &#125;
+        else
+        &#123;
+            Algo::Transform(InComponent-&gt;MaterialInstances, AvailableMaterials, GetRenderProxy);
+            AvailableMaterialInterfaces.Append(InComponent-&gt;MaterialInstances);
+        &#125;
+    &#125;
+
+    (...)
+
+    if (ensure(AvailableMaterialInterfaces.Num() &gt; 0))
+    &#123;
+        for(int Index &#x3D; 0; Index &lt; AvailableMaterialInterfaces.Num(); ++Index)
+        &#123;
+            bool bIsValidMaterial &#x3D; false;
+            UMaterialInterface* MaterialInterface &#x3D; AvailableMaterialInterfaces[Index];
+            if (MaterialInterface !&#x3D; nullptr)
+            &#123;
+                bIsValidMaterial &#x3D; true;
+
+                const UMaterial* LandscapeMaterial &#x3D; MaterialInterface-&gt;GetMaterial_Concurrent();
+
+                &#x2F;&#x2F; In some case it&#39;s possible that the Material Instance we have and the Material are not related, for example, in case where content was force deleted, we can have a MIC with no parent, so GetMaterial will fallback to the default material.
+                &#x2F;&#x2F; and since the MIC is not really valid, fallback to 
+                UMaterialInstance* MaterialInstance &#x3D; Cast&lt;UMaterialInstance&gt;(MaterialInterface);
+                bIsValidMaterial &amp;&#x3D; (MaterialInstance &#x3D;&#x3D; nullptr) || MaterialInstance-&gt;IsChildOf(LandscapeMaterial);
+
+                &#x2F;&#x2F; Check usage flags : 
+                bIsValidMaterial &amp;&#x3D; !bHasStaticLighting || MaterialInterface-&gt;CheckMaterialUsage_Concurrent(MATUSAGE_StaticLighting);
+            &#125;
+
+            if (!bIsValidMaterial)
+            &#123;
+                &#x2F;&#x2F; Replace the landscape material by the default material : 
+                MaterialInterface &#x3D; UMaterial::GetDefaultMaterial(MD_Surface);
+                AvailableMaterialInterfaces[Index] &#x3D; MaterialInterface;
+                AvailableMaterials[Index] &#x3D; MaterialInterface-&gt;GetRenderProxy();
+            &#125;
+        &#125;
+    &#125;
+    else
+    &#123;
+        AvailableMaterialInterfaces.Add(UMaterial::GetDefaultMaterial(MD_Surface));
+        AvailableMaterials.Add(AvailableMaterialInterfaces.Last()-&gt;GetRenderProxy());
+    &#125;
+
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="mesh-drawing"><a class="markdownIt-Anchor" href="#mesh-drawing"></a> Mesh Drawing</h5>
+<p>后续的绘制流程与UE Mesh Drawing Pipeline中所述基本一致，此处不再赘述</p>
+<p>但需要注意的是，前述的渲染资源创建过程中只是设置了 LandscapeVertex 在当前 LandscapeComponent 中的索引位置。<br>
+在BasePass中，需要获取各 VertexFactory 的世界空间位置</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Shaders\Private\BasePassVertexShader.usf
+
+void Main(
+    FVertexFactoryInput Input,
+    out FBasePassVSOutput Output
+    (...))
+&#123;
+    (...)
+
+    FVertexFactoryIntermediates VFIntermediates &#x3D; GetVertexFactoryIntermediates(Input);
+    float4 WorldPositionExcludingWPO &#x3D; VertexFactoryGetWorldPosition(Input, VFIntermediates);
+    float4 WorldPosition &#x3D; WorldPositionExcludingWPO;
+
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>各种 VertexFactory 都实现了各自的 GetVertexFactoryIntermediates 和 VertexFactoryGetWorldPosition 方法</p>
+<p>LandscapeVertexFactory 中相关的主要函数的实现如下。在其中定义了采样高度图，并将顶点转换到世界空间等操作</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Shaders\Private\LandscapeVertexFactory.ush
+
+FVertexFactoryIntermediates GetVertexFactoryIntermediates(FVertexFactoryInput Input)
+&#123;
+    FVertexFactoryIntermediates Intermediates;
+    Intermediates.SceneData &#x3D; VF_GPUSCENE_GET_INTERMEDIATES(Input);
+    Intermediates.ComponentIndex &#x3D; GetComponentLinearIndex();
+    Intermediates.LodValues &#x3D; GetLodValues(Intermediates.ComponentIndex);
+    Intermediates.LodBias &#x3D; GetLodBias(Intermediates.ComponentIndex);
+    Intermediates.InputPosition &#x3D; Input.Position;
+
+#if LANDSCAPE_TILE   
+    Intermediates.InputPosition &#x3D; Intermediates.InputPosition + Input.TileData;
+    Intermediates.InputPosition.xy &#x3D; min(Intermediates.InputPosition.xy, float2(Intermediates.LodValues.z, Intermediates.LodValues.z));
+#endif
+
+    float2 xy &#x3D; Intermediates.InputPosition.xy * Intermediates.LodValues.w;
+
+    float LODCalculated &#x3D; CalcLOD(Intermediates.ComponentIndex, xy, Intermediates.InputPosition.zw);
+    float LodValue &#x3D; floor(LODCalculated);
+    float MorphAlpha &#x3D; LODCalculated - LodValue;
+
+    &#x2F;&#x2F; InputPositionLODAdjusted : Position for actual LOD in base LOD units
+    float2 ActualLODCoordsInt &#x3D; floor(Intermediates.InputPosition.xy * pow(2, -(LodValue - Intermediates.LodValues.x)));
+    float InvLODScaleFactor &#x3D; pow(2, -LodValue);
+
+    &#x2F;&#x2F; Base to Actual LOD, Base to Next LOD
+    float2 CoordTranslate &#x3D; float2( LandscapeParameters.SubsectionSizeVertsLayerUVPan.x * InvLODScaleFactor - 1, max(LandscapeParameters.SubsectionSizeVertsLayerUVPan.x * 0.5f * InvLODScaleFactor, 2) - 1 ) * LandscapeParameters.SubsectionSizeVertsLayerUVPan.y;
+    float2 InputPositionLODAdjusted &#x3D; ActualLODCoordsInt &#x2F; CoordTranslate.x;
+
+    &#x2F;&#x2F; InputPositionNextLOD : Position for next LOD in base LOD units
+    float2 NextLODCoordsInt &#x3D; floor(ActualLODCoordsInt * 0.5);
+    float2 InputPositionNextLOD &#x3D; NextLODCoordsInt &#x2F; CoordTranslate.y;
+
+    &#x2F;&#x2F; 计算采样纹理坐标
+    float2 SampleCoords &#x3D; InputPositionLODAdjusted * LandscapeParameters.HeightmapUVScaleBias.xy + LandscapeParameters.HeightmapUVScaleBias.zw + 0.5*LandscapeParameters.HeightmapUVScaleBias.xy + Intermediates.InputPosition.zw * LandscapeParameters.SubsectionOffsetParams.xy;
+    &#x2F;&#x2F; 采样高度图
+    float4 SampleValue &#x3D; Texture2DSampleLevel(LandscapeParameters.HeightmapTexture, LandscapeParameters.HeightmapTextureSampler, SampleCoords, LodValue-Intermediates.LodBias.x);
+    float Height &#x3D; DecodePackedHeight(SampleValue.xy);
+
+    float2 SampleCoordsNextLOD &#x3D; InputPositionNextLOD * LandscapeParameters.HeightmapUVScaleBias.xy + LandscapeParameters.HeightmapUVScaleBias.zw + 0.5*LandscapeParameters.HeightmapUVScaleBias.xy + Intermediates.InputPosition.zw * LandscapeParameters.SubsectionOffsetParams.xy;
+    float4 SampleValueNextLOD &#x3D; Texture2DSampleLevel(LandscapeParameters.HeightmapTexture, LandscapeParameters.HeightmapTextureSampler, SampleCoordsNextLOD, LodValue+1-Intermediates.LodBias.x);
+    float HeightNextLOD &#x3D; DecodePackedHeight(SampleValueNextLOD.xy);
+
+#if LANDSCAPE_XYOFFSET &#x2F;&#x2F; FEATURE_LEVEL &gt;&#x3D; FEATURE_LEVEL_SM4 only
+    float2 SampleCoords2 &#x3D; float2(InputPositionLODAdjusted * LandscapeParameters.WeightmapUVScaleBias.xy + LandscapeParameters.WeightmapUVScaleBias.zw + Intermediates.InputPosition.zw * LandscapeParameters.SubsectionOffsetParams.zz);
+    float4 OffsetValue &#x3D; Texture2DSampleLevel( LandscapeParameters.XYOffsetmapTexture, LandscapeParameters.XYOffsetmapTextureSampler, SampleCoords2, LodValue- Intermediates.LodBias.y );
+    float2 SampleCoordsNextLOD2 &#x3D; float2(InputPositionNextLOD * LandscapeParameters.WeightmapUVScaleBias.xy + LandscapeParameters.WeightmapUVScaleBias.zw + Intermediates.InputPosition.zw * LandscapeParameters.SubsectionOffsetParams.zz);
+    float4 OffsetValueNextLOD &#x3D; Texture2DSampleLevel( LandscapeParameters.XYOffsetmapTexture, LandscapeParameters.XYOffsetmapTextureSampler, SampleCoordsNextLOD2, LodValue+1-Intermediates.LodBias.y );
+    float2 XYOffset &#x3D; float2(((OffsetValue.r * 255.0 * 256.0 + OffsetValue.g * 255.0) - 32768.0) * XYOFFSET_SCALE, ((OffsetValue.b * 255.0 * 256.0 + OffsetValue.a * 255.0) - 32768.0) * XYOFFSET_SCALE );
+    float2 XYOffsetNextLOD &#x3D; float2(((OffsetValueNextLOD.r * 255.0 * 256.0 + OffsetValueNextLOD.g * 255.0) - 32768.0) * XYOFFSET_SCALE, ((OffsetValueNextLOD.b * 255.0 * 256.0 + OffsetValueNextLOD.a * 255.0) - 32768.0) * XYOFFSET_SCALE );
+
+    InputPositionLODAdjusted &#x3D; InputPositionLODAdjusted + XYOffset;
+    InputPositionNextLOD &#x3D; InputPositionNextLOD + XYOffsetNextLOD;
+#endif
+
+    Intermediates.LocalPosition &#x3D; lerp( float3(InputPositionLODAdjusted, Height), float3(InputPositionNextLOD, HeightNextLOD), MorphAlpha );
+
+    float2 Normal &#x3D; float2(SampleValue.b, SampleValue.a);
+    float2 NormalNextLOD &#x3D; float2(SampleValueNextLOD.b, SampleValueNextLOD.a);
+    float2 InterpNormal &#x3D; lerp( Normal, NormalNextLOD, MorphAlpha ) * float2(2.0,2.0) - float2(1.0,1.0);
+    Intermediates.WorldNormal &#x3D; float3( InterpNormal, sqrt(max(1.0-dot(InterpNormal,InterpNormal),0.0)) );
+
+    return Intermediates;
+&#125;
+
+float4 VertexFactoryGetWorldPosition(FVertexFactoryInput Input, FVertexFactoryIntermediates Intermediates)
+&#123;
+    FDFMatrix LocalToWorld &#x3D; GetInstanceData(Intermediates).LocalToWorld;
+    return TransformLocalToTranslatedWorld(GetLocalPosition(Intermediates), LocalToWorld);
+&#125;
+
+float3 GetLocalPosition(FVertexFactoryIntermediates Intermediates)
+&#123;
+    return Intermediates.LocalPosition+float3(Intermediates.InputPosition.zw * LandscapeParameters.SubsectionOffsetParams.ww,0);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="渲染流程总结"><a class="markdownIt-Anchor" href="#渲染流程总结"></a> 渲染流程总结</h3>
+<p>在一帧中地形渲染大致会经历如下流程：</p>
+<ul>
+<li>在 GameThread 中进行地形子系统的 Tick，在其中会对 Heightmap, Weightmap 等数据进行更新；</li>
+</ul>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace1.png" alt="Trace1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace1.png" class="lozad post-image"></p>
+<ul>
+<li>AddPrimitive，创建 LandscapeComponentSceneProxy 并收集地形材质，在渲染线程 AddPrimitiveCommand 中完成 LandscapeUniformShaderParameters 的设置；</li>
+</ul>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace2.png" alt="Trace2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace2.png" class="lozad post-image"></p>
+<ul>
+<li>在 FSceneRenderer::Render 的 InitViews 过程中，调用 FSceneRenderer::OnRenderBegin --&gt; FLandscapeSceneViewExtension::PreRenderView_RenderThread --&gt; FLandscapeRenderSystem::UpdateBuffers 完成 LandscapeSectionLODUniformParameters 的设置。在 InitViews 后续流程中完成 MeshDrawCommand 收集；</li>
+</ul>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace3.png" alt="Trace3" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace3.png" class="lozad post-image"></p>
+<ul>
+<li>在 BassPass 中添加 RDG Pass，在最后 ExecutePass；</li>
+</ul>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace4.png" alt="Trace4" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace4.png" class="lozad post-image"></p>
+<ul>
+<li>在 Pass 执行时创建 ParallelCommandListSet，创建并入队 FDrawVisibleMeshCommandsAnyThreadTask；</li>
+</ul>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace5.png" alt="Trace5" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace5.png" class="lozad post-image"></p>
+<ul>
+<li>FDrawVisibleMeshCommandsAnyThreadTask 任务是提交 MeshDrawCommand 至新命令队列，并将新命令队列加入 ParallelCommandListSet 中；</li>
+<li>Pass 执行完毕退出前，ParallelCommandListSet 析构函数中进行 Dispatch 中，其中对其命令队列中的 MeshDrawCommand 进行异步转译，得到 RHICommand；</li>
+</ul>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace6.png" alt="Trace6" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace6.png" class="lozad post-image"></p>
+<ul>
+<li>添加 RHI 线程任务提交得到的 RHIPlatformCommandList</li>
+</ul>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace7.png" alt="Trace7" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/Trace7.png" class="lozad post-image"></p>
+<p><img src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/RenderDoc.png" alt="RenderDoc" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/RenderDoc.png" class="lozad post-image"></p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/landscape-technical-guide-in-unreal-engine">Unreal Engine Documentation: Landscape Technical Guide</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/kekec/p/16907471.html">UE4地形系统（Landscape）</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29523119/article/details/125532143">UE5引擎 PC端的Landscape渲染浅分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.xianlongok.site/post/310fc368/">UE4 地形 landscape</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.gamelook.com.cn/2020/12/405988">完美世界丁许朋：UE4开放世界ARPG《幻塔》技术分享</a></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/">
+            https://suikasan111.github.io/2024/07/11/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-1%EF%BC%9A%E6%95%B4%E4%BD%93%E5%88%86%E6%9E%90/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2024/07/12/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-2%EF%BC%9A%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E8%BD%AC%E6%8D%A2/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">UE5-地形系统-2：运行时数据转换 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/07/09/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-TaskGraph%E7%B3%BB%E7%BB%9F-%E4%B8%8B%EF%BC%9A%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">UE5-TaskGraph系统-下：机制分析 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 主要类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#alandscapeproxy"><span class="toc-text"> ALandscapeProxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#alandscape"><span class="toc-text"> ALandscape</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ulandscapecomponent"><span class="toc-text"> ULandscapeComponent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flandscapecomponentsceneproxy"><span class="toc-text"> FLandscapeComponentSceneProxy</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#flandscapesharedbuffers"><span class="toc-text"> FLandscapeSharedBuffers</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%B0%E5%BD%A2%E6%B8%B2%E6%9F%93"><span class="toc-text"> 地形渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#heightmap%E6%A0%BC%E5%BC%8F"><span class="toc-text"> HeightMap格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E4%B8%ADvertex%E5%92%8Cindex%E7%9A%84%E7%BB%84%E7%BB%87%E5%BD%A2%E5%BC%8F"><span class="toc-text"> 组件中Vertex和Index的组织形式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#index"><span class="toc-text"> Index</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#vertex"><span class="toc-text"> Vertex</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#landscape%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B"><span class="toc-text"> Landscape渲染过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAflandscapecomponentsceneproxy"><span class="toc-text"> 创建FLandscapeComponentSceneProxy</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E8%B5%84%E6%BA%90%E5%88%9B%E5%BB%BA"><span class="toc-text"> 渲染资源创建</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#sharedbuffers"><span class="toc-text"> SharedBuffers</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9C%B0%E5%BD%A2%E6%9D%90%E8%B4%A8"><span class="toc-text"> 地形材质</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#mesh-drawing"><span class="toc-text"> Mesh Drawing</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E6%B5%81%E7%A8%8B%E6%80%BB%E7%BB%93"><span class="toc-text"> 渲染流程总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%B1%BB%E5%9E%8B"><span class="toc-text"> 主要类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#alandscapeproxy"><span class="toc-text"> ALandscapeProxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#alandscape"><span class="toc-text"> ALandscape</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ulandscapecomponent"><span class="toc-text"> ULandscapeComponent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flandscapecomponentsceneproxy"><span class="toc-text"> FLandscapeComponentSceneProxy</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#flandscapesharedbuffers"><span class="toc-text"> FLandscapeSharedBuffers</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%B0%E5%BD%A2%E6%B8%B2%E6%9F%93"><span class="toc-text"> 地形渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#heightmap%E6%A0%BC%E5%BC%8F"><span class="toc-text"> HeightMap格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E4%B8%ADvertex%E5%92%8Cindex%E7%9A%84%E7%BB%84%E7%BB%87%E5%BD%A2%E5%BC%8F"><span class="toc-text"> 组件中Vertex和Index的组织形式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#index"><span class="toc-text"> Index</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#vertex"><span class="toc-text"> Vertex</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#landscape%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B"><span class="toc-text"> Landscape渲染过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAflandscapecomponentsceneproxy"><span class="toc-text"> 创建FLandscapeComponentSceneProxy</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E8%B5%84%E6%BA%90%E5%88%9B%E5%BB%BA"><span class="toc-text"> 渲染资源创建</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#sharedbuffers"><span class="toc-text"> SharedBuffers</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9C%B0%E5%BD%A2%E6%9D%90%E8%B4%A8"><span class="toc-text"> 地形材质</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#mesh-drawing"><span class="toc-text"> Mesh Drawing</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E6%B5%81%E7%A8%8B%E6%80%BB%E7%BB%93"><span class="toc-text"> 渲染流程总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-18</div>
+        <a href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/"><div class="recent-posts-item-content">Frostbite Terrain Procedural Tools</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-17</div>
+        <a href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/"><div class="recent-posts-item-content">UE5-渲染线程中多线程任务分发简析</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-15</div>
+        <a href="/2024/07/15/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-4%EF%BC%9A%E6%80%BB%E7%BB%93/"><div class="recent-posts-item-content">UE5-地形系统-4：总结</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

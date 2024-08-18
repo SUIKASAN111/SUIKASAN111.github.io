@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>UE5-渲染线程中多线程任务分发简析</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="UE5-渲染线程中多线程任务分发简析">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-07-17">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5源码">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5多线程">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>43</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>9</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>16</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#enqueue_render_command"><span class="toc-text"> ENQUEUE_RENDER_COMMAND</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B6%E9%9B%86meshbatch"><span class="toc-text"> 收集MeshBatch</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#staticmeshbatch"><span class="toc-text"> StaticMeshBatch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamicmeshbatch"><span class="toc-text"> DynamicMeshBatch</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B6%E9%9B%86meshdrawcommand"><span class="toc-text"> 收集MeshDrawCommand</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#staticmeshdrawcommand"><span class="toc-text"> StaticMeshDrawCommand</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamicmeshdrawcommand"><span class="toc-text"> DynamicMeshDrawCommand</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rhicommand%E8%BD%AC%E8%AF%91"><span class="toc-text"> RHICommand转译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GDC/">
+        <div class="categories-list-item">
+          GDC
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">7</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+        <div class="categories-list-item">
+          UE5地形系统
+          <span class="categories-list-item-badge">4</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+        title="地形系统">
+        <div class="tags-list-item">地形系统</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+        title="UE5地形">
+        <div class="tags-list-item">UE5地形</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+        title="UE5多线程">
+        <div class="tags-list-item">UE5多线程</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-RDG/" 
+        title="UE5 RDG">
+        <div class="tags-list-item">UE5 RDG</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+        title="游戏引擎">
+        <div class="tags-list-item">游戏引擎</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      UE5-渲染线程中多线程任务分发简析
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-07-17T15:19:37.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-07-17</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/" 
+          class="post-meta-link">
+          UE5源码修改实战
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.5k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/UE5/" 
+            class="post-meta-link">
+            UE5
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+            class="post-meta-link">
+            UE5源码
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+            class="post-meta-link">
+            UE5多线程
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="说明"><a class="markdownIt-Anchor" href="#说明"></a> 说明</h2>
+<p>本文主要根据<a href="TODO">UE5-MeshDrawingPipeline</a>中分析的渲染过程，依次分析TaskGraph在渲染线程中的应用</p>
+<p>关于TaskGraph的分析参考，请移步<a href="TODO">UE5-TaskGraph系统-上：基本类型</a>和<a href="TODO">UE5-TaskGraph系统-下：机制分析</a></p>
+<h2 id="enqueue_render_command"><a class="markdownIt-Anchor" href="#enqueue_render_command"></a> ENQUEUE_RENDER_COMMAND</h2>
+<p>ENQUEUE_RENDER_COMMAND 宏的作用是由游戏线程向渲染线程入队命令，将宏展开可以看见其在异步 Enqueue 情况下的调用过程：</p>
+<p>FRenderCommandPipe::Enqueue --&gt; FRenderCommandPipe::EnqueueUniqueRenderCommand</p>
+<p>若开启了独立的渲染线程，则 RenderCommand 不会立即执行而需要先入队至渲染线程，此时需要使用 TaskGraph 系统创建并入队任务，以在合适的时机执行。</p>
+<p>同步入队是每次使用 ENQUEUE_RENDER_COMMAND 宏都会为当前命令创建一个入队至渲染线程的任务，而异步入队则是先收集命令，并在一定时机创建任务将其统一入队，但总之都需要使用 TaskGraph 进行入队任务的分发。</p>
+<p>对 ENQUEUE_RENDER_COMMAND 中任务创建与入队的分析详见<a href="TODO">UE5-渲染并行化</a></p>
+<h2 id="收集meshbatch"><a class="markdownIt-Anchor" href="#收集meshbatch"></a> 收集MeshBatch</h2>
+<h3 id="staticmeshbatch"><a class="markdownIt-Anchor" href="#staticmeshbatch"></a> StaticMeshBatch</h3>
+<p>FPrimitiveSceneInfo::AddStaticMeshes 中完成了静态 MeshBatch 的收集</p>
+<p>其中使用 ParallelForTemplate 函数启动任务，异步地将收集到的 FStaticMeshBatch 添加到 SceneInfo-&gt;StaticMeshes 中</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\PrimitiveSceneInfo.cpp
+
+void FPrimitiveSceneInfo::AddStaticMeshes(FRHICommandListBase&amp; RHICmdList, FScene* Scene, TArrayView&lt;FPrimitiveSceneInfo*&gt; SceneInfos, bool bCacheMeshDrawCommands)
+&#123;
+    LLM_SCOPE(ELLMTag::StaticMesh);
+
+    &#123;
+        ParallelForTemplate(SceneInfos.Num(), [Scene, &amp;SceneInfos](int32 Index)
+        &#123;
+            FOptionalTaskTagScope Scope(ETaskTag::EParallelRenderingThread);
+            SCOPED_NAMED_EVENT(FPrimitiveSceneInfo_AddStaticMeshes_DrawStaticElements, FColor::Magenta);
+            FPrimitiveSceneInfo* SceneInfo &#x3D; SceneInfos[Index];
+            &#x2F;&#x2F; Cache the primitive&#39;s static mesh elements.
+            FBatchingSPDI BatchingSPDI(SceneInfo);
+            BatchingSPDI.SetHitProxy(SceneInfo-&gt;DefaultDynamicHitProxy);
+            SceneInfo-&gt;Proxy-&gt;DrawStaticElements(&amp;BatchingSPDI);
+            SceneInfo-&gt;StaticMeshes.Shrink();
+            SceneInfo-&gt;StaticMeshRelevances.Shrink();
+            SceneInfo-&gt;bPendingAddStaticMeshes &#x3D; false;
+
+            check(SceneInfo-&gt;StaticMeshRelevances.Num() &#x3D;&#x3D; SceneInfo-&gt;StaticMeshes.Num());
+        &#125;);
+    &#125;
+
+    (...)
+
+    if (bCacheMeshDrawCommands)
+    &#123;
+        CacheMeshDrawCommands(Scene, SceneInfos);
+        CacheNaniteMaterialBins(Scene, SceneInfos);
+    #if RHI_RAYTRACING
+        CacheRayTracingPrimitives(Scene, SceneInfos);
+    #endif
+    &#125;
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Core\Public\Async\ParallelFor.h
+
+template&lt;typename BodyType, typename PreWorkType, typename ContextType&gt;
+inline void ParallelForInternal(const TCHAR* DebugName, int32 Num, int32 MinBatchSize, BodyType Body, PreWorkType CurrentThreadWorkToDoBeforeHelping, EParallelForFlags Flags, const TArrayView&lt;ContextType&gt;&amp; Contexts)
+&#123;
+    (...)
+
+    &#x2F;&#x2F;launch all the worker tasks
+    FEventRef FinishedSignal &#123; EEventMode::ManualReset &#125;;
+    FDataHandle Data &#x3D; new FParallelForData(DebugName, Num, BatchSize, NumBatches, NumWorkers, Contexts, Body, FinishedSignal, Priority);
+
+    &#x2F;&#x2F; Launch the first worker before we start doing prework
+    FParallelExecutor::LaunchAnotherWorkerIfNeeded(Data);
+
+    &#x2F;&#x2F; do the prework
+    CurrentThreadWorkToDoBeforeHelping();
+
+    &#x2F;&#x2F; help with the parallel-for to prevent deadlocks
+    FParallelExecutor LocalExecutor(MoveTemp(Data), NumWorkers);
+    const bool bFinishedLast &#x3D; LocalExecutor(true);
+
+    if (!bFinishedLast)
+    &#123;
+        const bool bPumpRenderingThread  &#x3D; (Flags &amp; EParallelForFlags::PumpRenderingThread) !&#x3D; EParallelForFlags::None;
+        if (bPumpRenderingThread &amp;&amp; IsInActualRenderingThread())
+        &#123;
+            &#x2F;&#x2F; FinishedSignal waits here if some other thread finishes the last item
+            &#x2F;&#x2F; Data must live on until all of the tasks are cleared which might be long after this function exits
+            while (!FinishedSignal-&gt;Wait(1))
+            &#123;
+                FTaskGraphInterface::Get().ProcessThreadUntilIdle(ENamedThreads::GetRenderThread_Local());
+            &#125;
+        &#125;
+        else
+        &#123;
+            &#x2F;&#x2F; FinishedSignal waits here if some other thread finishes the last item
+            &#x2F;&#x2F; Data must live on until all of the tasks are cleared which might be long after this function exits
+            TRACE_CPUPROFILER_EVENT_SCOPE(ParallelFor.Wait);
+            FinishedSignal-&gt;Wait();
+        &#125;
+    &#125;
+    checkSlow(LocalExecutor.GetData()-&gt;BatchItem.load(std::memory_order_relaxed) * LocalExecutor.GetData()-&gt;BatchSize &gt;&#x3D; LocalExecutor.GetData()-&gt;Num);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="dynamicmeshbatch"><a class="markdownIt-Anchor" href="#dynamicmeshbatch"></a> DynamicMeshBatch</h3>
+<p>收集动态 MeshBatch 的过程有如下调用：<br>
+FVisibilityTaskData::ProcessRenderThreadTasks --&gt; FVisibilityTaskData::GatherDynamicMeshElements</p>
+<p>FVisibilityTaskData::GatherDynamicMeshElements 中为收集动态 MeshBatch 创建任务并分发入队</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneVisibility.cpp
+
+void FVisibilityTaskData::GatherDynamicMeshElements(FDynamicPrimitiveIndexList&amp;&amp; DynamicPrimitiveIndexList)
+&#123;
+    FDynamicPrimitiveIndexList RenderThreadDynamicPrimitiveIndexList;
+
+    const int32 NumAsyncContexts &#x3D; DynamicMeshElements.ContextContainer.GetNumAsyncContexts();
+
+    if (NumAsyncContexts &gt; 0)
+    &#123;
+        const auto FilterDynamicPrimitives &#x3D; [] (TArrayView&lt;FPrimitiveSceneProxy*&gt; PrimitiveSceneProxies, FDynamicPrimitiveIndexList::FList&amp; Primitives, FDynamicPrimitiveIndexList::FList&amp; RenderThreadPrimitives)
+        &#123;
+            for (int32 Index &#x3D; 0; Index &lt; Primitives.Num(); )
+            &#123;
+                const FDynamicPrimitiveIndex PrimitiveIndex &#x3D; Primitives[Index];
+
+                if (!PrimitiveSceneProxies[PrimitiveIndex.Index]-&gt;SupportsParallelGDME())
+                &#123;
+                    RenderThreadPrimitives.Emplace(PrimitiveIndex);
+                    Primitives.RemoveAtSwap(Index, 1, EAllowShrinking::No);
+                &#125;
+                else
+                &#123;
+                    Index++;
+                &#125;
+            &#125;
+        &#125;;
+
+        FilterDynamicPrimitives(Scene.PrimitiveSceneProxies, DynamicPrimitiveIndexList.Primitives, RenderThreadDynamicPrimitiveIndexList.Primitives);
+#if WITH_EDITOR
+        FilterDynamicPrimitives(Scene.PrimitiveSceneProxies, DynamicPrimitiveIndexList.EditorPrimitives, RenderThreadDynamicPrimitiveIndexList.EditorPrimitives);
+#endif
+    &#125;
+    else
+    &#123;
+        RenderThreadDynamicPrimitiveIndexList &#x3D; MoveTemp(DynamicPrimitiveIndexList);
+        DynamicPrimitiveIndexList &#x3D; &#123;&#125;;
+    &#125;
+
+    if (!RenderThreadDynamicPrimitiveIndexList.IsEmpty())
+    &#123;
+        Tasks.DynamicMeshElementsRenderThread &#x3D; DynamicMeshElements.ContextContainer.LaunchRenderThreadTask(MoveTemp(RenderThreadDynamicPrimitiveIndexList));
+    &#125;
+
+    if (!DynamicPrimitiveIndexList.IsEmpty())
+    &#123;
+        FDynamicPrimitiveIndexQueue* Queue &#x3D; Allocator.Create&lt;FDynamicPrimitiveIndexQueue&gt;(MoveTemp(DynamicPrimitiveIndexList));
+
+        for (int32 Index &#x3D; 0; Index &lt; DynamicMeshElements.ContextContainer.GetNumAsyncContexts(); ++Index)
+        &#123;
+            Tasks.DynamicMeshElements.AddPrerequisites(DynamicMeshElements.ContextContainer.LaunchAsyncTask(Queue, Index, TaskConfig.TaskPriority));
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>FVisibilityTaskData::GatherDynamicMeshElements 中首先对动态 Primitives 进行过滤，将支持异步处理和不支持异步处理的 Primitives 分开存储。对于不支持异步处理的 Primitives，在渲染线程上创建并分发收集 DynamicMeshElements 的任务；而对于支持异步处理的 Primitives，则根据AsyncContexts 数量启动相应的异步收集 DynamicMeshElements 的任务，同时将它们都作为当前 TaskEvent 事件的前序任务，以实现线程同步。</p>
+<p>在渲染线程处理：</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneVisibility.cpp
+
+FGraphEventRef FDynamicMeshElementContextContainer::LaunchRenderThreadTask(FDynamicPrimitiveIndexList&amp;&amp; PrimitiveIndexList)
+&#123;
+    return Contexts.Last()-&gt;LaunchRenderThreadTask(MoveTemp(PrimitiveIndexList));
+&#125;
+
+FGraphEventRef FDynamicMeshElementContext::LaunchRenderThreadTask(FDynamicPrimitiveIndexList&amp;&amp; PrimitiveIndexList)
+&#123;
+    return FFunctionGraphTask::CreateAndDispatchWhenReady([this, PrimitiveIndexList &#x3D; MoveTemp(PrimitiveIndexList)]
+    &#123;
+        for (FDynamicPrimitiveIndex PrimitiveIndex : PrimitiveIndexList.Primitives)
+        &#123;
+            GatherDynamicMeshElementsForPrimitive(Primitives[PrimitiveIndex.Index], PrimitiveIndex.ViewMask);
+        &#125;
+
+        (...)
+    &#125;, TStatId&#123;&#125;, nullptr, ENamedThreads::GetRenderThread_Local());
+&#125;
+
+static FGraphEventRef FFunctionGraphTask::CreateAndDispatchWhenReady(TUniqueFunction&lt;void()&gt; InFunction, TStatId InStatId &#x3D; TStatId&#123;&#125;, const FGraphEventArray* InPrerequisites &#x3D; nullptr, ENamedThreads::Type InDesiredThread &#x3D; ENamedThreads::AnyThread)
+&#123;
+    return TGraphTask&lt;TFunctionGraphTaskImpl&lt;void(), ESubsequentsMode::TrackSubsequents&gt;&gt;::CreateTask(InPrerequisites).ConstructAndDispatchWhenReady(MoveTemp(InFunction), InStatId, InDesiredThread);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>异步处理：</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneVisibility.cpp
+
+UE::Tasks::FTask FDynamicMeshElementContextContainer::LaunchAsyncTask(FDynamicPrimitiveIndexQueue* PrimitiveIndexQueue, int32 Index, UE::Tasks::ETaskPriority TaskPriority)
+&#123;
+    return Contexts[Index]-&gt;LaunchAsyncTask(PrimitiveIndexQueue, TaskPriority);
+&#125;
+
+UE::Tasks::FTask FDynamicMeshElementContext::LaunchAsyncTask(FDynamicPrimitiveIndexQueue* PrimitiveIndexQueue, UE::Tasks::ETaskPriority TaskPriority)
+&#123;
+    return Pipe.Launch(UE_SOURCE_LOCATION, [this, PrimitiveIndexQueue]
+    &#123;
+        FOptionalTaskTagScope Scope(ETaskTag::EParallelRenderingThread);
+        FDynamicPrimitiveIndex PrimitiveIndex;
+
+        while (PrimitiveIndexQueue-&gt;Pop(PrimitiveIndex))
+        &#123;
+            GatherDynamicMeshElementsForPrimitive(Primitives[PrimitiveIndex.Index], PrimitiveIndex.ViewMask);
+        &#125;
+
+        (...)
+
+    &#125;, TaskPriority);
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Core\Public\Tasks\Pipe.h
+
+
+template&lt;typename TaskBodyType&gt;
+TTask&lt;TInvokeResult_T&lt;TaskBodyType&gt;&gt; FPipe::Launch(
+    const TCHAR* InDebugName, 
+    TaskBodyType&amp;&amp; TaskBody, 
+    ETaskPriority Priority &#x3D; ETaskPriority::Default,
+    EExtendedTaskPriority ExtendedPriority &#x3D; EExtendedTaskPriority::None,
+    ETaskFlags Flags &#x3D; ETaskFlags::None)
+&#123;
+    using FResult &#x3D; TInvokeResult_T&lt;TaskBodyType&gt;;
+    using FExecutableTask &#x3D; Private::TExecutableTask&lt;std::decay_t&lt;TaskBodyType&gt;&gt;;
+
+    FExecutableTask* Task &#x3D; FExecutableTask::Create(InDebugName, Forward&lt;TaskBodyType&gt;(TaskBody), Priority, ExtendedPriority, Flags);
+    Task-&gt;SetPipe(*this);
+    Task-&gt;TryLaunch(sizeof(*Task));
+    return TTask&lt;FResult&gt;&#123; Task &#125;;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>总结：FVisibilityTaskData::GatherDynamicMeshElements 函数首先检查是否有异步上下文可用。如果有，则过滤不支持异步处理的网格元素，并其放在单独的列表中，这些列表将被直接提交到渲染线程上创建任务处理，而剩余的网格元素将被异步处理。如果没有异步上下文，所有网格元素都将直接提交到渲染线程上处理。</p>
+<h2 id="收集meshdrawcommand"><a class="markdownIt-Anchor" href="#收集meshdrawcommand"></a> 收集MeshDrawCommand</h2>
+<h3 id="staticmeshdrawcommand"><a class="markdownIt-Anchor" href="#staticmeshdrawcommand"></a> StaticMeshDrawCommand</h3>
+<p>FPrimitiveSceneInfo::CacheMeshDrawCommands 函数中完成静态 MeshDrawCommand 的收集<br>
+在该函数中，首先定义 DoWorkLamda 用于线程回调，在其中定义了为各 MeshPass 创建 MeshPassProcessor 并分发 MeshDrawCommand 的操作<br>
+在函数最后判断是否开启多线程，若开启多线程，则使用 ParallelForTemplate 函数启动多线程任务并使用上述回调函数，异步地收集静态 MeshDrawCommand</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\PrimitiveSceneInfo.cpp
+
+void FPrimitiveSceneInfo::CacheMeshDrawCommands(FScene* Scene, TArrayView&lt;FPrimitiveSceneInfo*&gt; SceneInfos)
+&#123;
+    SCOPED_NAMED_EVENT(FPrimitiveSceneInfo_CacheMeshDrawCommands, FColor::Emerald);
+    CSV_SCOPED_TIMING_STAT_EXCLUSIVE(FPrimitiveSceneInfo_CacheMeshDrawCommands);
+
+    QUICK_SCOPE_CYCLE_COUNTER(STAT_CacheMeshDrawCommands);
+
+    &#x2F;&#x2F; 计数并行的线程数量
+    const int BATCH_SIZE &#x3D; WITH_EDITOR ? 1 : GMeshDrawCommandsBatchSize;
+    const int NumBatches &#x3D; (SceneInfos.Num() + BATCH_SIZE - 1) &#x2F; BATCH_SIZE;
+    &#x2F;&#x2F; 线程回调
+    auto DoWorkLambda &#x3D; [Scene, SceneInfos, BATCH_SIZE](FCachedPassMeshDrawListContext&amp; DrawListContext, int32 Index)
+    &#123;
+        SCOPED_NAMED_EVENT(FPrimitiveSceneInfo_CacheMeshDrawCommand, FColor::Green);
+
+        struct FMeshInfoAndIndex
+        &#123;
+            int32 InfoIndex;
+            int32 MeshIndex;
+        &#125;;
+
+        TArray&lt;FMeshInfoAndIndex, SceneRenderingAllocator&gt; MeshBatches;
+        MeshBatches.Reserve(3 * BATCH_SIZE);
+
+        &#x2F;&#x2F; 遍历当前线程的范围，逐个处理PrimitiveSceneInfo
+        int LocalNum &#x3D; FMath::Min((Index * BATCH_SIZE) + BATCH_SIZE, SceneInfos.Num());
+        for (int LocalIndex &#x3D; (Index * BATCH_SIZE); LocalIndex &lt; LocalNum; LocalIndex++)
+        &#123;
+            FPrimitiveSceneInfo* SceneInfo &#x3D; SceneInfos[LocalIndex];
+            check(SceneInfo-&gt;StaticMeshCommandInfos.Num() &#x3D;&#x3D; 0);
+            SceneInfo-&gt;StaticMeshCommandInfos.AddDefaulted(EMeshPass::Num * SceneInfo-&gt;StaticMeshes.Num());
+            FPrimitiveSceneProxy* SceneProxy &#x3D; SceneInfo-&gt;Proxy;
+
+            &#x2F;&#x2F; 体积透明阴影需要每帧更新，不能缓存
+            if (!SceneProxy-&gt;CastsVolumetricTranslucentShadow())
+            &#123;
+                &#x2F;&#x2F; 将PrimitiveSceneInfo的所有静态网格添加到MeshBatch列表
+                for (int32 MeshIndex &#x3D; 0; MeshIndex &lt; SceneInfo-&gt;StaticMeshes.Num(); MeshIndex++)
+                &#123;
+                    FStaticMeshBatch&amp; Mesh &#x3D; SceneInfo-&gt;StaticMeshes[MeshIndex];
+                    &#x2F;&#x2F; 检测是否支持缓存MeshDrawCommand
+                    if (SupportsCachingMeshDrawCommands(Mesh))
+                    &#123;
+                        MeshBatches.Add(FMeshInfoAndIndex&#123; LocalIndex, MeshIndex &#125;);
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+
+        &#x2F;&#x2F; 遍历所有MeshPass，将每个静态元素生成的MeshDrawCommand添加到对应Pass的缓存列表中
+        for (int32 PassIndex &#x3D; 0; PassIndex &lt; EMeshPass::Num; PassIndex++)
+        &#123;
+            const EShadingPath ShadingPath &#x3D; GetFeatureLevelShadingPath(Scene-&gt;GetFeatureLevel());
+            EMeshPass::Type PassType &#x3D; (EMeshPass::Type)PassIndex;
+
+            if ((FPassProcessorManager::GetPassFlags(ShadingPath, PassType) &amp; EMeshPassFlags::CachedMeshCommands) !&#x3D; EMeshPassFlags::None)
+            &#123;
+                &#x2F;&#x2F; 构建FCachedPassMeshDrawListContext
+                FCachedPassMeshDrawListContext::FMeshPassScope MeshPassScope(DrawListContext, PassType);
+                &#x2F;&#x2F; 创建Pass的FMeshPassProcessor
+                FMeshPassProcessor* PassMeshProcessor &#x3D; FPassProcessorManager::CreateMeshPassProcessor(ShadingPath, PassType, Scene-&gt;GetFeatureLevel(), Scene, nullptr, &amp;DrawListContext);
+
+                if (PassMeshProcessor !&#x3D; nullptr)
+                &#123;
+                    for (const FMeshInfoAndIndex&amp; MeshAndInfo : MeshBatches)
+                    &#123;
+                        FPrimitiveSceneInfo* SceneInfo &#x3D; SceneInfos[MeshAndInfo.InfoIndex];
+                        FStaticMeshBatch&amp; Mesh &#x3D; SceneInfo-&gt;StaticMeshes[MeshAndInfo.MeshIndex];
+
+                        FStaticMeshBatchRelevance&amp; MeshRelevance &#x3D; SceneInfo-&gt;StaticMeshRelevances[MeshAndInfo.MeshIndex];
+
+                        check(!MeshRelevance.CommandInfosMask.Get(PassType));
+
+                        uint64 BatchElementMask &#x3D; ~0ull;
+
+                        &#x2F;&#x2F; 添加MeshBatch到PassMeshProcessor，内部会将FMeshBatch转换到FMeshDrawCommand
+                        PassMeshProcessor-&gt;AddMeshBatch(Mesh, BatchElementMask, SceneInfo-&gt;Proxy);
+
+                        FCachedMeshDrawCommandInfo CommandInfo &#x3D; DrawListContext.GetCommandInfoAndReset();
+                        if (CommandInfo.CommandIndex !&#x3D; -1 || CommandInfo.StateBucketId !&#x3D; -1)
+                        &#123;
+                            static_assert(sizeof(MeshRelevance.CommandInfosMask) * 8 &gt;&#x3D; EMeshPass::Num, &quot;CommandInfosMask is too small to contain all mesh passes.&quot;);
+                            MeshRelevance.CommandInfosMask.Set(PassType);
+                            MeshRelevance.CommandInfosBase++;
+
+                            int CommandInfoIndex &#x3D; MeshAndInfo.MeshIndex * EMeshPass::Num + PassType;
+                            &#x2F;&#x2F; 将CommandInfo缓存到PrimitiveSceneInfo中
+
+                            FCachedMeshDrawCommandInfo&amp; CurrentCommandInfo &#x3D; SceneInfo-&gt;StaticMeshCommandInfos[CommandInfoIndex];
+                            checkf(CurrentCommandInfo.MeshPass &#x3D;&#x3D; EMeshPass::Num,
+                                TEXT(&quot;SceneInfo-&gt;StaticMeshCommandInfos[%d] is not expected to be initialized yet. MeshPass is %d, but expected EMeshPass::Num (%d).&quot;),
+                                CommandInfoIndex, (int32)EMeshPass::Num, CurrentCommandInfo.MeshPass);
+                            CurrentCommandInfo &#x3D; CommandInfo;
+                        &#125;
+                    &#125;
+                    &#x2F;&#x2F; 销毁FMeshPassProcessor
+                    delete PassMeshProcessor;
+                &#125;
+            &#125;
+        &#125;
+
+        (...)
+    &#125;;
+
+    &#x2F;&#x2F; 并行
+    bool bAnyLooseParameterBuffers &#x3D; false;
+    if (GMeshDrawCommandsCacheMultithreaded &amp;&amp; FApp::ShouldUseThreadingForPerformance())
+    &#123;
+        (...)
+
+        ParallelForTemplate(
+            NumBatches, 
+            [&amp;DrawListContexts, &amp;DoWorkLambda](int32 Index)
+            &#123;
+                FOptionalTaskTagScope Scope(ETaskTag::EParallelRenderingThread);
+                DoWorkLambda(DrawListContexts[Index], Index);
+            &#125;,
+            EParallelForFlags::Unbalanced
+        );
+
+        (...)
+    &#125;
+    &#x2F;&#x2F; 单线程
+    else
+    &#123;
+        (...)
+    &#125;
+
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="dynamicmeshdrawcommand"><a class="markdownIt-Anchor" href="#dynamicmeshdrawcommand"></a> DynamicMeshDrawCommand</h3>
+<p>在 FVisibilityTaskData::SetupMeshPasses 函数的最后调用 FSceneRenderer::SetupMeshPass，在其中为各个 MeshPass 创建相应的 MeshPassProcessor ，并调用 FParallelMeshDrawCommandPass::DispatchPassSetup 完成 MeshDrawCommand 的收集</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneRendering.cpp
+
+void FSceneRenderer::SetupMeshPass(FViewInfo&amp; View, FExclusiveDepthStencil::Type BasePassDepthStencilAccess, FViewCommands&amp; ViewCommands, FInstanceCullingManager&amp; InstanceCullingManager)
+&#123;
+    SCOPE_CYCLE_COUNTER(STAT_SetupMeshPass);
+
+    const EShadingPath ShadingPath &#x3D; GetFeatureLevelShadingPath(Scene-&gt;GetFeatureLevel());
+
+    for (int32 PassIndex &#x3D; 0; PassIndex &lt; EMeshPass::Num; PassIndex++)
+    &#123;
+        const EMeshPass::Type PassType &#x3D; (EMeshPass::Type)PassIndex;
+
+        if ((FPassProcessorManager::GetPassFlags(ShadingPath, PassType) &amp; EMeshPassFlags::MainView) !&#x3D; EMeshPassFlags::None)
+        &#123;
+            (...)
+
+            FMeshPassProcessor* MeshPassProcessor &#x3D; FPassProcessorManager::CreateMeshPassProcessor(ShadingPath, PassType, Scene-&gt;GetFeatureLevel(), Scene, &amp;View, nullptr);
+
+            FParallelMeshDrawCommandPass&amp; Pass &#x3D; View.ParallelMeshDrawCommandPasses[PassIndex];
+
+            (...)
+
+            FName PassName(GetMeshPassName(PassType));
+            Pass.DispatchPassSetup(
+                Scene,
+                View,
+                FInstanceCullingContext(PassName, ShaderPlatform, &amp;InstanceCullingManager, ViewIds, View.PrevViewInfo.HZB, InstanceCullingMode, CullingFlags),
+                PassType,
+                BasePassDepthStencilAccess,
+                MeshPassProcessor,
+                View.DynamicMeshElements,
+                &amp;View.DynamicMeshElementsPassRelevance,
+                View.NumVisibleDynamicMeshElements[PassType],
+                ViewCommands.DynamicMeshCommandBuildRequests[PassType],
+                ViewCommands.DynamicMeshCommandBuildFlags[PassType],
+                ViewCommands.NumDynamicMeshCommandBuildRequestElements[PassType],
+                ViewCommands.MeshCommands[PassIndex]);
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中的多线程任务分发是在 FParallelMeshDrawCommandPass::DispatchPassSetup 函数中<br>
+若开启了多线程，则会创建 FMeshDrawCommandPassSetupTask 并加入队列，在其执行时完成 MeshDrawCommand 的收集</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MeshDrawCommands.cpp
+
+void FParallelMeshDrawCommandPass::DispatchPassSetup(
+    FScene* Scene,
+    const FViewInfo&amp; View,
+    FInstanceCullingContext&amp;&amp; InstanceCullingContext,
+    EMeshPass::Type PassType,
+    FExclusiveDepthStencil::Type BasePassDepthStencilAccess,
+    FMeshPassProcessor* MeshPassProcessor,
+    const TArray&lt;FMeshBatchAndRelevance, SceneRenderingAllocator&gt;&amp; DynamicMeshElements,
+    const TArray&lt;FMeshPassMask, SceneRenderingAllocator&gt;* DynamicMeshElementsPassRelevance,
+    int32 NumDynamicMeshElements,
+    TArray&lt;const FStaticMeshBatch*, SceneRenderingAllocator&gt;&amp; InOutDynamicMeshCommandBuildRequests,
+    TArray&lt;EMeshDrawCommandCullingPayloadFlags, SceneRenderingAllocator&gt; InOutDynamicMeshCommandBuildFlags,
+    int32 NumDynamicMeshCommandBuildRequestElements,
+    FMeshCommandOneFrameArray&amp; InOutMeshDrawCommands,
+    FMeshPassProcessor* MobileBasePassCSMMeshPassProcessor,
+    FMeshCommandOneFrameArray* InOutMobileBasePassCSMMeshDrawCommands
+)
+&#123;
+    (...)
+
+    if (MaxNumDraws &gt; 0)
+    &#123;
+        (...)
+
+        const bool bExecuteInParallel &#x3D; FApp::ShouldUseThreadingForPerformance()
+            &amp;&amp; CVarMeshDrawCommandsParallelPassSetup.GetValueOnRenderThread() &gt; 0
+            &amp;&amp; GIsThreadedRendering; &#x2F;&#x2F; Rendering thread is required to safely use rendering resources in parallel.
+
+        if (bExecuteInParallel)
+        &#123;
+            if (IsOnDemandShaderCreationEnabled())
+            &#123;
+                TaskEventRef &#x3D; TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask().ConstructAndDispatchWhenReady(TaskContext);
+            &#125;
+            else
+            &#123;
+                FGraphEventArray DependentGraphEvents;
+                DependentGraphEvents.Add(TGraphTask&lt;FMeshDrawCommandPassSetupTask&gt;::CreateTask().ConstructAndDispatchWhenReady(TaskContext));
+                TaskEventRef &#x3D; TGraphTask&lt;FMeshDrawCommandInitResourcesTask&gt;::CreateTask(&amp;DependentGraphEvents).ConstructAndDispatchWhenReady(TaskContext);
+            &#125;
+        &#125;
+        else
+        &#123;
+            QUICK_SCOPE_CYCLE_COUNTER(STAT_MeshPassSetupImmediate);
+            FMeshDrawCommandPassSetupTask Task(TaskContext);
+            Task.AnyThreadTask();
+            if (!IsOnDemandShaderCreationEnabled())
+            &#123;
+                FMeshDrawCommandInitResourcesTask DependentTask(TaskContext);
+                DependentTask.AnyThreadTask();
+            &#125;
+        &#125;
+
+        (...)
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="rhicommand转译"><a class="markdownIt-Anchor" href="#rhicommand转译"></a> RHICommand转译</h2>
+<p>MeshDrawCommand 会先由 RDG 进行收集，在 RDG Render Pass 执行时将 MeshDrawCommand 转译成 RHICommand，而其中 CommandList 的转译以及转译所得 RHIPlatformCommandList 的提交可以进行异步处理。详见<a href="TODO">UE5-渲染并行化</a></p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/kekec/p/13915313.html">UE4之TaskGraph系统</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/14327537.html#2424-taskgraph">剖析虚幻渲染体系（02）- 多线程渲染</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/14588598.html">剖析虚幻渲染体系（03）- 渲染机制</a></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/">
+            https://suikasan111.github.io/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">Frostbite Terrain Procedural Tools </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">UE5-渲染并行化 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#enqueue_render_command"><span class="toc-text"> ENQUEUE_RENDER_COMMAND</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B6%E9%9B%86meshbatch"><span class="toc-text"> 收集MeshBatch</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#staticmeshbatch"><span class="toc-text"> StaticMeshBatch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamicmeshbatch"><span class="toc-text"> DynamicMeshBatch</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B6%E9%9B%86meshdrawcommand"><span class="toc-text"> 收集MeshDrawCommand</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#staticmeshdrawcommand"><span class="toc-text"> StaticMeshDrawCommand</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamicmeshdrawcommand"><span class="toc-text"> DynamicMeshDrawCommand</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rhicommand%E8%BD%AC%E8%AF%91"><span class="toc-text"> RHICommand转译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#enqueue_render_command"><span class="toc-text"> ENQUEUE_RENDER_COMMAND</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B6%E9%9B%86meshbatch"><span class="toc-text"> 收集MeshBatch</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#staticmeshbatch"><span class="toc-text"> StaticMeshBatch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamicmeshbatch"><span class="toc-text"> DynamicMeshBatch</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B6%E9%9B%86meshdrawcommand"><span class="toc-text"> 收集MeshDrawCommand</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#staticmeshdrawcommand"><span class="toc-text"> StaticMeshDrawCommand</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamicmeshdrawcommand"><span class="toc-text"> DynamicMeshDrawCommand</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rhicommand%E8%BD%AC%E8%AF%91"><span class="toc-text"> RHICommand转译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-18</div>
+        <a href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/"><div class="recent-posts-item-content">Frostbite Terrain Procedural Tools</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-17</div>
+        <a href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/"><div class="recent-posts-item-content">UE5-渲染线程中多线程任务分发简析</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-15</div>
+        <a href="/2024/07/15/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-4%EF%BC%9A%E6%80%BB%E7%BB%93/"><div class="recent-posts-item-content">UE5-地形系统-4：总结</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>Frostbite Terrain Procedural Tools</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="Frostbite Terrain Procedural Tools">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/07/18/GDC/FrostbiteTerrainProceduralTools/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/2024/07/06/GDC/FrostbiteTerrainProceduralTools/banner.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-07-18">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="游戏引擎">
+        
+          <meta 
+            property="og:article:tag" 
+            content="地形系统">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>43</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>9</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>16</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#overlays"><span class="toc-text"> Overlays</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#overlays-composition"><span class="toc-text"> Overlays Composition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#types-of-overlays"><span class="toc-text"> Types of overlays</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#paintable-overlays"><span class="toc-text"> Paintable overlays</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#autopaint-overlays"><span class="toc-text"> Autopaint overlays</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#autopaint-behaviours"><span class="toc-text"> Autopaint Behaviours</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#effect-overlays"><span class="toc-text"> Effect overlays</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#examples"><span class="toc-text"> Examples</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E5%8C%96%E7%94%9F%E6%88%90"><span class="toc-text"> 程序化生成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#example"><span class="toc-text"> Example</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#terrain-update"><span class="toc-text"> Terrain Update</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GDC/">
+        <div class="categories-list-item">
+          GDC
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">7</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+        <div class="categories-list-item">
+          UE5地形系统
+          <span class="categories-list-item-badge">4</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+        title="地形系统">
+        <div class="tags-list-item">地形系统</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+        title="UE5地形">
+        <div class="tags-list-item">UE5地形</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+        title="UE5多线程">
+        <div class="tags-list-item">UE5多线程</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-RDG/" 
+        title="UE5 RDG">
+        <div class="tags-list-item">UE5 RDG</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+        title="游戏引擎">
+        <div class="tags-list-item">游戏引擎</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+  <div class="image-wrapper">
+    <img 
+      src="/2024/07/06/GDC/FrostbiteTerrainProceduralTools/banner.jpg" 
+      data-src="/2024/07/06/GDC/FrostbiteTerrainProceduralTools/banner.jpg"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="Frostbite Terrain Procedural Tools thumbnail">
+  </div>
+
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      Frostbite Terrain Procedural Tools
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-07-18T12:47:51.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-07-18</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/GDC/" 
+          class="post-meta-link">
+          GDC
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>1k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+            class="post-meta-link">
+            游戏引擎
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+            class="post-meta-link">
+            地形系统
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="说明"><a class="markdownIt-Anchor" href="#说明"></a> 说明</h2>
+<p>本文为对GDC2023上寒霜引擎地形程序化工具分享的记录与分析</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=tBXzyoK4GvE&amp;t=197s">GDC 2023: From Battlegrounds to Fairways: Terrain Procedural Tools in Frostbite</a></p>
+<h2 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h2>
+<p>寒霜引擎将其中的地形相关的 Texture 都与对应的 Mask（类似权重图）组合来进行地形混合，他们将这些 Texture 和 Mask 都称为 Raster。<br>
+Raster 被划分进多个 Overlays（类似 Layers 的概念），在其中进行 Blend 并输出混合后的 Raster，而最终混合地形效果所用的各个 Mask 都是由 Overlays 组合得到的。</p>
+<p>高度图、纹理贴图等都可以作为 Raster 输入 Overlays，而其输出也可以作为其他 Overlays 的输入。因此寒霜引擎对 Overlays 的操作非常灵活，这个 Feature 使得地形的高度图也可以受材质混合以及地形上的其他 Object 的影响而发生改变，并且高度图的输出也可以反过来影响地形效果，对程序化地形生成也比较有利。</p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/1.png" alt="1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/1.png" class="lozad post-image"></p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/2.png" alt="2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/2.png" class="lozad post-image"></p>
+<p>寒霜引擎的地形程序工具使得原本需要依赖 Houdini 完成的工作在一定程度上移至 Editor 中，极大简化了工作流，且方便对效果进行迅速的测试。</p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/3.png" alt="3" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/3.png" class="lozad post-image"></p>
+<h2 id="overlays"><a class="markdownIt-Anchor" href="#overlays"></a> Overlays</h2>
+<h3 id="overlays-composition"><a class="markdownIt-Anchor" href="#overlays-composition"></a> Overlays Composition</h3>
+<p>Overlays 首尾相接，每一个 Overlay 的输出都可以作为后续某个 Overlay 的输入，并在其中完成混合（寒霜引擎支持12种混合模式）</p>
+<p>寒霜引擎中的 Raster，是一个通用 Texture 的概念（无论是高度图还是纹理贴图等，其区别只有存储的数据格式不同），这给 Overlays 增加了更多的灵活性。比如，某一个 Overlay 进行默认的高度图混合，而其输出的 Raster 可以作为其他 Overlays 中的 Mask 进行混合；反过来，某个 Overlay 进行地形材质的混合，而其输出也同样可以作为高度图 Overlay 的 Mask 来影响地形高度。</p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/4.png" alt="4" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/4.png" class="lozad post-image"></p>
+<h3 id="types-of-overlays"><a class="markdownIt-Anchor" href="#types-of-overlays"></a> Types of overlays</h3>
+<h4 id="paintable-overlays"><a class="markdownIt-Anchor" href="#paintable-overlays"></a> Paintable overlays</h4>
+<p>由 Brushes 进行编辑或导入静态数据而成的 Overlay<br>
+（猜测类似 UE 中 EditLayers 拥有各自的 Textures，而其在 Tick 中的 Merge 操作，在寒霜引擎中由 Overlays 的混合操作完成）</p>
+<h4 id="autopaint-overlays"><a class="markdownIt-Anchor" href="#autopaint-overlays"></a> Autopaint overlays</h4>
+<p>由 Objects 自动在 Raster 上进行绘制的 Overlay</p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/5.png" alt="5" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/5.png" class="lozad post-image"></p>
+<h5 id="autopaint-behaviours"><a class="markdownIt-Anchor" href="#autopaint-behaviours"></a> Autopaint Behaviours</h5>
+<p>Autopaint Behaviours 赋予 Assets 像 Brushes 一样编辑地形的能力。它可以看作是 Mesh, Transform, Shader 的组合。</p>
+<p>因为最后需要输出的是 Raster，因此相当于用一个正交相机从顶部观察</p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/6.png" alt="6" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/6.png" class="lozad post-image"></p>
+<p>Sand 和 Rock 的混合<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/7.png" alt="7" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/7.png" class="lozad post-image"><br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/8.png" alt="8" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/8.png" class="lozad post-image"></p>
+<p>Road 材质贴图影响高度图<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/9.png" alt="9" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/9.png" class="lozad post-image"><br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/10.png" alt="10" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/10.png" class="lozad post-image"></p>
+<h4 id="effect-overlays"><a class="markdownIt-Anchor" href="#effect-overlays"></a> Effect overlays</h4>
+<p>在其他 Overlays 基础上，使用 Generator 或 Filter 程序化生成地形效果的 Overlays（类似后处理，在其之前的 Overlays 的基础上加上某些全局的效果）</p>
+<p>加噪<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/11.png" alt="11" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/11.png" class="lozad post-image"></p>
+<p>Filter<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/12.png" alt="12" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/12.png" class="lozad post-image"></p>
+<h4 id="examples"><a class="markdownIt-Anchor" href="#examples"></a> Examples</h4>
+<p>PGA Tour<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/13.png" alt="13" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/13.png" class="lozad post-image"></p>
+<p>战地2042<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/14.png" alt="14" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/14.png" class="lozad post-image"></p>
+<h2 id="程序化生成"><a class="markdownIt-Anchor" href="#程序化生成"></a> 程序化生成</h2>
+<p>前述 Overlays 组合的概念，实际上是为地形程序化数据流构建了类似依赖图的机制<br>
+某个 Overlays 的更改可以自动传播至有依赖关系的其他 Overlays</p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/15.png" alt="15" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/15.png" class="lozad post-image"></p>
+<h3 id="example"><a class="markdownIt-Anchor" href="#example"></a> Example</h3>
+<p>SnowGrass Mask Generation<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/16.png" alt="16" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/16.png" class="lozad post-image"><br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/17.png" alt="17" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/17.png" class="lozad post-image"></p>
+<p>AO Generator<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/18.png" alt="18" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/18.png" class="lozad post-image"></p>
+<p>ColorRange Selection（叠加积雪覆盖区域）<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/19.png" alt="19" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/19.png" class="lozad post-image"></p>
+<p>Height Selection（移除河床）<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/20.png" alt="20" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/20.png" class="lozad post-image"></p>
+<p>Flowmap<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/21.png" alt="21" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/21.png" class="lozad post-image"></p>
+<p>Roads &amp; Trees Autopaint<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/22.png" alt="22" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/22.png" class="lozad post-image"></p>
+<p>Artist Touchups<br>
+<img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/23.png" alt="23" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/23.png" class="lozad post-image"></p>
+<h2 id="terrain-update"><a class="markdownIt-Anchor" href="#terrain-update"></a> Terrain Update</h2>
+<p>寒霜引擎的地形更新也是由任务队列进行管理。</p>
+<p>地形工具的使用会生成新的 Update Request，以创建更新输出的 Raster Mask 的任务</p>
+<p>从 Paintable overlay 出发，可以沿着依赖关系找到其影响的所有 Overlays 以及最终的 Mask。其中，与当前修改直接相关的 Raster Mask 的更新为 Primary job（修改的 Overlay 属于该 Mask），因依赖关系传播的受到边缘影响的 Mask 的更新为 Secondary job</p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/24.png" alt="24" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/24.png" class="lozad post-image"></p>
+<p>像 Blur 之类的效果会对 Brush 覆盖范围周边的一小部分也产生影响，因此在依赖传播的过程中，遇到此类 Overlay 时，就对 Coverage 进行一定程度的增加</p>
+<p>Primary jobs 会在 Brush 绘制时立即执行，而 Secondary jobs 会在队列中等待，在期间可以对任务进行合并简化，在释放鼠标时统一执行</p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/25.png" alt="25" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/25.png" class="lozad post-image"></p>
+<p>根据视锥、任务类型、相机距离等因素对任务队列进行排序</p>
+<p><img src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/26.png" alt="26" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/26.png" class="lozad post-image"></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/07/18/GDC/FrostbiteTerrainProceduralTools/">
+            https://suikasan111.github.io/2024/07/18/GDC/FrostbiteTerrainProceduralTools/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">UE5-渲染线程中多线程任务分发简析 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#overlays"><span class="toc-text"> Overlays</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#overlays-composition"><span class="toc-text"> Overlays Composition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#types-of-overlays"><span class="toc-text"> Types of overlays</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#paintable-overlays"><span class="toc-text"> Paintable overlays</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#autopaint-overlays"><span class="toc-text"> Autopaint overlays</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#autopaint-behaviours"><span class="toc-text"> Autopaint Behaviours</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#effect-overlays"><span class="toc-text"> Effect overlays</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#examples"><span class="toc-text"> Examples</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E5%8C%96%E7%94%9F%E6%88%90"><span class="toc-text"> 程序化生成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#example"><span class="toc-text"> Example</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#terrain-update"><span class="toc-text"> Terrain Update</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#overlays"><span class="toc-text"> Overlays</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#overlays-composition"><span class="toc-text"> Overlays Composition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#types-of-overlays"><span class="toc-text"> Types of overlays</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#paintable-overlays"><span class="toc-text"> Paintable overlays</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#autopaint-overlays"><span class="toc-text"> Autopaint overlays</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#autopaint-behaviours"><span class="toc-text"> Autopaint Behaviours</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#effect-overlays"><span class="toc-text"> Effect overlays</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#examples"><span class="toc-text"> Examples</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E5%8C%96%E7%94%9F%E6%88%90"><span class="toc-text"> 程序化生成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#example"><span class="toc-text"> Example</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#terrain-update"><span class="toc-text"> Terrain Update</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-18</div>
+        <a href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/"><div class="recent-posts-item-content">Frostbite Terrain Procedural Tools</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-17</div>
+        <a href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/"><div class="recent-posts-item-content">UE5-渲染线程中多线程任务分发简析</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-15</div>
+        <a href="/2024/07/15/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-4%EF%BC%9A%E6%80%BB%E7%BB%93/"><div class="recent-posts-item-content">UE5-地形系统-4：总结</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

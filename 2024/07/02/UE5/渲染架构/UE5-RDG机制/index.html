@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>UE5-RDG机制</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="UE5-RDG机制">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/07/02/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-RDG%E6%9C%BA%E5%88%B6/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-07-02">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5源码">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5 RDG">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>43</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>9</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>16</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rdg%E6%9C%BA%E5%88%B6"><span class="toc-text"> RDG机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text"> 基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rdg%E8%B5%84%E6%BA%90"><span class="toc-text"> RDG资源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rdg-pass"><span class="toc-text"> RDG Pass</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rdgbuilder"><span class="toc-text"> RDGBuilder</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#addpass"><span class="toc-text"> AddPass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#execute"><span class="toc-text"> Execute</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GDC/">
+        <div class="categories-list-item">
+          GDC
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">7</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+        <div class="categories-list-item">
+          UE5地形系统
+          <span class="categories-list-item-badge">4</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/" 
+        title="地形系统">
+        <div class="tags-list-item">地形系统</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%9C%B0%E5%BD%A2/" 
+        title="UE5地形">
+        <div class="tags-list-item">UE5地形</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E5%A4%9A%E7%BA%BF%E7%A8%8B/" 
+        title="UE5多线程">
+        <div class="tags-list-item">UE5多线程</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-RDG/" 
+        title="UE5 RDG">
+        <div class="tags-list-item">UE5 RDG</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E/" 
+        title="游戏引擎">
+        <div class="tags-list-item">游戏引擎</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      UE5-RDG机制
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-07-02T14:12:55.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-07-02</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+          class="post-meta-link">
+          UE5渲染架构
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.3k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/UE5/" 
+            class="post-meta-link">
+            UE5
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+            class="post-meta-link">
+            UE5源码
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5-RDG/" 
+            class="post-meta-link">
+            UE5 RDG
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h2>
+<p>RDG(Rendering Dependency Graph)，渲染依赖图，是UE4.22开始引进的全新的渲染子系统，是基于有向无环图(Directed Acyclic Graph，DAG)的调度系统，用于执行渲染管线的整帧优化。</p>
+<p>传统的图形API（DirectX 11、OpenGL）要求驱动器调用复杂的启发法，以确定何时以及如何在GPU上执行关键的调度操作。例如清空缓存，管理和再使用内存，执行布局转换等等。由于接口存在即时模式特性，因此需要复杂的记录和状态跟踪才能处理各种极端情况。这些情况最终会对性能产生负面影响，阻碍并行。<br>
+现代的图形API（DirectX 12、Vulkan和Metal 2）与传统图形API不同，将低级GPU管理的负担转移到应用程序。这使得应用程序可以利用渲染管线的高级情境来驱动调度，从而提高性能并且简化渲染堆栈。</p>
+<p>RDG的理念是，不在GPU上立即执行Pass，而是先收集所有需要渲染的Pass，并构建Pass之间的依赖关系，然后在编译中并对进行各类裁剪和优化，最后统一执行。</p>
+<p>依赖性图表数据结构的整帧认知与现代图形API的能力相结合，使RDG能够在后台执行复杂的调度任务，RDG包括以下功能：</p>
+<ul>
+<li>安排异步计算栅栏的执行</li>
+<li>以最佳生命周期和内存别名分配临时资源</li>
+<li>使用拆分屏障转换子资源，在GPU上隐藏延迟并改善重叠</li>
+<li>命令列表并行记录</li>
+<li>剔除图中未使用的资源和通道</li>
+<li>验证API的使用和资源依赖关系</li>
+<li>在RDG Insights中实现图结构和内存生命周期的可视化</li>
+</ul>
+<p>此外，RDG利用依赖性图表在通道设置期间提供丰富的验证，对影响功能和性能的问题进行自动捕捉，从而改进开发流程。</p>
+<h2 id="rdg机制"><a class="markdownIt-Anchor" href="#rdg机制"></a> RDG机制</h2>
+<h3 id="基本概念"><a class="markdownIt-Anchor" href="#基本概念"></a> 基本概念</h3>
+<p>RDG基础类型和接口主要集中于RenderGraphUtils.h和RenderGraphDefinitions.h之中，其中包括RDG Pass类型、Buffer标记、纹理标记、UAV标记、RDG对象分配器等等。</p>
+<h4 id="rdg资源"><a class="markdownIt-Anchor" href="#rdg资源"></a> RDG资源</h4>
+<p>RDG资源并不是直接用RHI资源，而是包裹了RHI资源引用，然后针对不同类型的资源各自封装，且增加了额外的信息。<br>
+RDG系统对基本上所有的RHI资源进行了封装和包裹，以便进一步控制、管理RHI资源，精准控制它们的生命周期、引用关系及调试信息等，进一步优化、裁剪，提升渲染性能。</p>
+<h4 id="rdg-pass"><a class="markdownIt-Anchor" href="#rdg-pass"></a> RDG Pass</h4>
+<p>Pass是RDG体系中最核心的类型之一，涉及了消费者、生产者、转换依赖、各类资源状态等等数据和处理。RDG的Pass有以下几种类型：</p>
+<p><img src="/2024/07/02/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-RDG%E6%9C%BA%E5%88%B6/RDGPass.png" alt="RDGPass" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/02/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-RDG%E6%9C%BA%E5%88%B6/RDGPass.png" class="lozad post-image"></p>
+<p>RDG Pass和渲染Pass并非一一对应关系，有可能多个合并成一个渲染Pass。</p>
+<h4 id="rdgbuilder"><a class="markdownIt-Anchor" href="#rdgbuilder"></a> RDGBuilder</h4>
+<p>RDGBuilder是RDG体系的核心，负责收集渲染Pass和参数，编译Pass、数据，处理资源依赖，裁剪和优化各类数据，还有提供执行接口。作为RDG系统的驱动器，FRDGBuilder负责存储数据、处理状态转换、自动管理资源生命周期和屏障、裁剪无效资源，以及收集、编译、执行Pass，提取纹理或缓冲等等功能。</p>
+<h3 id="addpass"><a class="markdownIt-Anchor" href="#addpass"></a> AddPass</h3>
+<p>AddPass会根据传入的参数构建一个RDG Pass的实例，然后设置该Pass的纹理和缓冲区数据，接着用内部设置Pass的依赖Pass等句柄，如果是立即模式，会重定向纹理和缓冲区的Merge状态成Pass状态，并且直接执行。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Public\RenderGraphBuilder.inl
+
+template &lt;typename ParameterStructType, typename ExecuteLambdaType&gt;
+FRDGPassRef FRDGBuilder::AddPass(
+    FRDGEventName&amp;&amp; Name,
+    const ParameterStructType* ParameterStruct,
+    ERDGPassFlags Flags,
+    ExecuteLambdaType&amp;&amp; ExecuteLambda)
+&#123;
+#if !USE_NULL_RHI
+    return AddPassInternal(Forward&lt;FRDGEventName&gt;(Name), ParameterStructType::FTypeInfo::GetStructMetadata(), ParameterStruct, Flags, Forward&lt;ExecuteLambdaType&gt;(ExecuteLambda));
+#else
+    checkNoEntry();
+    return nullptr;
+#endif &#x2F;&#x2F; !USE_NULL_RHI
+&#125;
+
+template &lt;typename ParameterStructType, typename ExecuteLambdaType&gt;
+FRDGPassRef FRDGBuilder::AddPassInternal(
+    FRDGEventName&amp;&amp; Name,
+    const FShaderParametersMetadata* ParametersMetadata,
+    const ParameterStructType* ParameterStruct,
+    ERDGPassFlags Flags,
+    ExecuteLambdaType&amp;&amp; ExecuteLambda)
+&#123;
+    using LambdaPassType &#x3D; TRDGLambdaPass&lt;ParameterStructType, ExecuteLambdaType&gt;;
+    (...)
+
+    &#x2F;&#x2F; 分配RDG Pass实例
+    FRDGPass* Pass &#x3D; Allocators.Root.AllocNoDestruct&lt;LambdaPassType&gt;(
+        MoveTemp(Name),
+        ParametersMetadata,
+        ParameterStruct,
+        OverridePassFlags(Name.GetTCHAR(), Flags),
+        MoveTemp(ExecuteLambda));
+
+    IF_RDG_ENABLE_DEBUG(ClobberPassOutputs(Pass));
+    &#x2F;&#x2F; 加入Pass Registry
+    Passes.Insert(Pass);
+    &#x2F;&#x2F; 设置Pass
+    SetupParameterPass(Pass);
+    return Pass;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>SetupParameterPass</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Public\RenderGraphBuilder.inl
+
+FRDGPass* FRDGBuilder::SetupParameterPass(FRDGPass* Pass)
+&#123;
+    (...)
+    &#x2F;&#x2F; 获取Pass数据，
+    SetupPassInternals(Pass);
+
+    &#x2F;&#x2F; ----处理纹理状态、缓冲区状态----
+    if (ParallelSetup.bEnabled)
+    &#123;
+        MarkResourcesAsProduced(Pass);
+        AsyncSetupQueue.Push(FAsyncSetupOp::SetupPassResources(Pass));
+    &#125;
+    else
+    &#123;
+        SetupPassResources(Pass);
+    &#125;
+
+    &#x2F;&#x2F; 如果为立即模式，则重定向纹理和缓冲区的Merge状态为Pass状态，并直接执行
+    SetupAuxiliaryPasses(Pass);
+    return Pass;
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Private\RenderGraphBuilder.cpp
+
+void FRDGBuilder::SetupPassResources(FRDGPass* Pass)
+&#123;
+    &#x2F;&#x2F; 设置Pass的资源
+    (...)
+
+    if (ParallelSetup.bEnabled)
+    &#123;
+        &#x2F;&#x2F; 设置依赖关系
+        SetupPassDependencies(Pass);
+
+        for (FRDGPass::FExternalAccessOp Op : Pass-&gt;ExternalAccessOps)
+        &#123;
+            Op.Resource-&gt;AccessModeState.ActiveMode &#x3D; Op.Mode;
+        &#125;
+    &#125;
+&#125;
+
+void FRDGBuilder::SetupPassDependencies(FRDGPass* Pass)
+&#123;
+    bool bIsCullRootProducer &#x3D; false;
+
+    &#x2F;&#x2F; 遍历当前Pass的所有贴图
+    for (auto&amp; PassState : Pass-&gt;TextureStates)
+    &#123;
+        FRDGTextureRef Texture &#x3D; PassState.Texture;
+        auto&amp; LastProducers &#x3D; Texture-&gt;LastProducers;
+
+        Texture-&gt;ReferenceCount +&#x3D; PassState.ReferenceCount;
+
+        &#x2F;&#x2F; 遍历当前贴图的所有Producer
+        for (uint32 Index &#x3D; 0, Count &#x3D; LastProducers.Num(); Index &lt; Count; ++Index)
+        &#123;
+            const FRDGSubresourceState* SubresourceState &#x3D; PassState.State[Index];
+
+            if (!SubresourceState)
+            &#123;
+                continue;
+            &#125;
+
+            FRDGProducerState ProducerState;
+            ProducerState.Pass &#x3D; Pass;
+            ProducerState.Access &#x3D; SubresourceState-&gt;Access;
+            ProducerState.NoUAVBarrierHandle &#x3D; SubresourceState-&gt;NoUAVBarrierFilter.GetUniqueHandle();
+
+            &#x2F;&#x2F; 添加依赖
+            bIsCullRootProducer |&#x3D; AddCullingDependency(LastProducers[Index], ProducerState, Pass-&gt;Pipeline) &amp;&amp; Texture-&gt;IsCullRoot();
+        &#125;
+    &#125;
+
+    &#x2F;&#x2F; 遍历当前Pass的所有BufferState
+    for (auto&amp; PassState : Pass-&gt;BufferStates)
+    &#123;
+        FRDGBufferRef Buffer &#x3D; PassState.Buffer;
+        const FRDGSubresourceState&amp; SubresourceState &#x3D; PassState.State;
+
+        Buffer-&gt;ReferenceCount +&#x3D; PassState.ReferenceCount;
+
+        FRDGProducerState ProducerState;
+        ProducerState.Pass &#x3D; Pass;
+        ProducerState.Access &#x3D; SubresourceState.Access;
+        ProducerState.NoUAVBarrierHandle &#x3D; SubresourceState.NoUAVBarrierFilter.GetUniqueHandle();
+
+        &#x2F;&#x2F; 添加依赖
+        bIsCullRootProducer |&#x3D; AddCullingDependency(Buffer-&gt;LastProducer, ProducerState, Pass-&gt;Pipeline) &amp;&amp; Buffer-&gt;IsCullRoot();
+    &#125;
+
+    &#x2F;&#x2F; 依赖剔除
+    const bool bCullPasses &#x3D; GRDGCullPasses &gt; 0;
+    Pass-&gt;bCulled &#x3D; bCullPasses;
+
+    if (bCullPasses &amp;&amp; (bIsCullRootProducer || Pass-&gt;bHasExternalOutputs || EnumHasAnyFlags(Pass-&gt;Flags, ERDGPassFlags::NeverCull)))
+    &#123;
+        CullPassStack.Emplace(Pass);
+
+        FlushCullStack();
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="execute"><a class="markdownIt-Anchor" href="#execute"></a> Execute</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Private\RenderGraphBuilder.cpp
+
+void FRDGBuilder::Execute()
+&#123;
+    (...)
+
+    &#x2F;&#x2F; 在编译之前，在图的末尾创建epilogue pass
+    SetupEmptyPass(EpiloguePass &#x3D; Passes.Allocate&lt;FRDGSentinelPass&gt;(Allocators.Root, RDG_EVENT_NAME(&quot;Graph Epilogue&quot;)));
+
+    const FRDGPassHandle ProloguePassHandle &#x3D; GetProloguePassHandle();
+    const FRDGPassHandle EpiloguePassHandle &#x3D; GetEpiloguePassHandle();
+
+    (...)
+
+    &#x2F;&#x2F; 非立即模式
+    if (!IsImmediateMode())
+    &#123;
+        SubmitParallelSetupTasks();
+        BeginFlushResourcesRHI();
+        WaitForParallelSetupTasks();
+
+        (...)
+
+        Compile();
+
+        (...)
+    &#125;
+    else
+    &#123;
+        SubmitBufferUploads(RHICmdList);
+        FinalizeResources();
+    &#125;
+
+    SubmitParallelSetupTasks();
+    EndFlushResourcesRHI();
+    WaitForParallelSetupTasks();
+
+    (...)
+
+
+    &#x2F;&#x2F; 执行Pass
+    if (!IsImmediateMode())
+    &#123;
+        SCOPED_NAMED_EVENT_TEXT(&quot;FRDGBuilder::ExecutePasses&quot;, FColor::Magenta);
+        SCOPE_CYCLE_COUNTER(STAT_RDG_ExecuteTime);
+        CSV_SCOPED_TIMING_STAT_EXCLUSIVE(RDG_Execute);
+
+        for (FRDGPassHandle PassHandle &#x3D; ProloguePassHandle; PassHandle &lt;&#x3D; EpiloguePassHandle; ++PassHandle)
+        &#123;
+            (...)
+
+            ExecutePass(Pass, RHICmdList);
+        &#125;
+    &#125;
+    else
+    &#123;
+        ExecutePass(EpiloguePass, RHICmdList);
+    &#125;
+
+    RHICmdList.SetStaticUniformBuffers(&#123;&#125;);
+
+    (...)
+
+    &#x2F;&#x2F; 执行纹理提取和缓冲区提取
+    for (const FExtractedTexture&amp; ExtractedTexture : ExtractedTextures)
+    &#123;
+        check(ExtractedTexture.Texture-&gt;RenderTarget);
+        *ExtractedTexture.PooledTexture &#x3D; ExtractedTexture.Texture-&gt;RenderTarget;
+    &#125;
+    for (const FExtractedBuffer&amp; ExtractedBuffer : ExtractedBuffers)
+    &#123;
+        check(ExtractedBuffer.Buffer-&gt;PooledBuffer);
+        *ExtractedBuffer.PooledBuffer &#x3D; ExtractedBuffer.Buffer-&gt;PooledBuffer;
+    &#125;
+
+    (...)
+&#125;
+
+void FRDGBuilder::ExecutePass(FRDGPass* Pass, FRHIComputeCommandList&amp; RHICmdListPass)
+&#123;
+    &#123;
+        SCOPED_GPU_MASK(RHICmdListPass, Pass-&gt;GPUMask);
+
+        &#123;
+            FRHICommandListScopedPipeline Scope(RHICmdListPass, Pass-&gt;Pipeline);
+
+#if 0 &#x2F;&#x2F; Disabled by default to reduce memory usage in Insights.
+            SCOPED_NAMED_EVENT_TCHAR(Pass-&gt;GetName(), FColor::Magenta);
+#endif
+
+#if RDG_CPU_SCOPES
+            if (!Pass-&gt;bParallelExecute)
+            &#123;
+                Pass-&gt;CPUScopeOps.Execute();
+            &#125;
+#endif
+
+            IF_RDG_ENABLE_DEBUG(ConditionalDebugBreak(RDG_BREAKPOINT_PASS_EXECUTE, BuilderName.GetTCHAR(), Pass-&gt;GetName()));
+
+            Pass-&gt;GPUScopeOpsPrologue.Execute(RHICmdListPass);
+
+            &#x2F;&#x2F; 执行pass的顺序: 1.prologue -&gt; 2.pass主体 -&gt; 3.epilogue
+            &#x2F;&#x2F; 整个过程使用指定Pass上的命令列表执行
+            ExecutePassPrologue(RHICmdListPass, Pass);
+
+#if RDG_DUMP_RESOURCES_AT_EACH_DRAW
+            BeginPassDump(Pass);
+#endif
+
+            Pass-&gt;Execute(RHICmdListPass);
+
+#if RDG_DUMP_RESOURCES_AT_EACH_DRAW
+            EndPassDump(Pass);
+#endif
+
+            ExecutePassEpilogue(RHICmdListPass, Pass);
+
+            Pass-&gt;GPUScopeOpsEpilogue.Execute(RHICmdListPass);
+        &#125;
+    &#125;
+
+    &#x2F;&#x2F; 异步计算完成, 则立即派发
+    if (!Pass-&gt;bParallelExecute &amp;&amp; Pass-&gt;bDispatchAfterExecute)
+    &#123;
+        if (Pass-&gt;Pipeline &#x3D;&#x3D; ERHIPipeline::Graphics)
+        &#123;
+            RHICmdList.ImmediateFlush(EImmediateFlushType::DispatchToRHIThread);
+        &#125;
+    &#125;
+
+    &#x2F;&#x2F; 如果是调试模式且非异步计算，则提交命令并刷新到GPU, 然后等待GPU处理完成
+    if (GRDGDebugFlushGPU)
+    &#123;
+        check(!GRDGAsyncCompute &amp;&amp; !ParallelExecute.bEnabled);
+        RHICmdList.SubmitCommandsAndFlushGPU();
+        RHICmdList.BlockUntilGPUIdle();
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>RDG是在RHI之上的又一层封装，以实现RHI命令延迟执行。其将Pipeline分为设置阶段与执行阶段，在设置阶段收集Lambda、记录各个Pass的资源，并建立依赖关系，进行Pass剔除、合并具有相同RenderTarget的Pass等操作，最终将统一执行Lambda。</p>
+<p>FRDGBuilder的执行周期可划分为4个阶段：收集Pass、编译Pass、执行Pass、清理</p>
+<p>收集Pass阶段：主要是收集渲染模块的所有能够产生RHICommand的Pass（Lambda），非立即模式下收集之后不立即执行，将其延迟执行。AddPass的步骤是先创建FRDGPass的实例，并加入到Pass列表，随后执行SetupPass。SetupPass中主要处理纹理和缓冲区的状态、引用、依赖和标记等。</p>
+<p>编译Pass阶段：主要包含构建生产者和消费者的依赖关系，确定Pass的裁剪等各类标记，调整资源的生命周期，裁剪Pass，处理Pass的资源转换和屏障，处理异步计算Pass的依赖和引用关系，查找并建立分叉和合并Pass节点，合并所有具体相同渲染目标的光栅化Pass等步骤。</p>
+<p>执行Pass阶段：首先会执行编译，再根据编译结果执行所有符合条件的Pass。执行单个Pass时依次执行前序、主体和后续，相当于执行命令队列的BeginRenderPass、执行Pass主体（Lambda）渲染代码、EndRenderPass。执行Pass主体时过程简洁，就是调用该Pass的Lambda实例。</p>
+<p>清理阶段：将清理或重置FRDGBuilder实例内的所有数据和内存。</p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/render-dependency-graph-in-unreal-engine">Unreal Engine Documentation: Render Dependency Graph</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/15217090.html">剖析虚幻渲染体系（11）- RDG</a></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/07/02/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-RDG%E6%9C%BA%E5%88%B6/">
+            https://suikasan111.github.io/2024/07/02/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-RDG%E6%9C%BA%E5%88%B6/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2024/07/06/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-RHIThread/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">UE5-RHIThread </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/06/24/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-MeshDrawingPipeline/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">UE5-Mesh Drawing Pipeline </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rdg%E6%9C%BA%E5%88%B6"><span class="toc-text"> RDG机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text"> 基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rdg%E8%B5%84%E6%BA%90"><span class="toc-text"> RDG资源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rdg-pass"><span class="toc-text"> RDG Pass</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rdgbuilder"><span class="toc-text"> RDGBuilder</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#addpass"><span class="toc-text"> AddPass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#execute"><span class="toc-text"> Execute</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rdg%E6%9C%BA%E5%88%B6"><span class="toc-text"> RDG机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text"> 基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rdg%E8%B5%84%E6%BA%90"><span class="toc-text"> RDG资源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rdg-pass"><span class="toc-text"> RDG Pass</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rdgbuilder"><span class="toc-text"> RDGBuilder</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#addpass"><span class="toc-text"> AddPass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#execute"><span class="toc-text"> Execute</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text"> 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-18</div>
+        <a href="/2024/07/18/GDC/FrostbiteTerrainProceduralTools/"><div class="recent-posts-item-content">Frostbite Terrain Procedural Tools</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-17</div>
+        <a href="/2024/07/17/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%88%86%E5%8F%91%E7%AE%80%E6%9E%90/"><div class="recent-posts-item-content">UE5-渲染线程中多线程任务分发简析</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-15</div>
+        <a href="/2024/07/15/UE5/%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F/UE5-%E5%9C%B0%E5%BD%A2%E7%B3%BB%E7%BB%9F-4%EF%BC%9A%E6%80%BB%E7%BB%93/"><div class="recent-posts-item-content">UE5-地形系统-4：总结</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>
