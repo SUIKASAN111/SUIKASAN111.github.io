@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>Head First设计模式-精炼整理</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="Head First设计模式-精炼整理">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/2024/02/07/ProgramDesign/Head-First设计模式-精炼整理/banner.PNG">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-02-07">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="Head First Design Patterns">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>31</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>7</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>11</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#preface"><span class="toc-text"> Preface</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E6%96%87%E6%A6%82%E8%BF%B0"><span class="toc-text"> 本文概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%A6%E7%B1%8D%E7%AE%80%E4%BB%8B"><span class="toc-text"> 书籍简介</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oo%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="toc-text"> OO设计原则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%81%E8%A3%85%E5%8F%98%E5%8C%96%E7%9A%84%E9%83%A8%E5%88%86"><span class="toc-text"> 封装变化的部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#interface-oriented-programming-%E9%9D%A2%E5%90%91%E6%8E%A5%E5%8F%A3%E7%BC%96%E7%A8%8B"><span class="toc-text"> Interface Oriented Programming - 面向接口编程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#composite-reuse-principle-%E7%BB%84%E5%90%88%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF"><span class="toc-text"> Composite Reuse Principle - 组合复用原则（组合优于继承）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%BE%E8%80%A6%E5%90%88%E8%AE%BE%E8%AE%A1"><span class="toc-text"> 松耦合设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#open-closed-principle-%E5%BC%80%E6%94%BE-%E5%85%B3%E9%97%AD%E5%8E%9F%E5%88%99"><span class="toc-text"> Open-Closed Principle - 开放-关闭原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dependence-inversion-principle-%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99"><span class="toc-text"> Dependence Inversion Principle - 依赖倒置原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#least-knowledge-principle-%E6%9C%80%E5%B0%91%E7%9F%A5%E8%AF%86%E5%8E%9F%E5%88%99"><span class="toc-text"> Least Knowledge Principle - 最少知识原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hollywood-principle-%E5%A5%BD%E8%8E%B1%E5%9D%9E%E5%8E%9F%E5%88%99"><span class="toc-text"> Hollywood Principle - 好莱坞原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#single-responsibility-principle-%E5%8D%95%E4%B8%80%E8%B4%A3%E4%BB%BB%E5%8E%9F%E5%88%99"><span class="toc-text"> Single Responsibility Principle - 单一责任原则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oo%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="toc-text"> OO设计模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#strategy-pattern-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Strategy Pattern - 策略模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#observer-pattern-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Observer Pattern - 观察者模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-2"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-2"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#decorator-pattern-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Decorator Pattern - 装饰器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-3"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-3"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-2"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#factory-pattern-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Factory Pattern - 工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#simple-factory-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Simple Factory - 简单工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-4"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#pros-cons-4"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#factory-method-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Factory Method - 工厂方法模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-5"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#a-deeper-look"><span class="toc-text"> A Deeper Look</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#pros-cons-5"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#abstract-factory-pattern-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Abstract Factory Pattern - 抽象工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-5"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-6"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#pros-cons-6"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-3"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#singleton-pattern-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Singleton Pattern - 单例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-6"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-7"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-7"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-4"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#command-pattern-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Command Pattern - 命令模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-7"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-8"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-8"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-5"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#adapter-pattern-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Adapter Pattern - 适配器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-8"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-9"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-9"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-6"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#facade-pattern-%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Facade Pattern - 外观模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-9"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-10"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-10"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-7"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#template-method-pattern-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Template Method Pattern - 模板方法模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-10"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-11"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-11"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-8"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iterator-pattern-%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Iterator Pattern - 迭代器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-11"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-12"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-12"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-9"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#composite-pattern-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Composite Pattern - 组合模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-12"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-13"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-13"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-10"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#state-pattern-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"><span class="toc-text"> State Pattern - 状态模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-13"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-14"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-14"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-11"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#proxy-pattern-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Proxy Pattern - 代理模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-14"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-15"><span class="toc-text"> 案例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%90%86"><span class="toc-text"> 远程代理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E4%BB%A3%E7%90%86"><span class="toc-text"> 虚拟代理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BF%9D%E6%8A%A4%E4%BB%A3%E7%90%86"><span class="toc-text"> 保护代理</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-15"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-12"><span class="toc-text"> 要点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-text"> 附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%88%86%E7%B1%BB"><span class="toc-text"> 设计模式分类</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">3</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+  <div class="image-wrapper">
+    <img 
+      src="/2024/02/07/ProgramDesign/Head-First设计模式-精炼整理/banner.PNG" 
+      data-src="/2024/02/07/ProgramDesign/Head-First设计模式-精炼整理/banner.PNG"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="Head First设计模式-精炼整理 thumbnail">
+  </div>
+
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      Head First设计模式-精炼整理
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-02-07T13:08:49.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-02-07</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/Design-Pattern/" 
+          class="post-meta-link">
+          Design Pattern
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>17.4k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/Head-First-Design-Patterns/" 
+            class="post-meta-link">
+            Head First Design Patterns
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <hr>
+<h2 id="preface"><a class="markdownIt-Anchor" href="#preface"></a> Preface</h2>
+<p>本文是对<a target="_blank" rel="noopener" href="https://book.douban.com/subject/2243615/">《Head First设计模式》</a>的归纳整理。</p>
+<h3 id="本文概述"><a class="markdownIt-Anchor" href="#本文概述"></a> 本文概述</h3>
+<p>原书为了加深读者的理解和记忆，使用了程序设计案例分析的方式层层递进地介绍设计模式，非常适合入门设计模式。不过，该书更侧重使用案例建立对设计模式的初步理解，而非系统地、完备地介绍设计模式概念，容易造成对设计模式的认知高度依赖书中具体案例的情况（理解了书中的案例，却没有完全理解设计模式本身），且比较不便于后续查阅和复习。</p>
+<p>因此本文旨在对书中内容进行重新归纳梳理。主要的工作是：总结书中介绍的设计模式，结合书中程序设计案例进行说明并使用其他设计模式资料作为补充，以便建立对设计模式更为系统的认知。</p>
+<p>本书使用JAVA构建例子(<a target="_blank" rel="noopener" href="https://wickedsmart.com/head-first-design-patterns">原书代码</a>)，由于我较常用C++，因此在学习过程中使用C++重新实现了一部分典型示例代码，代码可在<a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111/HeadFirstDesignPatterns-Code-Cpp">我的Github仓库</a>获取。</p>
+<h3 id="书籍简介"><a class="markdownIt-Anchor" href="#书籍简介"></a> 书籍简介</h3>
+<p>该书并非传统意义上的教材，并没有使用引入概念、解释概念的教学方式。相反，其致力于使用通俗易懂、简单而典型的案例进行引入，引导读者思考如何优化程序设计，并最终引入对应的设计模式。</p>
+<p>该书非常适合已基本了解OOP而急需了解程序设计方面最佳实践的程序员。我愿称之为设计模式入门必读书籍。</p>
+<p>设计模式实际上有很多，经典的四人帮(GoF)基础设计模式、架构模式、游戏设计模式等等，本书并没有覆盖设计模式的方方面面，而是聚焦于GoF模式中最核心最常用的部分。</p>
+<p>以本书为引子，想必能顺利啃下市面上绝大部分的设计模式书籍了。</p>
+<hr>
+<h2 id="oo设计原则"><a class="markdownIt-Anchor" href="#oo设计原则"></a> OO设计原则</h2>
+<p>书中提到<strong>设计原则</strong>，可谓是贯穿设计模式的主线，所有设计模式都或多或少的基于这些设计原则进行考量。理解这些设计原则有助于从根本上理解设计模式。</p>
+<p>这些设计原则散布在原书中的各个部分，本章将其提取出来放在一起，并作必要解释。</p>
+<h3 id="封装变化的部分"><a class="markdownIt-Anchor" href="#封装变化的部分"></a> 封装变化的部分</h3>
+<p>识别应用中变化的方面，把它们和不变的方面分开</p>
+<p>把会变化的部分取出并<strong>封装</strong>，从而可在后续修过或扩展该部分，而不会影响其他不需要变化的部分</p>
+<h3 id="interface-oriented-programming-面向接口编程"><a class="markdownIt-Anchor" href="#interface-oriented-programming-面向接口编程"></a> Interface Oriented Programming - 面向接口编程</h3>
+<p>针对接口编程，而不是针对实现编程</p>
+<p>“针对接口编程”的真正含义是“针对超类(基类)编程”，或者说，变量所声明的类型应该是基类，通常为<strong>抽象类或接口</strong>，这样，分配给这些变量的对象可以是基类的任何具体实现，这意味着类声明时不必知道实际的对象类型，使得我们能够<strong>在运行时分配具体的实现对象</strong></p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/polymorphism.png" alt="Polymorphism" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/polymorphism.png" class="lozad post-image"></p>
+<p>具体而言，可将类的一些行为放在分离的类中，实现特定行为接口的类。这样，进行那些行为的类不需要知道行为的任何实现细节。</p>
+<p><em>注：这一点通常依赖于OOP的多态特性，比如使用虚继承、用基类指针指向派生类对象</em></p>
+<h3 id="composite-reuse-principle-组合复用原则组合优于继承"><a class="markdownIt-Anchor" href="#composite-reuse-principle-组合复用原则组合优于继承"></a> Composite Reuse Principle - 组合复用原则（组合优于继承）</h3>
+<p>优先使用组合而非继承</p>
+<p>Has-A can be better than Is-A</p>
+<p>组合与继承的使用，通常都是为了达到代码复用的目的。</p>
+<p>以继承实现复用，有时候并不怎么便于维护。而使用组合往往有助于解决问题。</p>
+<p>具体来说，我们考察下列情况：</p>
+<p>假设，Derived类通过继承Base类获得其中的行为，而每当有新的Derived类加入时，程序员不得不对其进行检查，必要时还需要在Derived类中重新实现这些行为以覆盖Base类的行为。这种情况下，非但不能达到复用的目的，还会使得程序员耗费更多精力完成新的实现。</p>
+<p>而在组合关系下，假设，A类中包含(拥有)Behavior类，当A类需要进行Behavior类中定义的行为时，相当于是将事情转交由Behavior类进行完成，而A类并不需要知晓Behavior类完成行为的细节。而当有新的一个B类加入时，它也可以通过组合其所需的Behavior类实现相应行为，这种情况下，相比使用继承，组合关系下的类可以只知道其可以这样调用行为，而行为的具体执行交由其组合类完成，无需在本类中实现新方法、覆盖基类行为。</p>
+<p><em>注：侯捷老师的《面向对象高级编程》课程中也简要提及过如上所述的类之间的关系，如果你是一位对OOP还不甚了解的C++程序员，抑或是想要复习一下OOP相关内容，我都十分建议你去学习一下侯捷老师的这套课程</em></p>
+<p>本书中出现的组合关系，实际上更像是委托关系。在C++中，委托关系就是类中包含指向行为接口类的指针，这样，当该类需要进行那些行为时，可以通过指针将进行行为的工作“委托”给接口类，从而不需要知道其行为的具体实现。</p>
+<p><em>注：我不太了解JAVA，只知道JAVA不使用指针，所以我并不确定这部分的组合和委托在JAVA、C#之类的完全面向对象的编程语言中是否是一回事。据我了解，在C++中组合通常指一个类中包含另一个类的对象，而委托则是一个类中包含指向另一个类的指针。前者是“我中有你”，是实实在在的拥有(Has-A)；而后者则更像是“当我需要你为我做事的时候，我可以通过指针找到你，并将事情委托给你”</em></p>
+<h3 id="松耦合设计"><a class="markdownIt-Anchor" href="#松耦合设计"></a> 松耦合设计</h3>
+<p>尽量做到交互的对象之间的松耦合设计。</p>
+<p>松耦合设计允许我们建造能够应对变化的有弹性的OO系统，因为对象之间的互相依赖降到最低。当两个对象松耦合时，它们可以交互，但是通常对彼此所知甚少。</p>
+<p>前述的优先使用组合就是一种典型的实现松耦合的方法，相比继承关系中的紧密耦合，组合关系使得类间的依赖降低，使得我们可以较容易地添加或移除其中的组合类，类的改变较少相互影响，同时我们还能够较为独立地复用每一个类。</p>
+<h3 id="open-closed-principle-开放-关闭原则"><a class="markdownIt-Anchor" href="#open-closed-principle-开放-关闭原则"></a> Open-Closed Principle - 开放-关闭原则</h3>
+<p>类应该对扩展开放，但对修改关闭。</p>
+<p>开放-关闭原则允许类容易扩展以容纳新的行为，而不用修改已有代码。这样的设计可以弹性应对改变，有足够弹性接受新的功能来应对改变的需求。</p>
+<p>注意，对于程序设计的每一部分都花费时间严格遵循开放-关闭原则是奢侈的，甚至是浪费的。因为让OO设计有弹性，对扩展开放，又不修改已有代码，这需要大量时间和精力。同时，遵循开放-关闭原则往往会引入新的抽象层次，这会增加代码的复杂度。</p>
+<h3 id="dependence-inversion-principle-依赖倒置原则"><a class="markdownIt-Anchor" href="#dependence-inversion-principle-依赖倒置原则"></a> Dependence Inversion Principle - 依赖倒置原则</h3>
+<p>依赖抽象，不依赖具体类。</p>
+<p>这个原则看起来很像“针对接口编程”，但是更强调抽象。<br>
+依赖倒置原则说明，高层组件不应该依赖于底层组件，并且两者都应该依赖于抽象。</p>
+<p>假设有一用户类A，其中的行为依赖于一系列具体类来定义，设这些具体类为B1,B2,B3,B4,…，此时A类作为高层组件依赖于这些作为低层组件的具体类。这种情况下，根据依赖倒置原则，应该新增一层抽象类B，所有上述具体类派生自这个抽象类，而用户类A仅需要调用抽象类B。此时用户类A不再依赖于具体类，而是依赖于抽象类B，而B1,B2,…等这些具体类也依赖于抽象类B。</p>
+<p>从类图上看，原本用户类向下依赖于各具体的低层组件，更改后用户类仅依赖于具体类的抽象，而具体类则反过来向上依赖于抽象类，看上去像是依赖关系被倒置了，依赖倒置原则也得名于此。</p>
+<h3 id="least-knowledge-principle-最少知识原则"><a class="markdownIt-Anchor" href="#least-knowledge-principle-最少知识原则"></a> Least Knowledge Principle - 最少知识原则</h3>
+<p><em>又称Law of Demeter - 迪米特法则</em></p>
+<p>最少知识原则要求设计系统时，对于任何对象，都要注意它所交互的类的数量，以及它和这些类如何交互。以减少类之间的依赖。</p>
+<p>最少知识原则提供了以下指南：对于任何对象，从该对象的任何方法，只调用属于以下范围的方法：</p>
+<ul>
+<li>对象自身。</li>
+<li>作为参数传给方法的对象。</li>
+<li>该方法创建或实例化的任何对象。</li>
+<li>对象的任何组件。</li>
+</ul>
+<p>但是，最少知识原则会导致越来越多的“包装”出现，这会造成系统复杂度的提升，导致运行性能下降。</p>
+<h3 id="hollywood-principle-好莱坞原则"><a class="markdownIt-Anchor" href="#hollywood-principle-好莱坞原则"></a> Hollywood Principle - 好莱坞原则</h3>
+<p>Don’t call us, we’ll call you.</p>
+<p>Call是双关，即可形象地指演员只能等演艺公司来打电话联系他们，而不能主动联系演艺公司，又可以指函数的调用。</p>
+<p>当高层组件和低层组件相互依赖，甚至连横向组件又于前两者互相依赖，“依赖腐烂”便发生了，此时没人能轻易理解系统是怎么设计的。</p>
+<p>好莱坞原则可以有效防止上述情况。基于这种原则，低层组件被允许挂钩进系统，而由高层组件决定何时需要它们以及怎样利用它们。也就是说高层组件对待底层组件的态度就是Don’t call us, we’ll call you.</p>
+<p>以模板方法模式为例，定义了模板方法的抽象类是高层组件，而其具体实现某些步骤的子类是低层组件。高层组件只有在模板方法中需要子类实现的某个方法时，才会调用子类，而子类则不会直接调用抽象类。</p>
+<h3 id="single-responsibility-principle-单一责任原则"><a class="markdownIt-Anchor" href="#single-responsibility-principle-单一责任原则"></a> Single Responsibility Principle - 单一责任原则</h3>
+<p>一个类应该只有一个变化的原因。</p>
+<p>一个类的责任就是它变化的原因，当一个类需要承担多个责任时候，它便有了更多变化的原因，更有可能不得不被修改，因此也更容易导致问题的出现。（变化的可能性增加往往意味着问题出现的可能性增加）</p>
+<p>于是，应该尽可能地只将一个责任分配给一个类而且仅一个类。</p>
+<p>以迭代器模式为例，它便是通过迭代器将管理数据结构和遍历数据的责任拆分开来。</p>
+<hr>
+<h2 id="oo设计模式"><a class="markdownIt-Anchor" href="#oo设计模式"></a> OO设计模式</h2>
+<p>本章正式进入设计模式的内容，对于书中出现的常见设计模式，逐一对其定义、特点、案例、优缺点等进行简要归纳。</p>
+<h3 id="strategy-pattern-策略模式"><a class="markdownIt-Anchor" href="#strategy-pattern-策略模式"></a> Strategy Pattern - 策略模式</h3>
+<h4 id="定义"><a class="markdownIt-Anchor" href="#定义"></a> 定义</h4>
+<p>策略模式定义了一个算法族，分别封装起来，使得它们之间可以相互变换。策略让算法的变化独立于使用它的客户。</p>
+<p>策略模式属于<strong>行为型模式</strong>，它通过对算法进行封装，把使用算法的责任和算法的实现分割开来，并委托给给不同的对象对这些算法进行管理。策略模式通过将算法与使用算法的代码解耦，提供了动态选择不同算法的方法。</p>
+<p>策略模式中的核心部分包括：<strong>上下文(Context)</strong>, <strong>抽象策略(Abstract Strategy)</strong>, <strong>具体策略(Concrete Strategy)</strong>。其中，环境维护对策略对象的引用，抽象策略定义策略对象的公共接口，而具体策略实现这些接口。</p>
+<h4 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例</h4>
+<p>以书中SimUDuck应用来说，其中FlyBehavior和QuackBehavior便是被封装起来的算法族(行为)，是抽象类，在例子中是抽象策略。<br>
+而诸如FlyWithWings, FlyNoWay的类继承前述的抽象类并具体实现其接口，它们是具体策略。<br>
+Duck类作为上下文维护着指向FlyBehavior和QuackBehavior类型的指针，通过使指针指向具体策略类来替换Duck的行为，而无需改变自身的设计。</p>
+<p>完整的UML如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simuduck_class_diagram.png" alt="simuduck_encapsulated" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simuduck_class_diagram.png" class="lozad post-image"></p>
+<h4 id="pros-cons"><a class="markdownIt-Anchor" href="#pros-cons"></a> Pros &amp; Cons</h4>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>算法/行为可以自由切换；</li>
+<li>避免使用多重条件判断；</li>
+<li>扩展性良好</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>算法/行为接口类会增多；</li>
+<li>所有算法/行为接口类需要对外暴露</li>
+</ul>
+<h3 id="observer-pattern-观察者模式"><a class="markdownIt-Anchor" href="#observer-pattern-观察者模式"></a> Observer Pattern - 观察者模式</h3>
+<h4 id="定义-2"><a class="markdownIt-Anchor" href="#定义-2"></a> 定义</h4>
+<p>观察者模式是一种<strong>行为型设计模式</strong>，它定义了对象之间的一对多依赖。当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern.png" alt="observer_pattern" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern.png" class="lozad post-image"></p>
+<p>观察者模式中，被订阅的对象称为<strong>主题(Subject)</strong>，它是具有状态的对象，并维护者一个**观察者(Observer)**列表。<br>
+观察者是订阅主题的对象，是接受主题通知的对象，观察者需要实现一个更新(Update)方法，当收到主题的通知时候，调用更新方法进行响应。</p>
+<p><strong>具体主题(Concrete Subject)</strong> 是主题接口的具体实现类，维护者观察者列表，并在状态发生变化时通知观察者。</p>
+<p><strong>具体观察者(Concrete Observer)</strong> 是观察者接口的具体实现类，实现了更新方法，并在收到具体主题通知时调用自己的更新方法进行响应。</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern_class_diagram.png" alt="observer_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/observer_pattern_class_diagram.png" class="lozad post-image"></p>
+<p><em>注：通常不应该期望主题的通知按照一定次序到达观察者</em></p>
+<h4 id="案例-2"><a class="markdownIt-Anchor" href="#案例-2"></a> 案例</h4>
+<p>以书中WeatherStation案例为例，其中的Subject为抽象主题。而WeatherData类是对抽象主题接口的实现，是具体主题。<br>
+Observer是抽象观察者，而具体Display类(如CurrentConditionsDisplay, StatisticDisplay等)是对抽象观察者接口的实现，是具体观察者。<br>
+当WeatherData有新数据时(即状态发生改变)，则依次通知其维护的Observer List中的所有观察者，收到通知的观察者调用各自实现的Update方法进行更新。</p>
+<p>观察者对象通常维护着对主题对象的引用，这为将来可能发生的观察者取消订阅提供便利。</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/weather_station_class_diagram.png" alt="weather_station_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/weather_station_class_diagram.png" class="lozad post-image"></p>
+<p><em>注：个人认为本例中可以设计为DisplayElement为继承Observer接口的接口，在此基础上加入抽象display方法，这样DisplayElement便成为了所有Display类型的接口。而所有具体的Display类都直接继承自DisplayElement，具体实现各自的update和display方法。这样类关系可能更加整洁一些</em></p>
+<h4 id="pros-cons-2"><a class="markdownIt-Anchor" href="#pros-cons-2"></a> Pros &amp; Cons</h4>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>主题与观察者之间是抽象耦合的，是一种松耦合</li>
+<li>建立了一套触发机制</li>
+</ul>
+<p><em>注：抽象耦合指的是类之间的依赖关系是通过抽象的接口实现的</em></p>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>主题需要依次通知所有观察者，如果一个主题有很多直接和间接的观察者，通知到所有观察者的过程会比较耗时</li>
+<li>如果主题和观察者之间有循环依赖，观察目标会触发它们的循环调用，导致系统崩溃</li>
+<li>观察者模式没有相应的机制让观察者知道所观察的目标对象是怎样变化的，观察者仅仅知道观察目标发生了变化。</li>
+</ul>
+<h4 id="要点"><a class="markdownIt-Anchor" href="#要点"></a> 要点</h4>
+<ul>
+<li>观察者模式定义对象之间的一对多关系。</li>
+<li>主题使用通用接口更新观察者。</li>
+<li>任何具体类型的观察者都可以参与该模式，只要它们实现观察者接口。</li>
+<li>观察者是松耦合的，主题只知道它们实现观察者接口，对其他细节并不知情。</li>
+<li>使用该模式时，可以从主题“拉”数据。</li>
+<li>观察者模式和出版/订阅模式相关，后者用于更复杂的主题或多消息类型的情形。</li>
+</ul>
+<h3 id="decorator-pattern-装饰器模式"><a class="markdownIt-Anchor" href="#decorator-pattern-装饰器模式"></a> Decorator Pattern - 装饰器模式</h3>
+<h4 id="定义-3"><a class="markdownIt-Anchor" href="#定义-3"></a> 定义</h4>
+<p>装饰器模式动态地将额外责任附件到对象上。对于扩展功能，装饰器提供子类化之外的弹性替代方案。</p>
+<p>装饰器模式属于<strong>结构型模式</strong>。</p>
+<p>装饰器模式通过将对象包装在装饰器类中，以便动态地修改其行为，添加新的功能，同时不改变其结构。这种模式创建了一个装饰类，用来包装原有的类，并在保持类方法签名完整性的前提下，提供了额外的功能。</p>
+<p>装饰器模式通过嵌套包装多个装饰器对象，可以实现多层次的功能增强。每个具体装饰器类都可以选择性地增加新的功能，同时保持对象接口的一致性。</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/decorator_pattern_class_diagram.png" alt="decorator_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/decorator_pattern_class_diagram.png" class="lozad post-image"></p>
+<p><strong>组件(Component)</strong> 定义原始对象的公共接口或抽象类。</p>
+<p><strong>具体组件(Concrete Component)</strong> 是被装饰的原始对象，定义了需要添加新功能的对象。</p>
+<p><strong>装饰器(Decorator)</strong> 继承自抽象组件，并通过组合的方式包含抽象组件对象(可以是具体组件、也可以是其他装饰器)。其定义了与抽象组件相同的接口，因此装饰器中也可以持有其他装饰器对象。</p>
+<p><strong>具体装饰器(Concrete Decorator)</strong> 实现了抽象装饰器的接口，负责向抽象组件添加新功能。添加新功能的方式通常是：在调用被装饰的对象的方法之前或之类执行其自己附加的操作。</p>
+<h4 id="案例-3"><a class="markdownIt-Anchor" href="#案例-3"></a> 案例</h4>
+<p>书中StarBuzz Coffe的案例以咖啡连锁店下单系统为例。在购买咖啡时，需要选择基础饮料，然后选择调料（如低因咖啡加双份摩卡加奶泡），计算订单价格的方式就是基础饮料价格加上调料的附加价格。</p>
+<p>首先，我们不可能为所有可能的饮料搭配情况定义一个类。<br>
+如果在抽象饮料类(Beverage)中加入代表是否添加某种调料的boolean值，然后通过cost方法计算出订单价格，这样是否可行呢？<br>
+看似合理，但是并不合适。<br>
+首先，这种方法没法表示添加双倍调料。当然，这尚且可以通过将boolean改为integer来解决。</p>
+<p>但是，如果调料价格改变或添加新的可选调料，都会迫使我们改变cost方法；而且，不是所有饮料都能够添加所有调料(总不会在茶里打奶泡吧)；再者，如果有新饮料加入…我不想再说下去了…</p>
+<p>总之，通过上面的叙述，想必已经非常明了，那显然是针对实现编程的设计，与我们追求的设计原则相悖。</p>
+<p>于是，引入装饰器模式。其类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_class_diagram.png" alt="starbuzz_decorator_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_class_diagram.png" class="lozad post-image"></p>
+<p>其中，定义抽象饮料类Beverage就是装饰器模式中的<strong>组件</strong>。各种基础饮料(HouseBlend, DarkRoast, etc.)继承自Beverage，它们是<strong>具体组件</strong>，也就是需要被调料装饰的原始对象。调料装饰器类CondimentDecorator是<strong>装饰器</strong>，而各类调料(Milk, Mocha, etc.)继承自CondimentDecorator，它们就是<strong>具体装饰器</strong>。</p>
+<p>Beverage中包含decription成员，也就是品名，同时包含virtual的cost方法获取价格。基础饮料通过继承获得其属性，而其中的cost方法获取其各自的基础饮料价格。</p>
+<p>CondimentDecorator继承自Beverage，同时通过组合持有一个Beverage对象，也就是要被该调料装饰的饮料。而继承自CondimentDecorator的具体调料装饰器则具体实现的各自的cost方法，(递归)获得其要装饰的饮料的价格并且加上该调料的价格。</p>
+<p>于是一杯DarkRoast加摩卡加奶泡，其获取价格的过程可表示如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_structure.png" alt="starbuzz_decorator_structure" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/starbuzz_decorator_structure.png" class="lozad post-image"></p>
+<h4 id="pros-cons-3"><a class="markdownIt-Anchor" href="#pros-cons-3"></a> Pros &amp; Cons</h4>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>装饰类和被装饰类可以独立发展，不相互耦合</li>
+<li>装饰器模式是继承的一个替代</li>
+<li>可以动态扩展一个实现类的功能</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>装饰器的过度使用会导致设计中有很多小对象（每次需要一点扩展都包装一下，装饰器就太多了）</li>
+<li>多层装饰比较复杂</li>
+<li><em>（我自己想的，不太确定）可能有少量空间浪费？装饰器表示的类型可能不需要用到其持有的被装饰对象的所有数据成员，但是也必须分配存储这些成员。如前面StarBuzz案例，Beverage中有一个description成员，抽象装饰器继承自Beverage，其中又包含一个Beverage类型的成员，其getDescription方法获取被装饰的Beverage的description加上该装饰器附加的名称，那么装饰器类自己继承自Beverage的description成员就没有用。（其实这点我觉得可以通过设计优化，但是还是把自己的思考姑且留在此处）</em></li>
+</ul>
+<h4 id="要点-2"><a class="markdownIt-Anchor" href="#要点-2"></a> 要点</h4>
+<ul>
+<li>继承是扩展形式之一，但未必是达到弹性设计的最佳方式。</li>
+<li>设计中应该允许行为可以被扩展，而无需修改已有代码。</li>
+<li>组合和委托经常可以用来在运行时添加新行为。（可以在运行时改变对象行为是组合和委托的一大优势，策略模式就是一个典型的例子）</li>
+<li>装饰器模式提供了子类化扩展行为的替代品。</li>
+<li>装饰器模式涉及一群装饰器类，这些类用来包装具体组件。</li>
+<li>装饰器类反映了它们所装饰的组件类型（它们和所装饰的组件类型相同，都经过了继承或接口实现）</li>
+<li>装饰器通过在对组件的方法调用之前或之后添加功能来改变组件的行为。</li>
+<li>可以用任意数目的装饰器包装一个组件。当然，多层装饰会较复杂。</li>
+<li>装饰器一般对组件的客户是透明的，除非客户依赖于组件的具体类型。</li>
+<li>装饰器会导致设计中出现出现许多小对象，过度使用会让代码变得复杂。</li>
+</ul>
+<p><em>注：上面提到的“透明”(Transparent)在计算机领域和我们日常生活中的直观理解并不相同。日常生活语境中通常认为A对B透明的意思是，A中的具体内容对B完全公开、无任何遮掩；然而在计算机领域正好相反，A对B透明指的是A对B隐藏了其具体内容、具体实现，对于B来说A是一层抽象，使得B可以不必关心A中具体做了什么事情、是如何做的</em></p>
+<h3 id="factory-pattern-工厂模式"><a class="markdownIt-Anchor" href="#factory-pattern-工厂模式"></a> Factory Pattern - 工厂模式</h3>
+<p>工厂模式属于<strong>创建型模式</strong>，它在创建对象时提供了一种封装机制，将实际创建对象的代码与使用代码分离。</p>
+<p><em>注：工厂模式通常包括了三种细分的模式，简单工厂、工厂方法、抽象工厂，三种方法相似却又各不相同，在初学时容易造成的困扰。本节我将尝试结合自己的理解分别说明三种工厂模式，力求说清楚三者的区别</em></p>
+<p>学习工厂模式的过程中，应该建立一个认知，即工厂模式主要是通过封装对象创建的具体细节，使得类的用户不需要关心不同对象的创建，而只需用统一的方式使用对象。这里的封装就是将不同的对象创建方法从用户代码中拿走，另行包装起来，从整体程序层面看并不能实质上减少什么步骤，该做的事情依然要做，只不过这些该做的事情并非都为用户所关心的，因此将其封装起来移至别处。</p>
+<p>学习设计模式时，应该时常思考如此设计对用户的意义。各类资料案例通常是包括了类设计代码和用户代码，我们能够看到所有东西，因此往往觉得这么设计好像也没有提供多少方便、没有省去多少麻烦。然而，如果从类的用户角度看，这些设计往往帮助其略去了不必关心的、容易出错的细节。以这样的视角来审视设计模式，或许能有更好的理解。</p>
+<p><em>注：我在学习工厂模式的过程中，出现这样的困惑：创建这些对象的方法实际上并没有什么变化，我们该写多少代码还是要写多少代码，甚至需要在不同类中反复横跳，这么做的意义到底是什么。但是当我完成所有类的设计，真正作为用户使用这些设计时，才明白这为用户的使用提供了多么大的方便。如果你也出现了类似的困惑，不妨看看我前两段的论述，兴许能给到你一些启发。</em></p>
+<h4 id="simple-factory-简单工厂模式"><a class="markdownIt-Anchor" href="#simple-factory-简单工厂模式"></a> Simple Factory - 简单工厂模式</h4>
+<p>严格来说，简单工厂并非一个设计模式，而是一种编程习惯。不少开发者将这种习惯当作工厂模式，这其实并不正确。</p>
+<p>由于简单工厂并非一种设计模式，我在书中和其他资料里也并未找到严格的定义，因此在本节我也不给简单工厂妄下定义了，直接上案例。后面结合工厂方法模式一起看，简单工厂到底是什么也不言自明了。</p>
+<h5 id="案例-4"><a class="markdownIt-Anchor" href="#案例-4"></a> 案例</h5>
+<p>书中的PizzaStore案例为开设披萨店，制作披萨。</p>
+<p>披萨店由PizzaStore类定义，其中由一个orderPizza方法。在接到顾客的订单后调用orderPizza方法，在其中创建出抽象披萨类型(Pizza Class)的具体对象(CheesePizza, VeggiePizza, etc.)，然后对其依次进行准备、烘焙、切片、装盒的操作。</p>
+<p>通常，对于披萨店来说，披萨的准备、烘焙、切片和装盒是固定操作，对于任何披萨都是如此。而披萨对象的创建，是披萨店对象所不关心的。试想一下，我们开一家披萨店，并不关心那些配料是怎么做出来的，我们只想要它们被送到我们店里，然后我们用既有的固定制作方法为顾客完成披萨的制作。</p>
+<p>于是，我们的PizzaStore类作为Pizza类的用户，不需要包含披萨“创建”的方法。因此将这些部分提取出来封装成一个只关心如何创建披萨的对象，这个对象就是简单工厂(SimplePizzaFactory)，披萨的创建由其中的createPizza方法完成。</p>
+<p>案例的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simple_pizza_factory_class_diagram.png" alt="simple_pizza_factory_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/simple_pizza_factory_class_diagram.png" class="lozad post-image"></p>
+<p>可见，PizzaStore将披萨的创建<strong>委托</strong>给了SimplePizzaFactory，而其自身则无需关心创建披萨的具体细节。</p>
+<h5 id="pros-cons-4"><a class="markdownIt-Anchor" href="#pros-cons-4"></a> Pros &amp; Cons</h5>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>完成了用户不关心的对象创建方法的封装，用户只需要针对其获得的对象进行固有的操作即可，而可能发生变化的对象创建的部分被封装起来，符合“封装变化的部分”原则</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>不符合“开放-关闭原则”，当有新的对象加入时，需要更改对象创建方法（加入更多的if-else语句判断具体创建何种对象），严格来说这是在更改已有的代码，而非进行扩展</li>
+</ul>
+<h4 id="factory-method-工厂方法模式"><a class="markdownIt-Anchor" href="#factory-method-工厂方法模式"></a> Factory Method - 工厂方法模式</h4>
+<p>上述的简单工厂的确达到了其实现封装的初衷，但是不可谓一个合格的设计模式，而工厂方法模式则从“开放-关闭原则”入手对简单工厂进行改进，它才是真正的工厂模式。</p>
+<p><em>注：这里对简单工厂和工厂方法做这样的对比解释或许会造成一点歧义，因为原书中在工厂方法模式的具体工厂里依然保留了简单工厂中对具体披萨产品if-else的判断，这是有其道理的，具体的说明放在后面案例分析部分</em></p>
+<h5 id="定义-4"><a class="markdownIt-Anchor" href="#定义-4"></a> 定义</h5>
+<p>工厂方法模式定义了一个创建对象的接口，但由子类决定要实例化哪个类。工厂方法让类把实例化推迟到其子类。</p>
+<p>工厂方法模式相当于在简单工厂的基础上又加入了一层抽象。简单工厂只有一个具体工厂类负责对象的创建，而工厂方法模式则在其上加入了抽象工厂类，定义不同的具体工厂类分别负责生产不同的产品。当有新的产品加入时，简单工厂必须在其唯一的具体工厂类中加入新的if-else语句，来适应新对象的创建，这是进行<strong>修改</strong>；而工厂方法模式则可以从抽象工厂派生出新的专门负责生产新产品的具体工厂类，这样就不需要改变原有的类的设计，这是进行<strong>扩展</strong>。</p>
+<p><em>注：这里所说的由子类决定实例化哪个类，并非真的由子类决定，而是该模式允许用户根据需要来决定使用哪个子类来创建其对应的产品。</em></p>
+<p>工厂方法模式的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_class_diagram.png" alt="factory_method_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_class_diagram.png" class="lozad post-image"></p>
+<p><strong>抽象产品(Abstract Product，上图Product)</strong> 定义了产品的共同接口或抽象类。它可以是具体产品类的父类或接口，规定了产品对象的共同方法。<br>
+<strong>具体产品(Concrete Product)</strong> 实现了抽象产品接口，定义了具体产品的特定行为和属性。<br>
+<strong>抽象工厂(Abstract Factory，上图Creator)</strong> 声明了创建产品的抽象方法，可以是接口或抽象类。它可以有多个方法用于创建不同类型的产品。<br>
+<strong>具体工厂(Concrete Factory，上图ConcreteCreator)</strong> 实现了抽象工厂接口，负责实际创建具体产品的对象。</p>
+<h5 id="案例-5"><a class="markdownIt-Anchor" href="#案例-5"></a> 案例</h5>
+<p>书中设置了一个情形：当披萨店的经营模式需要变成连锁加盟的形式。这意味着有更多的PizzaStore需要加入，而这些披萨店由于开在不同地区（案例中的New York和Chicago），需要适应不同地区的饮食习惯。</p>
+<p>首先我们检查一下，如果使用先前的简单工厂模式应该怎么做。显然，我们需要在SimplePizzaFactory中加入更多if-else语句，分别创建诸如NYCheesePizza, ChicagoCheesePizza等新的具体对象。也就是说我们不得不更改原有的工厂类的代码。</p>
+<p>而使用工厂方法模式则是这样实现的：将原先的PizzaStore更改为抽象类作为其中的<strong>抽象工厂</strong>，并由其派生出NYStylePizzaStore, ChicagoStylePizzaStore两个<strong>具体工厂</strong>。这两个具体工厂分别负责创建各自对应的具体对象。</p>
+<p>类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_pizza_class_diagram.png" alt="factory_method_pizza_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/factory_method_pizza_class_diagram.png" class="lozad post-image"></p>
+<h5 id="a-deeper-look"><a class="markdownIt-Anchor" href="#a-deeper-look"></a> A Deeper Look</h5>
+<p><em>注：这部分是我学习工厂模式时的一点困惑和相应的思考。</em></p>
+<p>原书本案例的代码设计中，在两个具体工厂中依然使用if-else语句判断创建何种具体对象。这似乎和前面所述的由简单工厂转向工厂方法模式的目的相悖。</p>
+<p>我认为对于这部分的设计其实并不冲突，我总结出来的原因如下：</p>
+<ul>
+<li>首先，相比可能随时新增的不同地区的加盟店，披萨店中的品类相对固定，甚至很可能是一成不变的，无非是CheesePizza，VeggiePizza，ClamPizza, PepperonPizza这几种。于是这部分可以暂且当作是不会发生变化的部分，根据“封装变化的部分”原则，这部分可以考虑不进行进一步的封装。</li>
+<li>再者，在本案例中，具体PizzaStore根据顾客的订单来创建具体Pizza对象。其实在用户代码中直接创建顾客想要的Pizza然后将其传入对应的PizzaStore完成具体Pizza的创建，如创建CheesePizza传入NYPizzaStore完成NYStyleCheesePizza的创建。但是这种设计显然不够直观，且不符合人的感性认知（顾客必然是先去一家PizzaStore然后点其中的具体Pizza产品，而不可能选中某一类Pizza产品然后找某一家店按照他们店里特有的风格去做出Pizza）。</li>
+<li>书中有提到，设计原则是进行程序设计时应该尽量遵循的指南，但绝非任何时候都应该严格遵循的铁律，任何程序都有一定程度上违反这些原则的地方。</li>
+</ul>
+<p>私以为程序设计是稳定和效率的综合权衡，程序设计的最佳实践更多是给予我们在综合考虑稳定和效率的情况下，更合理地行事的一种参考。但是任何最佳实践都不是放之四海而皆准的铁律，也不存在绝对正确的优异的行事方法。追求绝对的完美不会造就完美的程序，只会让人写不出代码。毕竟，没有人会在写“Hello World”时也考虑设计模式。</p>
+<p>正如书中所说，学习设计模式最终是将这些指南融会贯通，在设计时藏在大脑深处。这样，就算在违反这些原则时，我们也会知道自己正在违反原则，并且会有一个好的理由支持我们这么做。</p>
+<h5 id="pros-cons-5"><a class="markdownIt-Anchor" href="#pros-cons-5"></a> Pros &amp; Cons</h5>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>用户只需知道类名称就可以完成对象的创建。</li>
+<li>扩展性高，当需要增加产品时，只需要再派生出其对应的工厂类就可以。</li>
+<li>产品的具体实现对用户透明，用户只关心产品的接口。</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>每次增加一个产品时，都需要增加一个具体类和对象实现工厂，使得系统中类的个数成倍增加，在一定程度上增加了系统的复杂度，同时也增加了系统具体类的依赖。</li>
+</ul>
+<h4 id="abstract-factory-pattern-抽象工厂模式"><a class="markdownIt-Anchor" href="#abstract-factory-pattern-抽象工厂模式"></a> Abstract Factory Pattern - 抽象工厂模式</h4>
+<h5 id="定义-5"><a class="markdownIt-Anchor" href="#定义-5"></a> 定义</h5>
+<p>抽象工厂模式提供一个接口来创建相关或依赖对象的家族，而不需要指定具体类。</p>
+<p>工厂方法模式是为创建一个产品提供一个抽象接口，而抽象工厂模式则是为创建产品家族提供一个抽象接口。</p>
+<p>使用工厂方法模式时，需要为每一种产品扩展一个新的具体工厂类，当产品种类众多时，具体类的数量会成倍增长。而抽象工厂模式使用分组的思想，每一个分组中包括一整套产品家族，而每一个具体工厂负责生产对应的一整套产品。</p>
+<p>抽象工厂模式常可用于每一类大产品中包括一些子产品的情况，这些大产品就是前面所说的分组，其中的子产品或相同或不同，每个具体工厂负责生产一组产品中所有的子产品。</p>
+<p>抽象工厂模式的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_class_diagram.png" alt="abstract_factory_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_class_diagram.png" class="lozad post-image"></p>
+<p>工厂方法模式常常潜伏在抽象工厂模式中，抽象工厂模式定义了一个接口，这个接口创建一组产品，接口中的每一个方法对应创建组内的一个具体产品。抽象工厂的子类即具体工厂负责实现接口中的各个方法，使用工厂方法实现这些方法是自然而然的。</p>
+<h5 id="案例-6"><a class="markdownIt-Anchor" href="#案例-6"></a> 案例</h5>
+<p>书中的案例进一步提出这样的情形：我们需要为连锁加盟披萨店统一原料以保证披萨的质量。一旦引入了各类原料，我们生产的最小单位便不再是各类披萨，而是其中的各类原料，由这些原料以不同的方式组合构成各类披萨。</p>
+<p>首先，试想一下使用前面所说的工厂方法模式实现这个构想。我们需要为每种原料创建一个具体工厂，将生产出的原料组合为具体的披萨。可想而知，我们需要为每一种披萨生成好几个具体工厂，子类数量将成倍增长。</p>
+<p>如果从抽象的层面考虑，各不相同披萨无非就是面团、酱料、芝士、蔬菜等原料产品构成的产品家族。原料工厂实际上是用同样的方式生产这些原料，只不过具体的原料产品因地区而有所不同。</p>
+<p>于是，我们定义一个原料工厂的接口PizzaIngredientFactory，该接口创建所有原料，也就是抽象工厂。而New York和Chicago的具体的原料工厂派生自抽象工厂，以处理地区差异。</p>
+<p>然后，我们将对应地区的具体原料工厂传给该地区的每个具体披萨，当创建这些披萨时，这些具体披萨类从它们对应的具体原料工厂获得该披萨所需的原料，完成披萨的创建。</p>
+<p>通过这样的方式，我们依然保持了一个地区的加盟店对应一个具体工厂，只不过该具体工厂内生产的是该地区披萨对应的一整个原料家族，而非单个披萨对象。</p>
+<p>使用抽象工厂模式实现PizzaStore的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_pizza_store_class_diagram.png" alt="abstract_factory_pizza_store_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/abstract_factory_pizza_store_class_diagram.png" class="lozad post-image"></p>
+<h5 id="pros-cons-6"><a class="markdownIt-Anchor" href="#pros-cons-6"></a> Pros &amp; Cons</h5>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>当一个产品族中的多个对象被设计成一起工作时，它能保证客户端始终只使用同一个产品族中的对象。<br>
+<em>注：以PizzaStore为例，因为我们保证每个地区对应一个具体工厂，其中的具体原料工厂生产该地区披萨所需的一整个原料家族，因此不会出现类似误将NY的Cheese和Chicago的Clam组合再一起的情况。而如果使用工厂方法模式，针对每一个原料生成具体工厂，则无法保证这一点。</em></li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>产品族扩展非常困难。如果要在一个产品家族中增加一个新产品，不仅需要在抽象工厂里加入新接口，还需要在具体工厂中加入新的接口实现。</li>
+</ul>
+<h4 id="要点-3"><a class="markdownIt-Anchor" href="#要点-3"></a> 要点</h4>
+<ul>
+<li>所有工厂都封装对象的创建。</li>
+<li>简单工厂虽称不上真正的设计模式，但依然不失为将用户从具体类解耦的简单方法。</li>
+<li>工厂方法模式使用继承，将对象创建委托给了子类；抽象工厂模式使用组合，对象创建在工厂接口暴露的方法中实现。</li>
+<li>工厂模式通过减少对具体类的依赖，促进了松耦合。</li>
+<li>工厂方法的意图：允许一个类延迟实例化到其子类；抽象工厂的意图：创建相关对象家族，而不必依赖其具体类。</li>
+</ul>
+<h3 id="singleton-pattern-单例模式"><a class="markdownIt-Anchor" href="#singleton-pattern-单例模式"></a> Singleton Pattern - 单例模式</h3>
+<h4 id="定义-6"><a class="markdownIt-Anchor" href="#定义-6"></a> 定义</h4>
+<p>单例模式确保一个类只有一个实例，并提供一个全局访问点。</p>
+<p>单例模式涉及一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。</p>
+<p>单例模式属于<strong>创建型模式</strong>。</p>
+<p>单例模式类图非常简单：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/singleton_class_diagram.png" alt="singleton_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/singleton_class_diagram.png" class="lozad post-image"></p>
+<h4 id="案例-7"><a class="markdownIt-Anchor" href="#案例-7"></a> 案例</h4>
+<p>书中案例以巧克力锅炉为例，用单例模式简单模拟单个锅炉的工作流程。</p>
+<p>ChocolateBoiler类中将其构造函数设为私有，该类持有一个静态的实例对象的引用(uniqueInstance)，并提供一个静态的获取实例的方法(getInstance)。用户代码中通过类名调用getInstance，而不需要具体对象。getInstance方法首先检查该类中uniqueInstance是否为空，若为空则调用其构造函数初始化该实例，最后将其返回给用户。</p>
+<p>单例模式需要注意线程安全。案例的代码如果在多线程下执行，可能出现两个同时调用getInstance的情况，线程1检查uniqueInstance为空，而线程2可能在线程1完成uniqueInstance的构造之前也进行了nullptr的判断，最后将导致用户拥有两个该类的实例。</p>
+<p>处理上述的多线程问题，通常有三种方式：</p>
+<ul>
+<li>如果getInstance方法对性能的要求并不高，那么可以直接强制同步每个线程。当然，这种形式会迫使每个线程运行至此时都进行同步，即便我们清楚地知道，一次调用之后实例就已经存在，后续不会再构造新的实例。因此这种方法的性能较差。</li>
+<li>转为急切创建(eagerly create)实例，而不用延迟创建(lazily create)。如果我们可以确定应用总是会创建并使用这个实例，或者单例的创建和运行时的负担不重，那么可以选择在应用初始化时就创建实例。具体来说可以在单例类内直接初始化实例。这也就是我们常说的饿汉式，而在需要用到实例时才创建就是懒汉式。</li>
+<li>双重检查(double check)加锁。getInstance方法中首先检查实例是否存在，如果不存在则进入线程同步区块，进入该区块的线程进行强制同步。而当实例已经创建，后续调用getInstance方法就不会再进入同步区块，因此性能较高。</li>
+</ul>
+<h4 id="pros-cons-7"><a class="markdownIt-Anchor" href="#pros-cons-7"></a> Pros &amp; Cons</h4>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>提供了对唯一实例的受控访问</li>
+<li>内存中只有一个实例，减少了内存的开销。</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>没有接口，不能继承，因此扩展比较困难。</li>
+<li>与“单一职责原则”冲突，一个类应该只关心内部逻辑。</li>
+</ul>
+<h4 id="要点-4"><a class="markdownIt-Anchor" href="#要点-4"></a> 要点</h4>
+<ul>
+<li>单例模式确保应用中一个类最多只有一个实例。</li>
+<li>单例模式提供访问此实例的全局点。</li>
+<li>单例中构造函数设为private。</li>
+<li>单例模式应注意线程安全。</li>
+</ul>
+<h3 id="command-pattern-命令模式"><a class="markdownIt-Anchor" href="#command-pattern-命令模式"></a> Command Pattern - 命令模式</h3>
+<h4 id="定义-7"><a class="markdownIt-Anchor" href="#定义-7"></a> 定义</h4>
+<p>命令模式是一种数据驱动的设计模式，属于<strong>行为型模式</strong>。</p>
+<p>命令模式把请求封装为对象，以便用不同的请求、队列或者日志请求来参数化其他对象，并支持可撤销的操作。请求以命令的形式包裹在对象中，并传给调用对象。调用对象寻找可以处理该命令的合适的对象，并把该命令传给相应的对象，该对象执行命令。</p>
+<p>命令模式的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/command_pattern_class_diagram.png" alt="command_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/command_pattern_class_diagram.png" class="lozad post-image"></p>
+<p>命令模式中的主要角色如下：</p>
+<p><strong>命令(Command)</strong> 定义了命令接口，通常包含一个execute 方法，用于调用具体的操作。<br>
+<strong>具体命令(ConcreteCommand)</strong> 实现命令接口，负责执行具体的操作。它通常包含了对接收者的引用，通过调用接收者的方法来完成请求的处理。<br>
+<strong>接收者(Receiver)</strong> 知道如何执行与请求相关的操作，是实际执行命令的对象。<br>
+<strong>调用者(Invoker)</strong> 发送命令的对象，它包含了一个命令对象并能触发命令的执行。调用者并不直接处理请求，而是通过将请求传递给命令对象来实现。<br>
+<strong>客户端(Client)</strong> 创建具体命令对象并设置其接收者，将命令对象交给调用者执行。</p>
+<h4 id="案例-8"><a class="markdownIt-Anchor" href="#案例-8"></a> 案例</h4>
+<p>书中命令模式的案例为家具自动化遥控器。该遥控器包含七组On-Off按键以及一个全局撤销按键Undo。我们需要实现的功能为：用遥控器的按键控制特定家电的开关以及其他操作（如风扇挡位切换），Undo按键撤销上一个操作，将家电状态返回至上一个操作执行前的状态。</p>
+<p>案例中首先定义具体的家电类(Light, CeilingFan, etc.)，并在其中实现其各自的具体操作(如Light类的on, off, dim, getLevel, etc.)。</p>
+<p>Command类定义了命令接口，其中包括抽象execute和undo方法。具体命令类实现Command接口，其中包含了对应家电类型的引用，通过实现execute和undo方法分别定义该命令需要调用的家电类的方法和其对应的撤销操作。</p>
+<p>除此之外，每个具体的命令类中还需记录上一个状态，在execute方法中，执行对应家电的操作前，先将执行操作前的状态记录下来。如Light的命令对象调用execute方法，执行具体操作前需要记录执行操作前亮度；CeilingFan的命令对象需要记录执行操作前的风扇挡位，以便对应的undo操作恢复上一步的状态。</p>
+<p>RemoteControlWithUndo类定义遥控器，其中用两个Command类型的数组分别维护七个on按键和七个off按键。undoCommand维护上一个执行的操作，也就是当按下undo时需要撤销的操作。</p>
+<p>setCommand方法可以传入具体Command类型，将该命令绑定到一组按键上。onButtonWasPushed和offButtonWasPushed方法接受一个int型参数，表示按下对应槽位(0-6)的on或off按键，方法中调用其对应命令对象的execute方法，并将undoCommand设为该命令，以便undoButtonWasPushed方法调用时撤销对应的操作。</p>
+<p><em>注：C++在运行时获取基类指针指向的对象的动态类型比较麻烦，我使用C++的实现中为了方便遥控器类RemoteControl获取按键绑定的命令信息，为Command接口增加了一个抽象的getCommandType方法，具体命令类中实现该方法以获取对应的类名</em></p>
+<p>该案例的类图如下，其中省略了一些具体家电类，以及遥控器类的undo方法，但是其结构是一致的</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_control_class_diagram.png" alt="remote_control_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_control_class_diagram.png" class="lozad post-image"></p>
+<p><em>注：可以另外定义宏命令，一次性调用多个命令，其undo方法则是以相反的顺序调用其中命令的undo</em></p>
+<h4 id="pros-cons-8"><a class="markdownIt-Anchor" href="#pros-cons-8"></a> Pros &amp; Cons</h4>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>降低了系统耦合度。</li>
+<li>新的命令可以很容易添加到系统中去。</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>可能会导致某些系统有过多的具体命令类。</li>
+</ul>
+<h4 id="要点-5"><a class="markdownIt-Anchor" href="#要点-5"></a> 要点</h4>
+<ul>
+<li>命令模式把做出请求的对象从知道如何执行请求的对象解耦。</li>
+<li>命令对象处在解耦的中心，封装接收者以及一个（或一组）动作。</li>
+<li>调用者通过调用命令对象的execute()做出请求。</li>
+<li>调用者可以用命令参数化，甚至可以在运行时动态地进行。</li>
+<li>通过undo方法将对象重建到最后一次执行execute前的状态。</li>
+<li>宏命令是命令模式的一种简单延伸。</li>
+<li>在实践中也有命令对象自己实现请求，而不委托给接受者的设计。</li>
+<li>命令也可以用来实现日志和事务系统。</li>
+</ul>
+<h3 id="adapter-pattern-适配器模式"><a class="markdownIt-Anchor" href="#adapter-pattern-适配器模式"></a> Adapter Pattern - 适配器模式</h3>
+<h4 id="定义-8"><a class="markdownIt-Anchor" href="#定义-8"></a> 定义</h4>
+<p>适配器模式将一个类接口转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作。</p>
+<p>适配器模式属于<strong>结构型模式</strong></p>
+<p>对象适配器类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/object_adapter_class_diagram.png" alt="object_adapter_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/object_adapter_class_diagram.png" class="lozad post-image"></p>
+<p>其中，适配器将被适配的对象的接口转换成客户的目标接口。</p>
+<p>除了对象适配器，适配器模式还有一种实现方式——类适配器（只有编程语言支持多继承才能实现），其类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/class_adapter_class_diagram.png" alt="class_adapter_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/class_adapter_class_diagram.png" class="lozad post-image"></p>
+<p>类适配器同时继承自目标接口和被适配的类。</p>
+<p>对象适配器 vs. 类适配器：</p>
+<ul>
+<li>对象适配器除了适配一个被适配类，还可以适配其任何的子类；而类适配器则针对一个特定的类进行适配，不能同时适配其子类，但是它不需要重新实现整个被适配的类，且在必要是可以覆盖被适配类的行为。</li>
+<li>对象适配器只继承自接口，接到接口的调用后将其委托给其中的被适配类；而类适配器同时继承自两个类，将一个类的调用转接到另一个类。</li>
+<li>在需要相互适配的两个类都可能成为接口和被适配对象的情况下，对象适配器需要定义两种情况下的两个适配器类，而类适配器只需要一个适配器类。</li>
+</ul>
+<h4 id="案例-9"><a class="markdownIt-Anchor" href="#案例-9"></a> 案例</h4>
+<p>书中的案例是使用适配器使得客户可以使用Duck接口调用Turkey方法，反之亦然。以TurkeyAdapter为例，其本身是Duck接口的一个实现，其中维护一个对Turkey对象的引用，并实现了quack和fly方法。接到Duck接口quack方法的调用时，委托给其中Turkey对象，执行其中的gobble方法；接口Duck接口fly方法的调用时，委托给Turkey对象，执行其中的fly方法。</p>
+<p>案例较为简单，此处不再展开。</p>
+<h4 id="pros-cons-9"><a class="markdownIt-Anchor" href="#pros-cons-9"></a> Pros &amp; Cons</h4>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>可以让任何两个没有关联的类一起运行。</li>
+<li>提高了类的复用。</li>
+<li>增加了类的透明度。</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>过多地使用适配器，会让系统非常零乱，不易整体进行把握。</li>
+<li>类适配器需要编程语言对多继承的支持，如JAVA就无法实现类适配器。</li>
+</ul>
+<h4 id="要点-6"><a class="markdownIt-Anchor" href="#要点-6"></a> 要点</h4>
+<ul>
+<li>当需要使用一个已有的类，而其接口不符合要求，则可以使用适配器。</li>
+<li>适配器改变接口以符合客户的期望。</li>
+<li>适配器包装一个对象以改变其接口；装饰器包装一个对象以添加新的行为和责任；外观包装一群对象以简化其接口。</li>
+</ul>
+<h3 id="facade-pattern-外观模式"><a class="markdownIt-Anchor" href="#facade-pattern-外观模式"></a> Facade Pattern - 外观模式</h3>
+<h4 id="定义-9"><a class="markdownIt-Anchor" href="#定义-9"></a> 定义</h4>
+<p>外观模式为子系统中的一组接口提供了一个统一的接口。外观定义了一个更高级别的接口，使得子系统更容易使用。</p>
+<p>外观模式属于<strong>结构型模式</strong>，它向现有的系统添加一个接口，来隐藏系统的复杂性。</p>
+<p>类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/facade_pattern_class_diagram.png" alt="facade_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/facade_pattern_class_diagram.png" class="lozad post-image"></p>
+<h4 id="案例-10"><a class="markdownIt-Anchor" href="#案例-10"></a> 案例</h4>
+<p>书中HomeTheater案例定义了外观类HomeTheaterFacade，其中维护了家庭影院所需的各类设备对象的引用。客户直接调用外观HomeTheaterFacade的方法实现观看电影、结束放映等操作，而HomeTheaterFacade将完成这些操作所需要依次完成的一系列操作委托给其对应的对象。使得客户调用的接口极大简化。</p>
+<p>案例较为简单，此处不再展开。</p>
+<h4 id="pros-cons-10"><a class="markdownIt-Anchor" href="#pros-cons-10"></a> Pros &amp; Cons</h4>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>减少系统相互依赖，符合最少知识原则。</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>不符合开放-关闭原则，如果需要修改会很麻烦，继承重写都不合适。</li>
+</ul>
+<h4 id="要点-7"><a class="markdownIt-Anchor" href="#要点-7"></a> 要点</h4>
+<ul>
+<li>当需要简化并统一一个大接口或一个复杂的接口集，则可以使用外观。</li>
+<li>外观将客户从一个复杂子系统解耦。</li>
+<li>可以为一个子系统实现多于一个的外观。</li>
+</ul>
+<h3 id="template-method-pattern-模板方法模式"><a class="markdownIt-Anchor" href="#template-method-pattern-模板方法模式"></a> Template Method Pattern - 模板方法模式</h3>
+<h4 id="定义-10"><a class="markdownIt-Anchor" href="#定义-10"></a> 定义</h4>
+<p><strong>模板方法模式</strong>在一个方法中定义一个算法的骨架（也就是模板），而把一些步骤延迟到子类。模板方法可以使得子类在不改变算法结构的情况下，重新定义算法中的某些步骤。</p>
+<p>模板方法模式属于<strong>行为型模式</strong>，主要为了避免子类重复实现通用的方法的情况，将这些通用方法抽象出来在抽象类实现，而子类则可以按需重写某些方法。</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/template_method_pattern_class_diagram.PNG" alt="template_method_pattern" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/template_method_pattern_class_diagram.PNG" class="lozad post-image"></p>
+<h4 id="案例-11"><a class="markdownIt-Anchor" href="#案例-11"></a> 案例</h4>
+<p>以书中制作咖啡和茶为例。<br>
+其中制作咖啡的步骤为：</p>
+<ol>
+<li>把水煮沸；</li>
+<li>用沸水冲泡咖啡；</li>
+<li>把咖啡倒进杯子；</li>
+<li>加糖和奶。<br>
+而制作茶的步骤为：</li>
+<li>把水煮沸；</li>
+<li>用沸水浸泡茶叶；</li>
+<li>把茶倒进杯子；</li>
+<li>加柠檬。</li>
+</ol>
+<p>可见两者的第1、3步骤是一样的，这两个步骤可以作为通用方法(boilWater, pourInCup)放入抽象类中，而剩下的两个不相同的步骤可以交由茶和咖啡的子类自己实现。在抽象类中将上述四个步骤包装成一整个方法(prepareRecipe)，这就是我们的模板方法。</p>
+<p>案例的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/caffeine_beverage_class_diagram.PNG" alt="caffeine_beverage_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/caffeine_beverage_class_diagram.PNG" class="lozad post-image"></p>
+<p>我们注意到，第4步加调料应交由客户进行选择而非必需的步骤，因此我们加入一个返回bool值的方法(customerWantsCondiments)用以表示客户选择是否加调料。这个方法并非一定需要子类实现，比如说我们有产品中必定加调料或必定不加，此时就不需要客户的选择，这种情况下就不需要子类重新实现。这种可选的方法，有个形象的名字叫做Hook</p>
+<h4 id="pros-cons-11"><a class="markdownIt-Anchor" href="#pros-cons-11"></a> Pros &amp; Cons</h4>
+<p>Pros:</p>
+<ul>
+<li>将通用方法抽出，便于维护;</li>
+<li>行为由父类控制，子类实现。</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>当方法步骤需要不同实现时不得不增加子类。</li>
+</ul>
+<h4 id="要点-8"><a class="markdownIt-Anchor" href="#要点-8"></a> 要点</h4>
+<ul>
+<li>模板方法定义算法的步骤，将步骤的实现延迟到子类；</li>
+<li>模板方法的抽象类可以定义具体方法、抽象方法（在子类中具体实现）和Hook；</li>
+<li>Hook也是一种方法，在抽象类中可以不做任何事或只做缺省的事，而子类可以重写覆盖它；</li>
+<li>模板方法通常为final，以防子类篡改；</li>
+<li>策略模式和模板方法模式都封装算法，前者通过组合，后者通过继承；</li>
+<li>工厂方法是模板方法的一个特例。</li>
+</ul>
+<h3 id="iterator-pattern-迭代器模式"><a class="markdownIt-Anchor" href="#iterator-pattern-迭代器模式"></a> Iterator Pattern - 迭代器模式</h3>
+<h4 id="定义-11"><a class="markdownIt-Anchor" href="#定义-11"></a> 定义</h4>
+<p><strong>迭代器模式</strong>提供一种方法，可以访问一个聚合(Aggregate)对象中的元素而又不暴露其底层表示。</p>
+<p>迭代器模式属于<strong>行为型模式</strong>，主要用于应对不同聚合有不同的遍历方式的情况，相当于在聚合对象与使用它的用户间增加了一层抽象，也就是迭代器，将在元素间游走访问的责任交给迭代器，这样对于用户而言只需要对迭代器进行统一的操作，而无需知晓不同聚合对象的不同遍历方式。</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/iterator_pattern_class_diagram.PNG" alt="iterator_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/iterator_pattern_class_diagram.PNG" class="lozad post-image"></p>
+<h4 id="案例-12"><a class="markdownIt-Anchor" href="#案例-12"></a> 案例</h4>
+<p>注：原书使用JAVA，这里我选择以我实现的C++版本的来说</p>
+<p>书中两个餐厅合并的案例，（方便起见，以餐厅A、B来代称），餐厅A的菜单使用vector记录各项目，餐厅B的菜单使用C风格的数组记录各项目，Waitress类则负责打印菜单。</p>
+<p>如果直接合并两者，那么作为菜单类的用户，Waitress类打印菜单需要分别对两个餐厅的菜单以不同方式进行遍历，也就是说此时Waitress同时承担着管理菜单内部结构和遍历菜单两项职责。换言之，当菜单的结构发生变化（比如再多合并一家店，从而需要多合并一份菜单），那么Waitress类需要改变（增加以对应方式遍历新增菜单的操作）；而某家店菜单的遍历方式发生改变，此时Waitress类同样也需要改变。总而言之，这不符合单一责任原则。</p>
+<p>根据迭代器模式，我们将菜单抽象成类（抽象聚合），餐厅A、B的菜单（具体聚合）分别继承自抽象菜单。创建一个抽象迭代器类，餐厅A、B分别有各自派生自抽象迭代器的具体迭代器类，这两个具体迭代器分别负责以对应的方式遍历对应的菜单。</p>
+<p>此时以对应方式遍历的职责交给了迭代器，而Waitress类只依赖于抽象菜单和抽象迭代器，其职责则是只剩下管理菜单，即Waitress只需要用一样的方式使用迭代器而不需要关系具体是以怎样的方式遍历，而当新的菜单加入，Waitress类只需加入新的菜单及其对应的迭代器即可。</p>
+<p>类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/diner_menu_merge_class_diagram.PNG" alt="diner_menu_merge_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/diner_menu_merge_class_diagram.PNG" class="lozad post-image"></p>
+<h4 id="pros-cons-12"><a class="markdownIt-Anchor" href="#pros-cons-12"></a> Pros &amp; Cons</h4>
+<p>Pros:</p>
+<ul>
+<li>可以以统一的方式遍历聚合对象，且无需暴露其底层表示；</li>
+<li>增加新的聚合类和迭代器类都很方便。</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>迭代器模式将存储数据和遍历数据的职责分离，因此增加新的聚合类需要对应增加新的迭代器类，类的个数成对增加，一定程度上增加了系统的复杂性。</li>
+</ul>
+<h4 id="要点-9"><a class="markdownIt-Anchor" href="#要点-9"></a> 要点</h4>
+<ul>
+<li>迭代器允许访问聚合的元素，而不暴露其内部结构；</li>
+<li>迭代器将遍历聚合的责任取出并封装；</li>
+<li>对于支持遍历数据的操作方面，迭代器减轻了聚合的责任。</li>
+</ul>
+<h3 id="composite-pattern-组合模式"><a class="markdownIt-Anchor" href="#composite-pattern-组合模式"></a> Composite Pattern - 组合模式</h3>
+<h4 id="定义-12"><a class="markdownIt-Anchor" href="#定义-12"></a> 定义</h4>
+<p><strong>组合模式</strong>，又叫<strong>部分整体模式</strong>。它将对象组合成树形结构来表现部分——整体层次结构，使得用户可以统一处理单一对象和对象组合。</p>
+<p>组合模式属于<strong>结构型模式</strong>，主要用于应对用户希望模糊单一元素和组合元素的概念，用统一的方式处理它们的情况。</p>
+<p>组合模式类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" alt="composite_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" class="lozad post-image"></p>
+<p>其中主要有以下核心角色：<br>
+**组件(Component)**为所有对象的接口，声明了用于管理和访问子组件的方法，这些方法可以实现缺省的行为；<br>
+**叶子节点(Leaf)**实现了组件接口，它不含子节点，因此表示的是单一对象；<br>
+**复合节点(Composite)**实现了组件接口，它可以包含子节点，表示的是复合对象。<br>
+**客户(Client)**通过组件接口一致地使用该组合结构，而不需要区分叶子节点和复合节点。</p>
+<h4 id="案例-13"><a class="markdownIt-Anchor" href="#案例-13"></a> 案例</h4>
+<p>书中由菜单合并的案例更近一步。由迭代器模式中的案例可知，当需要增加新菜单时，必须进入Waitress类添加更多代码，同时还需为新菜单实现对应的的迭代器，这某种程度上也是在违反“开放-关闭原则”。除此之外，合并几个菜单，Waitress在打印时就必须调用几次printMenu。</p>
+<p>因此在本案例中，我们希望构建一个只用一次printMenu就可以打印全部菜单的结构，同时对于新增的菜单，我们希望将其当作该结构的子结构（即全部菜单下的子菜单）来对待，无论是一个菜单项，还是一个子菜单，都只需要一个统一的方法来完成打印。</p>
+<p>根据组合模式，我们设计一个MenuComponent作为MenuItem和Menu的接口，里面包含了诸如print, add等方法的缺省实现。MenuItem和Menu继承自MenuComponent，覆盖实现其对应需要的方法，尤其是print方法。</p>
+<p>该设计的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" alt="composite_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_pattern_class_diagram.PNG" class="lozad post-image"></p>
+<p>于是，我们构建出了树形结构的菜单，其中每个菜单项或子菜单都是一个节点，我们可以统一地print每一个节点，如果是叶子节点，则print出其菜单项信息；如果是复合节点，则（递归地）print该子菜单中的子节点。</p>
+<p>菜单的树形结构如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_menu_tree.PNG" alt="composite_menu_tree" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/composite_menu_tree.PNG" class="lozad post-image"></p>
+<h4 id="pros-cons-13"><a class="markdownIt-Anchor" href="#pros-cons-13"></a> Pros &amp; Cons</h4>
+<p>Pros:</p>
+<ul>
+<li>可以一致地调用高层和低层模块，调用简单；</li>
+<li>节点的增删比较方便。</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>组合模式允许组件接口同时管理树形结构和操作叶子节点，这个特性在为用户带来透明性（一致地调用，无需关心实现细节）的同时，也违反了单一责任原则；</li>
+</ul>
+<p>注：组合模式是典型的折中。尽管程序的设计受到设计模式的指导，但是人民往往会在仔细观察设计模式对程序设计的影响后，选择性地违反一些原则来换取某些方面的便利。还是那句话，将设计模式藏在脑海中，从而当我们违反一些设计原则时，能够知道自己正在违反原则，并且能有一个好的理由支持我们这么做。</p>
+<h4 id="要点-10"><a class="markdownIt-Anchor" href="#要点-10"></a> 要点</h4>
+<ul>
+<li>组合模式允许客户统一地处理对象组合和单一对象；</li>
+<li>组合结构内的任意对象称为组件，组件可以是其他组合或叶子；</li>
+<li>实现组合模式有许多设计上的折衷，需要平衡透明和安全。</li>
+</ul>
+<h3 id="state-pattern-状态模式"><a class="markdownIt-Anchor" href="#state-pattern-状态模式"></a> State Pattern - 状态模式</h3>
+<h4 id="定义-13"><a class="markdownIt-Anchor" href="#定义-13"></a> 定义</h4>
+<p><strong>状态模式</strong>允许对象在内部状态改变时改变其行为，对象看起来好像改变了它的类。</p>
+<p>状态模式属于<strong>行为型模式</strong>，主要用于对象的行为取决于其状态的情况，在这种情况下，朴素的实现方法需要在类中包含大量的用于状态转移的条件语句，因此可以将状态对应的行为委托给状态类（类似策略模式）。</p>
+<p>状态模式的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_pattern_class_diagram.png" alt="state_pattern_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_pattern_class_diagram.png" class="lozad post-image"></p>
+<h4 id="案例-14"><a class="markdownIt-Anchor" href="#案例-14"></a> 案例</h4>
+<p>书中的案例为一个设计一个糖果机程序，该糖果机有五个状态：未投币(NoQuarterState)、已投币(HasQuarterState)、已售出(SoldState)、胜利(WinnerState)、已售罄(SoldOutState)。上述五个状态都派生自基类State，分别重写其中的方法。</p>
+<p>糖果机中维护着五个状态对象的指针，而五个状态对象也维护着其所属糖果机对象的指针。</p>
+<p><em>注1：这里是一个交叉引用，原书使用JAVA实现代码不会出现编译问题，而使用C++实现则应当注意将具体状态类中需要委托其所属糖果机对象完成的方法进行类外定义。这是因为，JAVA编译时会一次性读进去所有东西，而C++编译时则是见一行读一行，我们不能调用未定义的类的方法，因此必须保证上述具体状态和糖果机这一对交叉引用的类先有一个定义完成。将需要使用糖果机类方法的具体状态类方法进行类外定义则是保证具体状态类先完成定义，那么在定义糖果机类的时候就可以拿到完整的具体状态类，当编译到对具体状态类方法的调用时，再去寻找类外的定义。</em></p>
+<p><em>注2：Context和State并非必须像该案例一样相互引用。本例是因为状态转移是在具体状态类中进行调用的，因为状态转移要视糖果机对象当前的糖果数量而定，是一个相对动态的状态转移；而当状态转移情况比较固定时，则可以将状态转移放在Context中进行调用，而这种情况下很多时候具体状态类可以不需要维护Context的引用，此时具体状态类可以在Context之外定义从而可以被多个Context共享。</em></p>
+<p>糖果机对象运行时调用insertQuarter, ejectQuarter, turnCrank等方法，并将其委托给当前的状态对象，当前的状态对象进行相应的方法调用，并根据糖果机对象剩余糖果数量完成状态转移。</p>
+<p>糖果机运行时状态转移的示例如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_transfer_diagram.png" alt="state_transfer_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/state_transfer_diagram.png" class="lozad post-image"></p>
+<h4 id="pros-cons-14"><a class="markdownIt-Anchor" href="#pros-cons-14"></a> Pros &amp; Cons</h4>
+<p>Pros:</p>
+<ul>
+<li>将所有与状态有关的行为封装成类，可以通过派生新类来增加新的状态，只需要改变对象状态即可改变对象的行为；</li>
+<li>可以让多个Context共享对象。</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>会增加系统类和对象的个数；</li>
+<li>状态模式的结构与实现都较为复杂，如果使用不当将导致程序结构和代码的混乱（从注1的交叉引用就可见一斑）；</li>
+<li>对“开放-关闭闭原则”的支持并不太好，因为增加新的状态类需要修改那些负责状态转换的源代码，否则无法切换到新增状态。</li>
+</ul>
+<h4 id="要点-11"><a class="markdownIt-Anchor" href="#要点-11"></a> 要点</h4>
+<ul>
+<li>状态模式允许一个对象基于内部状态拥有许多不同的行为；</li>
+<li>和过程式状态机不同，状态模式用真正的类代表每个状态；</li>
+<li>通过将状态封装成类，将后续可能需要进行改变局部化；</li>
+<li>状态模式和策略模式类图相同，但意图不同；</li>
+</ul>
+<h3 id="proxy-pattern-代理模式"><a class="markdownIt-Anchor" href="#proxy-pattern-代理模式"></a> Proxy Pattern - 代理模式</h3>
+<p><em>注：我的代码仓库中并未用C++重新实现代理模式的案例。</em></p>
+<h4 id="定义-14"><a class="markdownIt-Anchor" href="#定义-14"></a> 定义</h4>
+<p><strong>代理模式</strong>为另一个对象提供一个替身或占位符来控制对这个对象的访问。</p>
+<p>代理模式属于<strong>结构型模式</strong>，主要用于不希望用户直接访问对象的情况，比如，要访问的对象在远程的机器上。</p>
+<p>代理模式的种类很多，主要包括：远程代理、虚拟代理、Copy-on-Write 代理、保护（Protect or Access）代理、Cache代理、防火墙（Firewall）代理、同步化（Synchronization）代理、智能引用（Smart Reference）代理。</p>
+<p>代理模式的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/proxy_state_class_diagram.PNG" alt="proxy_state_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/proxy_state_class_diagram.PNG" class="lozad post-image"></p>
+<h4 id="案例-15"><a class="markdownIt-Anchor" href="#案例-15"></a> 案例</h4>
+<h5 id="远程代理"><a class="markdownIt-Anchor" href="#远程代理"></a> 远程代理</h5>
+<p>书中远程代理的案例是为状态模式案例的糖果机设计监视器，使得我们可以在远程调用糖果机的方法并返回我们需要的信息。</p>
+<p>简而言之，我们在客户端创建了实际糖果机对象的代理，用户调用代理的方法，代理则通过网络将实际的调用转发至远程的对象，调用的结果也通过网络返回至代理，经由代理处理后展示给用户。用户仿佛直接与远程的对象进行交互。</p>
+<p>远程代理的方法调用流程示意图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_1.PNG" alt="remote_proxy_state_calling_diagram_1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_1.PNG" class="lozad post-image"></p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_2.PNG" alt="remote_proxy_state_calling_diagram_2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/remote_proxy_state_calling_diagram_2.PNG" class="lozad post-image"></p>
+<h5 id="虚拟代理"><a class="markdownIt-Anchor" href="#虚拟代理"></a> 虚拟代理</h5>
+<p>书中虚拟代理的案例是设计显示音乐专辑封面的应用。专辑封面的显示需要先通过网络获取图像，但是网络状况会影响读取的时间，为了在加载图像的过程中也能显示一些信息，我们使用虚拟代理在本地“扮演”图像，在加载完成之前调用虚拟代理的方法显示信息，而加载完成后虚拟代理则将相应的调用委托给加载完成的Icon。</p>
+<p>该案例的类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/virtual_proxy_state_class_diagram.PNG" alt="virtual_proxy_state_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/virtual_proxy_state_class_diagram.PNG" class="lozad post-image"></p>
+<h5 id="保护代理"><a class="markdownIt-Anchor" href="#保护代理"></a> 保护代理</h5>
+<p>保护代理可以使代理只提供部分接口供客户调用，其类图如下：</p>
+<p><img src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/protection_proxy_state_class_diagram.PNG" alt="protection_proxy_state_class_diagram" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/protection_proxy_state_class_diagram.PNG" class="lozad post-image"></p>
+<h4 id="pros-cons-15"><a class="markdownIt-Anchor" href="#pros-cons-15"></a> Pros &amp; Cons</h4>
+<p>Pros:</p>
+<ul>
+<li>对象职责清晰；</li>
+<li>扩展性较高。</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>在客户端和真实主题之间增加了代理对象，因此可能导致请求的处理速度变慢；</li>
+<li>会导致设计中类和对象的数量增加。</li>
+</ul>
+<h4 id="要点-12"><a class="markdownIt-Anchor" href="#要点-12"></a> 要点</h4>
+<ul>
+<li>代理模式为另一个对象提供代表，以便控制客户对对象的访问；</li>
+<li>远程代理管理客户和远程对象的交互；</li>
+<li>虚拟代理控制访问实例化开销大的对象；</li>
+<li>保护代理基于调用者控制对对象方法的访问；</li>
+<li>装饰器模式为对象加上行为，而代理模式则是控制访问。</li>
+</ul>
+<hr>
+<h2 id="附录"><a class="markdownIt-Anchor" href="#附录"></a> 附录</h2>
+<h3 id="设计模式分类"><a class="markdownIt-Anchor" href="#设计模式分类"></a> 设计模式分类</h3>
+<ul>
+<li><strong>创建型模式</strong>：这类设计模式提供在创建对象的同时隐藏创建逻辑的方式，而不使用new运算符直接实例化对象。这使得程序在判断针对某个给定实例需要创建哪些对象时更加灵活。</li>
+<li><strong>结构型模式</strong>：这类模式关注对象之间的组合和关系，旨在解决如何构建灵活且可复用的类和对象结构。</li>
+<li><strong>行为型模式</strong>：这些模式关注对象之间的通信和交互，旨在解决对象之间的责任分配和算法的封装。</li>
+</ul>
+<p>23种设计模式分类如下：（其中加粗的为本书着重解释的设计模式）</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">模式类型&amp;描述</th>
+<th style="text-align:left">具体模式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>创建型模式</strong></td>
+<td style="text-align:left"><strong>工厂模式(Factory Pattern)</strong><br><strong>抽象工厂模式(Abstract Factory Pattern)</strong><br><strong>单例模式(Singleton Pattern)</strong><br>生成器模式(Builder Pattern)<br>原型模式(Prototype Pattern)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>结构型模式</strong></td>
+<td style="text-align:left"><strong>适配器模式(Adapter Pattern)</strong><br>桥接模式(Bridge Pattern)<br>组合模式(Composite Pattern)<br><strong>装饰器模式(Decorator Pattern)</strong><br><strong>外观模式(Facade Pattern)</strong><br>蝇量模式(Flyweight Pattern)<br><strong>代理模式(Proxy Pattern)</strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>行为型模式</strong></td>
+<td style="text-align:left">责任链模式(Chain of Responsibility Pattern)<br><strong>命令模式(Command Pattern)</strong><br>解释器模式(Interpreter Pattern)<br><strong>迭代器模式(Iterator Pattern)</strong><br>中介者模式(Mediator Pattern)<br>备忘录模式(Memento Pattern)<br><strong>观察者模式(Observer Pattern)</strong><br><strong>状态模式(State Pattern)</strong><br><strong>策略模式(Strategy Pattern)</strong><br><strong>模板方法模式(Template Method Pattern)</strong><br>访问者模式(Visitor Pattern)</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/">
+            https://suikasan111.github.io/2024/02/07/ProgramDesign/Head-First%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%B2%BE%E7%82%BC%E6%95%B4%E7%90%86/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2024/06/17/UE5/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%90%E8%B4%A8%E8%8A%82%E7%82%B9/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">UE5-添加自定义材质节点 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2023/12/18/GAMES202/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%AE%9E%E6%97%B6%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">GAMES202笔记：实时光线追踪 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#preface"><span class="toc-text"> Preface</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E6%96%87%E6%A6%82%E8%BF%B0"><span class="toc-text"> 本文概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%A6%E7%B1%8D%E7%AE%80%E4%BB%8B"><span class="toc-text"> 书籍简介</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oo%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="toc-text"> OO设计原则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%81%E8%A3%85%E5%8F%98%E5%8C%96%E7%9A%84%E9%83%A8%E5%88%86"><span class="toc-text"> 封装变化的部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#interface-oriented-programming-%E9%9D%A2%E5%90%91%E6%8E%A5%E5%8F%A3%E7%BC%96%E7%A8%8B"><span class="toc-text"> Interface Oriented Programming - 面向接口编程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#composite-reuse-principle-%E7%BB%84%E5%90%88%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF"><span class="toc-text"> Composite Reuse Principle - 组合复用原则（组合优于继承）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%BE%E8%80%A6%E5%90%88%E8%AE%BE%E8%AE%A1"><span class="toc-text"> 松耦合设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#open-closed-principle-%E5%BC%80%E6%94%BE-%E5%85%B3%E9%97%AD%E5%8E%9F%E5%88%99"><span class="toc-text"> Open-Closed Principle - 开放-关闭原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dependence-inversion-principle-%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99"><span class="toc-text"> Dependence Inversion Principle - 依赖倒置原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#least-knowledge-principle-%E6%9C%80%E5%B0%91%E7%9F%A5%E8%AF%86%E5%8E%9F%E5%88%99"><span class="toc-text"> Least Knowledge Principle - 最少知识原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hollywood-principle-%E5%A5%BD%E8%8E%B1%E5%9D%9E%E5%8E%9F%E5%88%99"><span class="toc-text"> Hollywood Principle - 好莱坞原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#single-responsibility-principle-%E5%8D%95%E4%B8%80%E8%B4%A3%E4%BB%BB%E5%8E%9F%E5%88%99"><span class="toc-text"> Single Responsibility Principle - 单一责任原则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oo%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="toc-text"> OO设计模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#strategy-pattern-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Strategy Pattern - 策略模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#observer-pattern-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Observer Pattern - 观察者模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-2"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-2"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#decorator-pattern-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Decorator Pattern - 装饰器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-3"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-3"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-2"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#factory-pattern-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Factory Pattern - 工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#simple-factory-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Simple Factory - 简单工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-4"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#pros-cons-4"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#factory-method-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Factory Method - 工厂方法模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-5"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#a-deeper-look"><span class="toc-text"> A Deeper Look</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#pros-cons-5"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#abstract-factory-pattern-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Abstract Factory Pattern - 抽象工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-5"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-6"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#pros-cons-6"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-3"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#singleton-pattern-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Singleton Pattern - 单例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-6"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-7"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-7"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-4"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#command-pattern-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Command Pattern - 命令模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-7"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-8"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-8"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-5"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#adapter-pattern-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Adapter Pattern - 适配器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-8"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-9"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-9"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-6"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#facade-pattern-%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Facade Pattern - 外观模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-9"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-10"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-10"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-7"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#template-method-pattern-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Template Method Pattern - 模板方法模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-10"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-11"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-11"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-8"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iterator-pattern-%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Iterator Pattern - 迭代器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-11"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-12"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-12"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-9"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#composite-pattern-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Composite Pattern - 组合模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-12"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-13"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-13"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-10"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#state-pattern-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"><span class="toc-text"> State Pattern - 状态模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-13"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-14"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-14"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-11"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#proxy-pattern-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Proxy Pattern - 代理模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-14"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-15"><span class="toc-text"> 案例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%90%86"><span class="toc-text"> 远程代理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E4%BB%A3%E7%90%86"><span class="toc-text"> 虚拟代理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BF%9D%E6%8A%A4%E4%BB%A3%E7%90%86"><span class="toc-text"> 保护代理</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-15"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-12"><span class="toc-text"> 要点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-text"> 附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%88%86%E7%B1%BB"><span class="toc-text"> 设计模式分类</span></a></li></ol></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#preface"><span class="toc-text"> Preface</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E6%96%87%E6%A6%82%E8%BF%B0"><span class="toc-text"> 本文概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%A6%E7%B1%8D%E7%AE%80%E4%BB%8B"><span class="toc-text"> 书籍简介</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oo%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="toc-text"> OO设计原则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%81%E8%A3%85%E5%8F%98%E5%8C%96%E7%9A%84%E9%83%A8%E5%88%86"><span class="toc-text"> 封装变化的部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#interface-oriented-programming-%E9%9D%A2%E5%90%91%E6%8E%A5%E5%8F%A3%E7%BC%96%E7%A8%8B"><span class="toc-text"> Interface Oriented Programming - 面向接口编程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#composite-reuse-principle-%E7%BB%84%E5%90%88%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF"><span class="toc-text"> Composite Reuse Principle - 组合复用原则（组合优于继承）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%BE%E8%80%A6%E5%90%88%E8%AE%BE%E8%AE%A1"><span class="toc-text"> 松耦合设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#open-closed-principle-%E5%BC%80%E6%94%BE-%E5%85%B3%E9%97%AD%E5%8E%9F%E5%88%99"><span class="toc-text"> Open-Closed Principle - 开放-关闭原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dependence-inversion-principle-%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99"><span class="toc-text"> Dependence Inversion Principle - 依赖倒置原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#least-knowledge-principle-%E6%9C%80%E5%B0%91%E7%9F%A5%E8%AF%86%E5%8E%9F%E5%88%99"><span class="toc-text"> Least Knowledge Principle - 最少知识原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hollywood-principle-%E5%A5%BD%E8%8E%B1%E5%9D%9E%E5%8E%9F%E5%88%99"><span class="toc-text"> Hollywood Principle - 好莱坞原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#single-responsibility-principle-%E5%8D%95%E4%B8%80%E8%B4%A3%E4%BB%BB%E5%8E%9F%E5%88%99"><span class="toc-text"> Single Responsibility Principle - 单一责任原则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oo%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="toc-text"> OO设计模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#strategy-pattern-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Strategy Pattern - 策略模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#observer-pattern-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Observer Pattern - 观察者模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-2"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-2"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#decorator-pattern-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Decorator Pattern - 装饰器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-3"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-3"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-2"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#factory-pattern-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Factory Pattern - 工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#simple-factory-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Simple Factory - 简单工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-4"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#pros-cons-4"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#factory-method-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Factory Method - 工厂方法模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-5"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#a-deeper-look"><span class="toc-text"> A Deeper Look</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#pros-cons-5"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#abstract-factory-pattern-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Abstract Factory Pattern - 抽象工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-5"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-6"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#pros-cons-6"><span class="toc-text"> Pros &amp; Cons</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-3"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#singleton-pattern-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Singleton Pattern - 单例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-6"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-7"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-7"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-4"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#command-pattern-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Command Pattern - 命令模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-7"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-8"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-8"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-5"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#adapter-pattern-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Adapter Pattern - 适配器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-8"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-9"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-9"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-6"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#facade-pattern-%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Facade Pattern - 外观模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-9"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-10"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-10"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-7"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#template-method-pattern-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Template Method Pattern - 模板方法模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-10"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-11"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-11"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-8"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iterator-pattern-%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Iterator Pattern - 迭代器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-11"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-12"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-12"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-9"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#composite-pattern-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Composite Pattern - 组合模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-12"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-13"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-13"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-10"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#state-pattern-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"><span class="toc-text"> State Pattern - 状态模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-13"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-14"><span class="toc-text"> 案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-14"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-11"><span class="toc-text"> 要点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#proxy-pattern-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="toc-text"> Proxy Pattern - 代理模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-14"><span class="toc-text"> 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-15"><span class="toc-text"> 案例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%90%86"><span class="toc-text"> 远程代理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E4%BB%A3%E7%90%86"><span class="toc-text"> 虚拟代理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BF%9D%E6%8A%A4%E4%BB%A3%E7%90%86"><span class="toc-text"> 保护代理</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pros-cons-15"><span class="toc-text"> Pros &amp; Cons</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%81%E7%82%B9-12"><span class="toc-text"> 要点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-text"> 附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%88%86%E7%B1%BB"><span class="toc-text"> 设计模式分类</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-24</div>
+        <a href="/2024/06/24/UE5/UE5-MeshDrawingPipeline/"><div class="recent-posts-item-content">UE5-Mesh Drawing Pipeline</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-21</div>
+        <a href="/2024/06/21/UE5/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89GlobalShader/"><div class="recent-posts-item-content">UE5-添加自定义GlobalShader</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-18</div>
+        <a href="/2024/06/18/UE5/UE5-%E6%B7%BB%E5%8A%A0ShadingModel/"><div class="recent-posts-item-content">UE5-添加ShadingModel</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

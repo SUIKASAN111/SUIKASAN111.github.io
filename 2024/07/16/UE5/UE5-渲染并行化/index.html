@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>UE5-渲染并行化</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="UE5-渲染并行化">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/img/logo.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2024-07-16">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5">
+        
+          <meta 
+            property="og:article:tag" 
+            content="UE5渲染架构">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>31</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>7</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>11</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#enqueue_render_command-%E5%B9%B6%E8%A1%8C%E5%8C%96"><span class="toc-text"> ENQUEUE_RENDER_COMMAND 并行化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#parallelfor"><span class="toc-text"> ParallelFor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#addprimitive"><span class="toc-text"> AddPrimitive</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#enqueue_render_command"><span class="toc-text"> ENQUEUE_RENDER_COMMAND</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unreal-insight-trace"><span class="toc-text"> Unreal Insight Trace</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#executepass-%E5%B9%B6%E8%A1%8C%E5%8C%96"><span class="toc-text"> ExecutePass 并行化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#addpass"><span class="toc-text"> AddPass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dispatchdraw"><span class="toc-text"> DispatchDraw</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%8F%91%E5%91%BD%E4%BB%A4%E9%98%9F%E5%88%97"><span class="toc-text"> 分发命令队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E8%BD%AC%E8%AF%91"><span class="toc-text"> 并行转译</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">3</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      UE5-渲染并行化
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2024-07-16T14:13:48.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2024-07-16</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+          class="post-meta-link">
+          UE5渲染架构
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.9k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/UE5/" 
+            class="post-meta-link">
+            UE5
+          </a>
+        
+          
+            <span class="dot"></span>
+          
+          <a 
+            href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+            class="post-meta-link">
+            UE5渲染架构
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="说明"><a class="markdownIt-Anchor" href="#说明"></a> 说明</h2>
+<p>本文以UE5中向渲染线程入队命令的宏ENQUEUE_RENDER_COMMAND，以及RDGPass Execute为例，进行渲染并行化的简要分析</p>
+<h2 id="enqueue_render_command-并行化"><a class="markdownIt-Anchor" href="#enqueue_render_command-并行化"></a> ENQUEUE_RENDER_COMMAND 并行化</h2>
+<p>以往使用 ENQUEUE_RENDER_COMMAND 向渲染线程入队命令时，每一个 Enqueue 都会创建对应的任务并入队执行。</p>
+<p>而ENQUEUE_RENDER_COMMAND 并行所做的优化概括来说就是：可以异步地将需要处理的Command加入<code>FRenderThreadCommandPipe::Queue</code>，然后在某些时候创建一个任务统一顺序执行完</p>
+<h3 id="parallelfor"><a class="markdownIt-Anchor" href="#parallelfor"></a> ParallelFor</h3>
+<p>FRegisterComponentContext::Process 中使用多个线程并行地调用 FScene::AddPrimitive</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Engine\Private\Components\ActorComponent.cpp
+
+void FRegisterComponentContext::Process()
+&#123;
+    (...)
+
+    ParallelFor(AddPrimitiveBatches.Num(),
+        [&amp;](int32 Index)
+        &#123;
+            FOptionalTaskTagScope Scope(ETaskTag::EParallelGameThread);
+            UPrimitiveComponent* Component &#x3D; AddPrimitiveBatches[Index];
+
+            &#x2F;&#x2F; AActor::PostRegisterAllComponents (called by AActor::IncrementalRegisterComponents) can trigger code 
+            &#x2F;&#x2F; that either unregisters or re-registers components. If unregistered, skip this component.
+            &#x2F;&#x2F; If re-registered, FRegisterComponentContext is not passed, so SceneProxy can be created.
+            if (IsValid(Component) &amp;&amp; Component-&gt;IsRegistered())
+            &#123;
+                if (Component-&gt;IsRenderStateCreated() || !bAppCanEverRender)
+                &#123;
+                    &#x2F;&#x2F; Skip if SceneProxy is already created
+                    if (Component-&gt;SceneProxy &#x3D;&#x3D; nullptr)
+                    &#123;
+                        Scene-&gt;AddPrimitive(Component);
+                    &#125;
+                &#125;
+                else &#x2F;&#x2F; Fallback for some edge case where the component renderstate are missing
+                &#123;
+                    Component-&gt;CreateRenderState_Concurrent(nullptr);
+                &#125;
+            &#125;
+        &#125;,
+        bSingleThreaded
+    );
+    AddPrimitiveBatches.Empty();
+
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="addprimitive"><a class="markdownIt-Anchor" href="#addprimitive"></a> AddPrimitive</h3>
+<p>在 FScene::AddPrimitive 中调用 FScene::BatchAddPrimitivesInternal，并在最后使用 ENQUEUE_RENDER_COMMAND(AddPrimitiveCommand)，将AddPrimiviteCommand 加入渲染线程队列</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\RendererScene.cpp
+
+void FScene::AddPrimitive(FPrimitiveSceneDesc* Primitive)
+&#123;
+    &#x2F;&#x2F; If the bulk reregister flag is set, add &#x2F; remove will be handled in bulk by the FStaticMeshComponentBulkReregisterContext
+    if (Primitive-&gt;bBulkReregister)
+    &#123;
+        return;
+    &#125;
+
+    BatchAddPrimitivesInternal(MakeArrayView(&amp;Primitive, 1));
+&#125;
+
+template&lt;class T&gt;
+void FScene::BatchAddPrimitivesInternal(TArrayView&lt;T*&gt; InPrimitives)
+&#123;
+    (...)
+
+    for (T* Primitive : InPrimitives)
+    &#123;
+        (...)
+
+        FPrimitiveSceneProxy* PrimitiveSceneProxy  &#x3D; nullptr;
+
+        (...)
+
+        &#x2F;&#x2F; Create the primitive scene info.
+        FPrimitiveSceneInfo* PrimitiveSceneInfo &#x3D; new FPrimitiveSceneInfo(Primitive, this);
+        PrimitiveSceneProxy-&gt;PrimitiveSceneInfo &#x3D; PrimitiveSceneInfo;
+
+        &#x2F;&#x2F; Cache the primitives initial transform.
+        FMatrix RenderMatrix &#x3D; Primitive-&gt;GetRenderMatrix();
+        FVector AttachmentRootPosition &#x3D; Primitive-&gt;GetActorPositionForRenderer();
+
+        CreateCommands.Emplace(
+            PrimitiveSceneInfo,
+            PrimitiveSceneProxy,
+            &#x2F;&#x2F; If this primitive has a simulated previous transform, ensure that the velocity data for the scene representation is correct.
+            FMotionVectorSimulation::Get().GetPreviousTransform(ToUObject(Primitive)),
+            RenderMatrix,
+            Primitive-&gt;Bounds,
+            AttachmentRootPosition,
+            Primitive-&gt;GetLocalBounds()
+        );
+
+        (...)
+    &#125;
+
+    if (!CreateCommands.IsEmpty())
+    &#123;
+        ENQUEUE_RENDER_COMMAND(AddPrimitiveCommand)(
+            [this, CreateCommands &#x3D; MoveTemp(CreateCommands)](FRHICommandListBase&amp; RHICmdList)
+        &#123;
+            for (const FCreateCommand&amp; Command : CreateCommands)
+            &#123;
+                FScopeCycleCounter Context(Command.PrimitiveSceneProxy-&gt;GetStatId());
+                Command.PrimitiveSceneProxy-&gt;SetTransform(RHICmdList, Command.RenderMatrix, Command.WorldBounds, Command.LocalBounds, Command.AttachmentRootPosition);
+                Command.PrimitiveSceneProxy-&gt;CreateRenderThreadResources(RHICmdList);
+
+                AddPrimitiveSceneInfo_RenderThread(Command.PrimitiveSceneInfo, Command.PreviousTransform);
+            &#125;
+        &#125;);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="enqueue_render_command"><a class="markdownIt-Anchor" href="#enqueue_render_command"></a> ENQUEUE_RENDER_COMMAND</h3>
+<p>将 ENQUEUE_RENDER_COMMAND 宏展开后为如下形式：</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
+
+struct TSTR_AddPrimitiveCommand126
+&#123;
+    static const char* CStr() &#123; return &quot;AddPrimitiveCommand&quot;; &#125;
+    static const TCHAR* TStr() &#123; return L&quot;AddPrimitiveCommand&quot;; &#125;
+&#125;;
+using FRenderCommandTag_AddPrimitiveCommand126 &#x3D; TRenderCommandTag&lt;TSTR_AddPrimitiveCommand126&gt;;
+FRenderCommandPipe::Enqueue&lt;FRenderCommandTag_AddPrimitiveCommand126&gt;(
+    [this, CreateCommands &#x3D; MoveTemp(CreateCommands)](FRHICommandListBase&amp; RHICmdList)
+    &#123;
+        for (const FCreateCommand&amp; Command : CreateCommands)
+        &#123;
+            FScopeCycleCounter Context(Command.PrimitiveSceneProxy-&gt;GetStatId());
+            Command.PrimitiveSceneProxy-&gt;SetTransform(RHICmdList, Command.RenderMatrix, Command.WorldBounds, Command.LocalBounds, Command.AttachmentRootPosition);
+            Command.PrimitiveSceneProxy-&gt;CreateRenderThreadResources(RHICmdList);
+
+            AddPrimitiveSceneInfo_RenderThread(Command.PrimitiveSceneInfo, Command.PreviousTransform);
+        &#125;
+    &#125;);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>展开后的 ENQUEUE_RENDER_COMMAND 宏，调用FRenderCommandPipe::Enqueue，并在其中调用 EnqueueUniqueRenderCommand</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Public\RenderingThread.h
+
+class FRenderCommandPipe
+&#123;
+public:
+    (...)
+
+    template &lt;typename RenderCommandTag, typename LambdaType&gt;
+    FORCEINLINE static void Enqueue(LambdaType&amp;&amp; Lambda)
+    &#123;
+        EnqueueUniqueRenderCommand&lt;RenderCommandTag&gt;(MoveTemp(Lambda));
+    &#125;
+
+    (...)
+&#125;
+
+
+template&lt;typename RenderCommandTag, typename LambdaType&gt;
+FORCEINLINE_DEBUGGABLE void EnqueueUniqueRenderCommand(LambdaType&amp;&amp; Lambda)
+&#123;
+    TRACE_CPUPROFILER_EVENT_SCOPE_USE_ON_CHANNEL(RenderCommandTag::GetSpecId(), RenderCommandTag::GetName(), EventScope, RenderCommandsChannel, true); 
+
+    &#x2F;&#x2F; 如果在渲染线程内直接执行回调而不入队渲染命令.
+    if (IsInRenderingThread())
+    &#123;
+        Lambda(GetImmediateCommandList_ForRenderCommand());
+    &#125;
+    &#x2F;&#x2F; 需要在独立的渲染线程执行
+    else if (ShouldExecuteOnRenderThread())
+    &#123;
+        CheckNotBlockedOnRenderThread();
+        FRenderThreadCommandPipe::Enqueue&lt;RenderCommandTag, LambdaType&gt;(MoveTemp(Lambda));
+    &#125;
+    &#x2F;&#x2F; 不在独立的渲染线程执行, 则直接执行
+    else
+    &#123;
+        FScopeCycleCounter CycleScope(RenderCommandTag::GetStatId());
+        Lambda(GetImmediateCommandList_ForRenderCommand());
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可见，若入队的命令需要在独立的渲染线程执行，则会调用 <code>FRenderThreadCommandPipe::Enqueue</code></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Public\RenderingThread.h
+
+class FRenderThreadCommandPipe
+&#123;
+public:
+    template &lt;typename RenderCommandTag, typename LambdaType&gt;
+    FORCEINLINE_DEBUGGABLE static void Enqueue(LambdaType&amp;&amp; Lambda)
+    &#123;
+        if (GRenderCommandPipeMode !&#x3D; ERenderCommandPipeMode::None)
+        &#123;
+            Instance.EnqueueAndLaunch(RenderCommandTag::GetName(), RenderCommandTag::GetSpecId(), RenderCommandTag::GetStatId(), MoveTemp(Lambda));
+        &#125;
+        else
+        &#123;
+            TGraphTask&lt;TEnqueueUniqueRenderCommandType&lt;RenderCommandTag, LambdaType&gt;&gt;::CreateTask().ConstructAndDispatchWhenReady(MoveTemp(Lambda));
+        &#125;
+    &#125;
+
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>若 RenderCommandPipe 处于活跃状态，则调用 FRenderThreadCommandPipe::EnqueueAndLaunch 来向渲染线程入队命令；否则将会绕过 RenderCommandPipe，使用如以往相同的未经优化的方式来入队</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\RenderCore\Private\RenderingThread.cpp
+
+void FRenderThreadCommandPipe::EnqueueAndLaunch(const TCHAR* Name, uint32&amp; SpecId, TStatId StatId, TUniqueFunction&lt;void(FRHICommandListImmediate&amp;)&gt;&amp;&amp; Function)
+&#123;
+    Mutex.Lock();
+    bool bWasEmpty &#x3D; Queues[ProduceIndex].IsEmpty();
+    Queues[ProduceIndex].Emplace(Name, SpecId, StatId, MoveTemp(Function));
+    Mutex.Unlock();
+
+    if (bWasEmpty)
+    &#123;
+        TGraphTask&lt;TFunctionGraphTaskImpl&lt;void(), ESubsequentsMode::FireAndForget&gt;&gt;::CreateTask().ConstructAndDispatchWhenReady([this]
+        &#123;
+            FRHICommandListImmediate&amp; RHICmdList &#x3D; GetImmediateCommandList_ForRenderCommand();
+
+            Mutex.Lock();
+            TArray&lt;FCommand&gt;&amp; ConsumeCommands &#x3D; Queues[ProduceIndex];
+            ProduceIndex ^&#x3D; 1;
+            Mutex.Unlock();
+
+            for (FCommand&amp; Command : ConsumeCommands)
+            &#123;
+                TRACE_CPUPROFILER_EVENT_SCOPE_USE_ON_CHANNEL(*Command.SpecId, Command.Name, EventScope, RenderCommandsChannel, true);
+                FScopeCycleCounter Scope(Command.StatId, true);
+                Command.Function(RHICmdList);
+
+                &#x2F;&#x2F; Release the command immediately to match destruction order with task version.
+                Command.Function &#x3D; &#123;&#125;;
+            &#125;
+            ConsumeCommands.Reset();
+
+        &#125;, TStatId(), ENamedThreads::GetRenderThread());
+    &#125;
+&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>FRenderThreadCommandPipe::Queues 相当于一个暂存命令的队列。<br>
+每次使用 ENQUEUE_RENDER_COMMAND 宏入队命令时，先暂缓任务的创建和入队，而是将命令暂存于 Queues 中。<br>
+Queues 包含两个队列，由 ProduceIndex 来回切换取得。</p>
+<p>过程分析：</p>
+<ul>
+<li>第一个入队的命令，会取到 bWasEmpty == true，然后将命令加入 Queues[ProduceIndex] ，于是会进入后面的 if 分支，在其中创建任务遍历 Queues[ProduceIndex] 中的命令在渲染线程执行；</li>
+<li>注意到，上述执行命令的任务创建并入队，直到其真正被渲染线程执行前，Queues 都是未被当前线程上锁的，也就是说在此期间其他线程可以继续向 Queues[ProduceIndex] 暂存命令；</li>
+<li>当任务在渲染线程被执行，加锁取得 Queues[ProduceIndex] 中的命令，并切换 ProduceIndex 到另一队列，然后解锁；</li>
+<li>在任务执行时，取得的命令由渲染线程按加入的顺序依次执行。与此同时，其他入队命令的线程可以向 Queues[ProduceIndex] (另一个队列)暂存任务，并在合适的时机用同样的方式执行。</li>
+</ul>
+<h3 id="unreal-insight-trace"><a class="markdownIt-Anchor" href="#unreal-insight-trace"></a> Unreal Insight Trace</h3>
+<p>使用Unreal Insight Trace一下ENQUEUE_RENDER_COMMAND的调用过程，以进一步加深理解</p>
+<p><img src="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/Trace1.png" alt="Trace1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/Trace1.png" class="lozad post-image"></p>
+<h2 id="executepass-并行化"><a class="markdownIt-Anchor" href="#executepass-并行化"></a> ExecutePass 并行化</h2>
+<p>以FDeferredShadingSceneRenderer中BasePass异步执行为例</p>
+<h3 id="addpass"><a class="markdownIt-Anchor" href="#addpass"></a> AddPass</h3>
+<p>在 FDeferredShadingSceneRenderer::Render 中 AddPass</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\BasePassRendering.cpp
+
+void FDeferredShadingSceneRenderer::RenderBasePassInternal(
+    FRDGBuilder&amp; GraphBuilder,
+    TArrayView&lt;FViewInfo&gt; InViews,
+    const FSceneTextures&amp; SceneTextures,
+    const FRenderTargetBindingSlots&amp; BasePassRenderTargets,
+    FExclusiveDepthStencil::Type BasePassDepthStencilAccess,
+    const FForwardBasePassTextures&amp; ForwardBasePassTextures,
+    const FDBufferTextures&amp; DBufferTextures,
+    bool bParallelBasePass,
+    bool bRenderLightmapDensity,
+    FInstanceCullingManager&amp; InstanceCullingManager,
+    bool bNaniteEnabled,
+    FNaniteShadingCommands&amp; NaniteBasePassShadingCommands,
+    const TArrayView&lt;Nanite::FRasterResults&gt;&amp; NaniteRasterResults)
+&#123;
+    (...)
+
+    if (bRenderLightmapDensity || ViewFamily.UseDebugViewPS())
+    &#123;
+        (...)
+    &#125;
+    else
+    &#123;
+        (...)
+        if (bParallelBasePass)
+        &#123;
+            RDG_WAIT_FOR_TASKS_CONDITIONAL(GraphBuilder, IsBasePassWaitForTasksEnabled());
+
+            for (int32 ViewIndex &#x3D; 0; ViewIndex &lt; InViews.Num(); ++ViewIndex)
+            &#123;
+                (...)
+                if (bShouldRenderView)
+                &#123;
+                    View.ParallelMeshDrawCommandPasses[EMeshPass::BasePass].BuildRenderingCommands(GraphBuilder, Scene-&gt;GPUScene, PassParameters-&gt;InstanceCullingDrawParams);
+
+                    GraphBuilder.AddPass(
+                        RDG_EVENT_NAME(&quot;BasePassParallel&quot;),
+                        PassParameters,
+                        ERDGPassFlags::Raster | ERDGPassFlags::SkipRenderPass,
+                        [this, &amp;View, PassParameters](const FRDGPass* InPass, FRHICommandListImmediate&amp; RHICmdList)
+                    &#123;
+                        FRDGParallelCommandListSet ParallelCommandListSet(InPass, RHICmdList, GET_STATID(STAT_CLP_BasePass), View, FParallelCommandListBindings(PassParameters));
+                        View.ParallelMeshDrawCommandPasses[EMeshPass::BasePass].DispatchDraw(&amp;ParallelCommandListSet, RHICmdList, &amp;PassParameters-&gt;InstanceCullingDrawParams);
+                    &#125;);
+                &#125;
+                (...)
+            &#125;
+            (...)
+        &#125;
+        (...)
+    &#125;
+    (...)
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当上述 Pass 执行时，会先创建 FRDGParallelCommandListSet，然后将其传入 FParallelMeshDrawCommandPass::DispatchDraw</p>
+<h3 id="dispatchdraw"><a class="markdownIt-Anchor" href="#dispatchdraw"></a> DispatchDraw</h3>
+<p>在 FParallelMeshDrawCommandPass::DispatchDraw 中，创建与工作线程数量相同的任务数，将 Draws 均匀分配给各个任务</p>
+<p>具体而言，分别为每个工作线程创建 FDrawVisibleMeshCommandsAnyThreadTask 并加入其中，然后为 ParallelCommandListSet 添加新的并行命令队列，并记录命令队列对应的 NumDraws</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\MeshDrawCommands.cpp
+
+void FParallelMeshDrawCommandPass::DispatchDraw(FParallelCommandListSet* ParallelCommandListSet, FRHICommandList&amp; RHICmdList, const FInstanceCullingDrawParams* InstanceCullingDrawParams) const
+&#123;
+    (...)
+
+    if (ParallelCommandListSet)
+    &#123;
+        const ENamedThreads::Type RenderThread &#x3D; ENamedThreads::GetRenderThread();
+
+        &#x2F;&#x2F; 处理前序任务
+        FGraphEventArray Prereqs;
+        if (ParallelCommandListSet-&gt;GetPrereqs())
+        &#123;
+            Prereqs.Append(*ParallelCommandListSet-&gt;GetPrereqs());
+        &#125;
+        if (TaskEventRef.IsValid())
+        &#123;
+            Prereqs.Add(TaskEventRef);
+        &#125;
+
+        &#x2F;&#x2F; 构造与工作线程数量相同的并行绘制任务数
+        const int32 NumThreads &#x3D; FMath::Min&lt;int32&gt;(FTaskGraphInterface::Get().GetNumWorkerThreads(), ParallelCommandListSet-&gt;Width);
+        const int32 NumTasks &#x3D; FMath::Min&lt;int32&gt;(NumThreads, FMath::DivideAndRoundUp(MaxNumDraws, ParallelCommandListSet-&gt;MinDrawsPerCommandList));
+        const int32 NumDrawsPerTask &#x3D; FMath::DivideAndRoundUp(MaxNumDraws, NumTasks);
+
+        &#x2F;&#x2F; 遍历NumTasks次，构造NumTasks个绘制任务（FDrawVisibleMeshCommandsAnyThreadTask）实例
+        for (int32 TaskIndex &#x3D; 0; TaskIndex &lt; NumTasks; TaskIndex++)
+        &#123;
+            const int32 StartIndex &#x3D; TaskIndex * NumDrawsPerTask;
+            const int32 NumDraws &#x3D; FMath::Min(NumDrawsPerTask, MaxNumDraws - StartIndex);
+            checkSlow(NumDraws &gt; 0);
+            &#x2F;&#x2F; 新建命令队列
+            FRHICommandList* CmdList &#x3D; ParallelCommandListSet-&gt;NewParallelCommandList();
+
+            &#x2F;&#x2F; 构造FDrawVisibleMeshCommandsAnyThreadTask实例并加入TaskGraph中
+            &#x2F;&#x2F; 其中TaskContext.MeshDrawCommands就是上一部分由FMeshPassProcessor生成的
+            FGraphEventRef AnyThreadCompletionEvent &#x3D; TGraphTask&lt;FDrawVisibleMeshCommandsAnyThreadTask&gt;::CreateTask(&amp;Prereqs, RenderThread)
+                .ConstructAndDispatchWhenReady(*CmdList, TaskContext.InstanceCullingContext, TaskContext.MeshDrawCommands, TaskContext.MinimalPipelineStatePassSet,
+                    OverrideArgs,
+                    TaskContext.InstanceFactor,
+                    TaskIndex, NumTasks);
+
+            ParallelCommandListSet-&gt;AddParallelCommandList(CmdList, AnyThreadCompletionEvent, NumDraws);
+        &#125;
+    &#125;
+    else
+    &#123;
+        (...)
+    &#125;
+&#125;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneRendering.cpp
+
+void FParallelCommandListSet::AddParallelCommandList(FRHICommandList* CmdList, FGraphEventRef&amp; &#x2F;*unused CompletionEvent*&#x2F;, int32 InNumDrawsIfKnown)
+&#123;
+    QueuedCommandLists.Emplace(CmdList, InNumDrawsIfKnown &gt;&#x3D; 0 ? TOptional&lt;uint32&gt;(InNumDrawsIfKnown) : TOptional&lt;uint32&gt;());
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/Trace2.png" alt="Trace2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/Trace2.png" class="lozad post-image"></p>
+<h3 id="分发命令队列"><a class="markdownIt-Anchor" href="#分发命令队列"></a> 分发命令队列</h3>
+<p>当上述 Pass 的 Lambda 执行完毕，ParallelCommandListSet 会被析构，在其析构函数中调用 FParallelCommandListSet::Dispatch</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneRendering.h
+
+class FRDGParallelCommandListSet final : public FParallelCommandListSet
+&#123;
+public:
+    (...)
+
+    ~FRDGParallelCommandListSet() override
+    &#123;
+        Dispatch(bHighPriority);
+    &#125;
+
+    (...)
+&#125;;
+
+&#x2F;&#x2F; Engine\Source\Runtime\Renderer\Private\SceneRendering.cpp
+
+void FParallelCommandListSet::Dispatch(bool bHighPriority)
+&#123;
+    (...)
+
+    bool bActuallyDoParallelTranslate &#x3D; GRHISupportsParallelRHIExecute &amp;&amp; QueuedCommandLists.Num() &gt;&#x3D; CVarRHICmdMinCmdlistForParallelSubmit.GetValueOnRenderThread();
+    (...)
+
+    if (bActuallyDoParallelTranslate)
+    &#123;
+        check(GRHISupportsParallelRHIExecute);
+
+        auto Priority &#x3D; bHighPriority
+            ? FRHICommandListImmediate::ETranslatePriority::High
+            : FRHICommandListImmediate::ETranslatePriority::Normal;
+
+        NumAlloc -&#x3D; QueuedCommandLists.Num();
+        ParentCmdList.QueueAsyncCommandListSubmit(QueuedCommandLists, Priority, (MinDrawsPerCommandList * 4) &#x2F; 3);
+
+        &#x2F;&#x2F; #todo-renderpasses PS4 breaks if this isn&#39;t here. Why?
+        SetStateOnCommandList(ParentCmdList);
+        
+        if (bHasRenderPasses)
+        &#123;
+            ParentCmdList.EndRenderPass();
+        &#125;
+    &#125;
+    else
+    &#123;
+        (...)
+    &#125;
+    QueuedCommandLists.Reset();
+
+    QUICK_SCOPE_CYCLE_COUNTER(STAT_FParallelCommandListSet_Dispatch_ServiceLocalQueue);
+    FTaskGraphInterface::Get().ProcessThreadUntilIdle(RenderThread_Local);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/Trace3.png" alt="Trace3" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/Trace3.png" class="lozad post-image"></p>
+<h3 id="并行转译"><a class="markdownIt-Anchor" href="#并行转译"></a> 并行转译</h3>
+<p>在 FParallelCommandListSet::Dispatch 中会调用 FRHICommandListImmediate::QueueAsyncCommandListSubmit 异步地将 MeshDrawCommand 转译为 RHICommand，加入到 RHICommandList 中</p>
+<p>其中主要完成：执行 RHICommandList 中剩余在排队的命令；命令队列合并转译的计算；前序事件收集；处理图形API同步；创建并分发并行转译任务；按顺序提交转译得到的 RHIPlatformCommandList；</p>
+<p>添加一个 RHI 线程任务来提交已完成的平台命令列表。<br>
+每个并行翻译完成的任务块，按照提交的顺序排列。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; Engine\Source\Runtime\RHI\Private\RHICommandList.cpp
+
+void FRHICommandListImmediate::QueueAsyncCommandListSubmit(TArrayView&lt;FQueuedCommandList&gt; CommandLists, ETranslatePriority ParallelTranslatePriority, int32 MinDrawsPerTranslate)
+&#123;
+    (...)
+
+    if (ParallelTranslatePriority !&#x3D; ETranslatePriority::Disabled &amp;&amp; GRHISupportsParallelRHIExecute &amp;&amp; IsRunningRHIInSeparateThread())
+    &#123;
+        &#x2F;&#x2F; 在转译开始前，RHICommandList 中可能还有命令正在排队，为防止加入新转译的命令后乱序执行
+        &#x2F;&#x2F; 需要先将 RHICommandList 中的命令执行完毕
+        ExecuteAndReset(false);
+        InitializeImmediateContexts();
+
+        (...)
+        for (int32 RangeStart &#x3D; 0, RangeEnd &#x3D; 0; RangeStart &lt; CommandLists.Num(); RangeStart &#x3D; RangeEnd)
+        &#123;
+            RangeEnd &#x3D; RangeStart + 1;
+
+            &#x2F;&#x2F; 遍历需要转译的命令队列，检查其 NumDraws 是否达到 MinDrawsPerTranslate
+            &#x2F;&#x2F; 如果达到则单独转译该命令队列
+            &#x2F;&#x2F; 如果未到达则需要与后续的命令队列合并转译。
+            if (bMerge)
+            &#123;
+                for (int32 NumDraws &#x3D; 0, Index &#x3D; RangeStart; Index &lt; CommandLists.Num(); ++Index)
+                &#123;
+                    &#x2F;&#x2F; Command lists without NumDraws set are translated on their own
+                    if (!CommandLists[Index].NumDraws.IsSet())
+                        break;
+
+                    &#x2F;&#x2F; Otherwise group command lists into batches to reach at least MinDrawsPerTranslate
+                    NumDraws +&#x3D; CommandLists[Index].NumDraws.GetValue();
+                    RangeEnd &#x3D; Index + 1;
+
+                    if (NumDraws &gt;&#x3D; MinDrawsPerTranslate)
+                        break;
+                &#125;
+            &#125;
+
+            const int32 NumCmdListsInBatch &#x3D; RangeEnd - RangeStart;
+
+            FTask&amp; Task &#x3D; *(new (&amp;Tasks[NumTasks++]) FTask());
+            Task.InCmdLists &#x3D; AllocArrayUninitialized&lt;FRHICommandListBase*&gt;(NumCmdListsInBatch);
+
+            &#x2F;&#x2F; 对于每一批需要转译的命令队列，收集其前序事件
+            FGraphEventArray Prereqs;
+            for (int32 Index &#x3D; 0; Index &lt; NumCmdListsInBatch; ++Index)
+            &#123;
+                FRHICommandListBase* CmdList &#x3D; CommandLists[RangeStart + Index].CmdList;
+
+                Task.InCmdLists[Index] &#x3D; CmdList;
+                Prereqs.Add(CmdList-&gt;DispatchEvent);
+            &#125;
+
+            &#x2F;&#x2F; 与图形API同步
+            if (PersistentState.QueuedFenceCandidates.Num() &gt; 0)
+            &#123;
+                FGraphEventRef FenceCandidateEvent &#x3D; FGraphEvent::CreateGraphEvent();
+
+                if (PersistentState.RHIThreadBufferLockFence.GetReference())
+                &#123;
+                    FenceCandidateEvent-&gt;DontCompleteUntil(PersistentState.RHIThreadBufferLockFence);
+                &#125;
+
+                PersistentState.RHIThreadBufferLockFence &#x3D; FenceCandidateEvent;
+                Prereqs.Add(FenceCandidateEvent);
+
+                FFunctionGraphTask::CreateAndDispatchWhenReady(
+                    [FenceCandidates &#x3D; MoveTemp(PersistentState.QueuedFenceCandidates), FenceCandidateEvent](ENamedThreads::Type, const FGraphEventRef&amp;) mutable
+                &#123;
+                    SCOPED_NAMED_EVENT(FRHICommandListBase_SignalLockFence, FColor::Magenta);
+
+                    for (int32 Index &#x3D; FenceCandidates.Num() - 1; Index &gt;&#x3D; 0; Index--)
+                    &#123;
+                        if (FenceCandidates[Index]-&gt;Fence)
+                        &#123;
+                            FenceCandidateEvent-&gt;DontCompleteUntil(FenceCandidates[Index]-&gt;Fence);
+                            break;
+                        &#125;
+                    &#125;
+
+                    FenceCandidateEvent-&gt;DispatchSubsequents();
+
+                &#125;, TStatId(), &amp;PersistentState.QueuedFenceCandidateEvents);
+
+                PersistentState.QueuedFenceCandidateEvents.Reset();
+            &#125;
+            else if (PersistentState.RHIThreadBufferLockFence)
+            &#123;
+                Prereqs.Add(PersistentState.RHIThreadBufferLockFence);
+            &#125;
+
+            &#x2F;&#x2F; 创建并分发并行转译任务
+            Task.Event &#x3D; FFunctionGraphTask::CreateAndDispatchWhenReady(
+                [&amp;Task, GPUStatsInitial &#x3D; PersistentState.Stats]()
+                &#123;
+                    FOptionalTaskTagScope Scope(ETaskTag::EParallelRhiThread);
+                    SCOPE_CYCLE_COUNTER(STAT_ParallelTranslate);
+                    SCOPED_NAMED_EVENT(FParallelTranslateCommandList_DoTask, FColor::Magenta);
+
+                    TRHIPipelineArray&lt;IRHIComputeContext*&gt; Contexts &#x3D; &#123;&#125;;
+
+                    &#x2F;&#x2F; Replay the recorded commands. The Contexts array accumulates any used
+                    &#x2F;&#x2F; contexts depending on the SwitchPipeline commands that were recorded.
+                    for (FRHICommandListBase* RHICmdList : Task.InCmdLists)
+                    &#123;
+                        &#x2F;&#x2F; Redirect the output stats to this parallel task&#39;s copy
+                        FPersistentState::FGPUStats Stats &#x3D; GPUStatsInitial;
+                        Stats.Ptr &#x3D; &amp;Task.Stats;
+
+                        RHICmdList-&gt;Execute(Contexts, &amp;Stats);
+                        delete RHICmdList;
+                    &#125;
+
+                    &#x2F;&#x2F; Convert the completed contexts into IRHIPlatformCommandList instances.
+                    &#x2F;&#x2F; These are submitted by the RHI thread waiting on this translate task.
+                    for (IRHIComputeContext* Context : Contexts)
+                    &#123;
+                        if (Context)
+                        &#123;
+                            IRHIPlatformCommandList* CommandList &#x3D; GDynamicRHI-&gt;RHIFinalizeContext(Context);
+                            if (CommandList)
+                            &#123;
+                                Task.OutCmdLists.Add(CommandList);
+                            &#125;
+                        &#125;
+                    &#125;
+                &#125;
+                , QUICK_USE_CYCLE_STAT(FParallelTranslateCommandList, STATGROUP_TaskGraphTasks)
+                , &amp;Prereqs
+                , ParallelTranslatePriority &#x3D;&#x3D; ETranslatePriority::High
+                    ? CPrio_FParallelTranslateCommandListPrepass.Get()
+                    : CPrio_FParallelTranslateCommandList.Get()
+            );
+        &#125;
+
+        &#x2F;&#x2F; Resize the tasks array view to how many tasks we actually created after merging
+        Tasks &#x3D; TArrayView&lt;FTask&gt;(Tasks.GetData(), NumTasks);
+
+        &#x2F;&#x2F; 最后创建RHI线程任务，提交转译得到的RHIPlatformCommandList
+        &#x2F;&#x2F; 将会按顺序提交
+        EnqueueLambda(TEXT(&quot;SubmitParallelCommandLists&quot;), [Tasks](FRHICommandListBase&amp; ExecutingCmdList)
+        &#123;
+            TArray&lt;IRHIPlatformCommandList*&gt; AllCmdLists;
+
+            for (FTask&amp; Task : Tasks)
+            &#123;
+                if (!Task.Event-&gt;IsComplete())
+                &#123;
+                    SCOPE_CYCLE_COUNTER(STAT_ParallelTranslateWait);
+                    Task.Event-&gt;Wait();
+                &#125;
+
+                AllCmdLists.Append(Task.OutCmdLists);
+                ExecutingCmdList.PersistentState.Stats.Ptr-&gt;Accumulate(Task.Stats);
+
+                Task.~FTask();
+            &#125;
+
+            if (AllCmdLists.Num())
+            &#123;
+                GDynamicRHI-&gt;RHISubmitCommandLists(AllCmdLists, false);
+            &#125;
+        &#125;);
+    &#125;
+    else
+    &#123;
+        &#x2F;&#x2F; Commands will be executed directly on the RHI thread &#x2F; default contexts
+        (...)
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/Trace4.png" alt="Trace4" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/Trace4.png" class="lozad post-image"></p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/parallel-rendering-overview-for-unreal-engine">Unreal Engine Documentation: Parallel Rendering Overview</a></p>
+<p><a target="_blank" rel="noopener" href="https://portal.productboard.com/epicgames/1-unreal-engine-public-roadmap/c/1427-rhi-render-parallelization">Unreal Engine Public Roadmap: RHI - Render Parallelization</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/14327537.html#2532-%E6%B8%B2%E6%9F%93%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0">剖析虚幻渲染体系（02）- 多线程渲染</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/15156626.html">剖析虚幻渲染体系（10）- RHI</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/timlly/p/15217090.html">剖析虚幻渲染体系（11）- RDG</a></p>
+<p><a target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-insights-in-unreal-engine">Unreal Engine Documentation: Unreal Insights</a></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/">
+            https://suikasan111.github.io/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2024/06/24/UE5/UE5-MeshDrawingPipeline/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">UE5-Mesh Drawing Pipeline </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#enqueue_render_command-%E5%B9%B6%E8%A1%8C%E5%8C%96"><span class="toc-text"> ENQUEUE_RENDER_COMMAND 并行化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#parallelfor"><span class="toc-text"> ParallelFor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#addprimitive"><span class="toc-text"> AddPrimitive</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#enqueue_render_command"><span class="toc-text"> ENQUEUE_RENDER_COMMAND</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unreal-insight-trace"><span class="toc-text"> Unreal Insight Trace</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#executepass-%E5%B9%B6%E8%A1%8C%E5%8C%96"><span class="toc-text"> ExecutePass 并行化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#addpass"><span class="toc-text"> AddPass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dispatchdraw"><span class="toc-text"> DispatchDraw</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%8F%91%E5%91%BD%E4%BB%A4%E9%98%9F%E5%88%97"><span class="toc-text"> 分发命令队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E8%BD%AC%E8%AF%91"><span class="toc-text"> 并行转译</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-text"> 说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#enqueue_render_command-%E5%B9%B6%E8%A1%8C%E5%8C%96"><span class="toc-text"> ENQUEUE_RENDER_COMMAND 并行化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#parallelfor"><span class="toc-text"> ParallelFor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#addprimitive"><span class="toc-text"> AddPrimitive</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#enqueue_render_command"><span class="toc-text"> ENQUEUE_RENDER_COMMAND</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unreal-insight-trace"><span class="toc-text"> Unreal Insight Trace</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#executepass-%E5%B9%B6%E8%A1%8C%E5%8C%96"><span class="toc-text"> ExecutePass 并行化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#addpass"><span class="toc-text"> AddPass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dispatchdraw"><span class="toc-text"> DispatchDraw</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%8F%91%E5%91%BD%E4%BB%A4%E9%98%9F%E5%88%97"><span class="toc-text"> 分发命令队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E8%BD%AC%E8%AF%91"><span class="toc-text"> 并行转译</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text"> Reference</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-24</div>
+        <a href="/2024/06/24/UE5/UE5-MeshDrawingPipeline/"><div class="recent-posts-item-content">UE5-Mesh Drawing Pipeline</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-21</div>
+        <a href="/2024/06/21/UE5/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89GlobalShader/"><div class="recent-posts-item-content">UE5-添加自定义GlobalShader</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-18</div>
+        <a href="/2024/06/18/UE5/UE5-%E6%B7%BB%E5%8A%A0ShadingModel/"><div class="recent-posts-item-content">UE5-添加ShadingModel</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>GAMES101作业8：质点弹簧系统</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="GAMES101作业8：质点弹簧系统">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/2023/04/06/GAMES101/GAMES101作业8：质点弹簧系统/banner.PNG">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2023-04-06">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="GAMES101作业">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>31</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>7</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>11</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#segmentation-fault-core-dumped%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95"><span class="toc-text"> Segmentation Fault (Core dumped)问题解决记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#roperope"><span class="toc-text"> Rope::Rope</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateeuler"><span class="toc-text"> Rope::simulateEuler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateverlet"><span class="toc-text"> Rope::simulateVerlet</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">3</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+  <div class="image-wrapper">
+    <img 
+      src="/2023/04/06/GAMES101/GAMES101作业8：质点弹簧系统/banner.PNG" 
+      data-src="/2023/04/06/GAMES101/GAMES101作业8：质点弹簧系统/banner.PNG"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="GAMES101作业8：质点弹簧系统 thumbnail">
+  </div>
+
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      GAMES101作业8：质点弹簧系统
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2023-04-06T02:03:15.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2023-04-06</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/GAMES101/" 
+          class="post-meta-link">
+          GAMES101
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.2k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+            class="post-meta-link">
+            GAMES101作业
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="segmentation-fault-core-dumped问题解决记录"><a class="markdownIt-Anchor" href="#segmentation-fault-core-dumped问题解决记录"></a> Segmentation Fault (Core dumped)问题解决记录</h2>
+<p>我遇到的Segmentation Fault (Core dumped)问题不同于课程BBS上有朋友提出的那种，我不是写了代码后因为代码问题导致出错的，而是直接编译运行作业8的框架就报了这个错误，说明并非代码问题。我始终没有找到与我遇到相同问题的朋友，因此解决这个问题花了我不少时间，因此这篇文章特意保留了我搜索解决这个问题的简单记录，希望能帮助到遇到同样问题的朋友们。</p>
+<p>------------------------------------------------------4.6 分界线---------------------------------------------------------<br>
+作业8一直出现segmentation fault的问题，即便是直接使用作业框架运行也是如此，问题可能不是出在作业的代码上。</p>
+<p>我使用gdb查看过生成的core文件，如下<br>
+<img src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/gdbcore.png" alt="gdbcore" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/gdbcore.png" class="lozad post-image"><br>
+于是在工作区搜索createKeyTable()函数<br>
+<img src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/createKeyTable.png" alt="createKeyTable" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/createKeyTable.png" class="lozad post-image"><br>
+问题似乎出在了glfw库中？真见鬼了…</p>
+<p>感觉也不像是glfw的问题。我下载了其他朋友完成的作业8在我电脑上运行，仍然是segmentation fault.</p>
+<p>研究这问题一整天了，暂时实在没法解决，目前我的猜测是我这台电脑ubuntu有点问题，后续有空继续尝试解决，或者等七月回家之后换台设备再次尝试。<br>
+作业8只能暂时搁置了，等后续问题解决之后再补上这篇文章以及github仓库。</p>
+<p>------------------------------------------------------4.7 分界线---------------------------------------------------------</p>
+<p>想不到第二天居然解决了<br>
+我找到了这篇文章——<a target="_blank" rel="noopener" href="https://blog.opstree.com/2019/04/02/resolving-segmentation-fault-core-dumped-in-ubuntu/">Resolving Segmentation Fault (“Core dumped”) in Ubuntu</a>.文章中给出了解决Ubuntu系统下Segmentation Fault (Core dumped)问题的方法，我先使用了第一种命令行方法，结果没想到把系统搞崩了，Ubuntu桌面没了，重新装了一下桌面进去试了一下代码，没能成功解决。然后我尝试了一下第二种方法，开机进入Advanced options for Ubuntu，选择Run Ubuntu in the recovery mode，然后Repair broken packages，修复完毕后进入系统运行代码发现居然成功了。<br>
+<img src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/repaired.png" alt="repaired" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/repaired.png" class="lozad post-image"></p>
+<p>如果你也遇到了直接编译运行作业8代码框架也会出现Segmentation Fault (Core dumped)的问题，或许也是因为Ubuntu系统的问题，不妨试一下这个方法。<br>
+<strong>注：完成作业过程中，我某次开机重启后，发现再次出现Segmentation Fault (Core dumped)问题，不过重新使用一次上述的第二种方法后又成功解决了。</strong></p>
+<hr>
+<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
+<p>本次作业将实现弹簧质点系统</p>
+<p>主要工作如下：</p>
+<ol>
+<li>Rope::Rope in rope.cpp: 完成Rope类的构造函数，实现连接绳子的约束；</li>
+<li>Rope::simulateEuler in rope.cpp: 利用欧拉方法实现胡克定律；</li>
+<li>Rope::simulateVerlet in rope.cpp: 实现显式Verlet方法；</li>
+<li>Rope::simulateVerlet in rope.cpp: 向显式Verlet方法积分的胡克定律中加入阻尼。</li>
+</ol>
+<hr>
+<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
+<h3 id="roperope"><a class="markdownIt-Anchor" href="#roperope"></a> Rope::Rope</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rope.cpp
+Rope::Rope(Vector2D start, Vector2D end, int num_nodes, float node_mass, float k, vector&lt;int&gt; pinned_nodes)
+&#123;
+    &#x2F;&#x2F; TODO (Part 1): Create a rope starting at &#96;start&#96;, ending at &#96;end&#96;, and containing &#96;num_nodes&#96; nodes.
+
+    &#x2F;&#x2F; Comment-in this part when you implement the constructor
+    &#x2F;&#x2F; for (auto &amp;i : pinned_nodes) &#123;
+    &#x2F;&#x2F;     masses[i]-&gt;pinned &#x3D; true;
+    &#x2F;&#x2F; &#125;
+    Vector2D step &#x3D; (end - start) &#x2F; (num_nodes - 1);
+    for(int i &#x3D; 0; i &lt; num_nodes; ++i)&#123;
+        masses.push_back(new Mass(start + step * i, node_mass, false));
+        if(i &gt; 0)&#123;
+            springs.push_back(new Spring(masses[i-1], masses[i], k));
+        &#125;
+    &#125;
+    for(auto &amp;i : pinned_nodes)&#123;
+        masses[i]-&gt;pinned &#x3D; true;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>根据传入的起始与终止位置以及质点数量构造质点，step为质点间的间距，在相邻两质点间构造弹簧，弹簧系数为k.最后的for循环根据传入的pinned_nodes将对应质点设为固定的。</p>
+<p>编译运行<br>
+<img src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/rope.png" alt="rope" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/rope.png" class="lozad post-image"></p>
+<h3 id="ropesimulateeuler"><a class="markdownIt-Anchor" href="#ropesimulateeuler"></a> Rope::simulateEuler</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rope.cpp
+void Rope::simulateEuler(float delta_t, Vector2D gravity)
+&#123;
+    for (auto &amp;s : springs)
+    &#123;
+        &#x2F;&#x2F; TODO (Part 2): Use Hooke&#39;s law to calculate the force on a node
+        Vector2D dis &#x3D; s-&gt;m1-&gt;position - s-&gt;m2-&gt;position;&#x2F;&#x2F; 两质量距离矢量，m2指向m1
+        float curr_length &#x3D; dis.norm();&#x2F;&#x2F; 弹簧当前长度
+        Vector2D force &#x3D; s-&gt;k * (curr_length - s-&gt;rest_length) * dis &#x2F; curr_length;&#x2F;&#x2F; 对于m2的力矢量
+        s-&gt;m1-&gt;forces -&#x3D; force;
+        s-&gt;m2-&gt;forces +&#x3D; force;
+    &#125;
+
+    for (auto &amp;m : masses)
+    &#123;
+        if (!m-&gt;pinned)
+        &#123;
+            &#x2F;&#x2F; TODO (Part 2): Add the force due to gravity, then compute the new velocity and position
+            m-&gt;forces +&#x3D; gravity * m-&gt;mass;&#x2F;&#x2F; 加上重力
+            Vector2D a &#x3D; m-&gt;forces &#x2F; m-&gt;mass;&#x2F;&#x2F; 加速度a&#x3D;F&#x2F;m
+            m-&gt;velocity +&#x3D; a * delta_t;
+            m-&gt;position +&#x3D; m-&gt;velocity * delta_t;
+            &#x2F;&#x2F; TODO (Part 2): Add global damping
+        &#125;
+
+        &#x2F;&#x2F; Reset all forces on each mass
+        m-&gt;forces &#x3D; Vector2D(0, 0);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>首先利用胡克定律计算结点的受力（变量计算说明见注释），记得不要搞错方向。<br>
+在第二个for循环中遍历质点，加上重力，并计算加速度，以此更新速度与位置。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in application.cpp
+ropeEuler &#x3D; new Rope(Vector2D(0, 200), Vector2D(-400, 200), 16, config.mass,
+                        config.ks, &#123;0&#125;);
+ropeVerlet &#x3D; new Rope(Vector2D(0, 200), Vector2D(-400, 200), 16, config.mass,
+                        config.ks, &#123;0&#125;);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>3个结点太少，application.cpp中修改上述函数，将结点数量改为16个。</p>
+<p>编译运行<br>
+<img src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/Euler.gif" alt="Euler" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/Euler.gif" class="lozad post-image"><br>
+此时由于没有引入Damping，弹簧将永远不会停止运动，并且运动状态特别不稳定。</p>
+<p>下面加入Damping，修改后的Rope::simulateEuler如下</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rope.cpp
+void Rope::simulateEuler(float delta_t, Vector2D gravity)
+    &#123;
+        for (auto &amp;s : springs)
+        &#123;
+            ......
+
+            &#x2F;&#x2F; Internal Damping
+            Vector2D D_V &#x3D; s-&gt;m1-&gt;velocity - s-&gt;m2-&gt;velocity;
+            Vector2D disNorm &#x3D; dis &#x2F; curr_length;
+            float k_d &#x3D; 0.05f;
+            Vector2D force_a &#x3D; -k_d * (disNorm.x * D_V.x + disNorm.y * D_V.y) * dis &#x2F; curr_length;
+            s-&gt;m1-&gt;forces +&#x3D; force_a;
+            s-&gt;m2-&gt;forces -&#x3D; force_a;
+        &#125;
+
+        for (auto &amp;m : masses)
+        &#123;
+            ......
+        &#125;
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>加入了Internal Damping，具体计算方法如Lecture 21中所述，其实就是套如下公式，唯一的区别是ppt中公式计算的力是对b点而言的，上面代码中则是先计算a点，即m1<br>
+<img src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/InternalDampingFormula.PNG" alt="InternalDampingFormula" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/InternalDampingFormula.PNG" class="lozad post-image"></p>
+<p>编译运行结果如下<br>
+<img src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/InternalDamping.gif" alt="InternalDamping" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/InternalDamping.gif" class="lozad post-image"><br>
+可见弹簧的运动状态变得更加稳定，但是由于没有空气阻力，弹簧仍然不会静止</p>
+<p>下面引入空气阻力</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rope.cpp
+void Rope::simulateEuler(float delta_t, Vector2D gravity)
+    &#123;
+        for (auto &amp;s : springs)
+        &#123;
+            ......
+
+            &#x2F;&#x2F; Internal Damping
+            Vector2D D_V &#x3D; s-&gt;m1-&gt;velocity - s-&gt;m2-&gt;velocity;
+            Vector2D disNorm &#x3D; dis &#x2F; curr_length;
+            float k_d &#x3D; 0.05f;
+            Vector2D force_a &#x3D; -k_d * (disNorm.x * D_V.x + disNorm.y * D_V.y) * dis &#x2F; curr_length;
+            s-&gt;m1-&gt;forces +&#x3D; force_a;
+            s-&gt;m2-&gt;forces -&#x3D; force_a;
+
+            &#x2F;&#x2F; Air Damping
+            s-&gt;m1-&gt;forces +&#x3D; -0.005f * s-&gt;m1-&gt;velocity;
+            s-&gt;m2-&gt;forces +&#x3D; -0.005f * s-&gt;m2-&gt;velocity;
+        &#125;
+
+        for (auto &amp;m : masses)
+        &#123;
+            ......
+        &#125;
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>编译运行<br>
+<img src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/AirDamping.gif" alt="AirDamping" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/AirDamping.gif" class="lozad post-image"><br>
+弹簧运动稳定且最终会静止</p>
+<p>最终，完整的Rope::simulateEuler函数如下</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rope.cpp
+void Rope::simulateEuler(float delta_t, Vector2D gravity)
+&#123;
+    for (auto &amp;s : springs)
+    &#123;
+        &#x2F;&#x2F; TODO (Part 2): Use Hooke&#39;s law to calculate the force on a node
+        Vector2D dis &#x3D; s-&gt;m1-&gt;position - s-&gt;m2-&gt;position;&#x2F;&#x2F; 两质量距离矢量，m2指向m1
+        float curr_length &#x3D; dis.norm();&#x2F;&#x2F; 弹簧当前长度
+        Vector2D force &#x3D; s-&gt;k * (curr_length - s-&gt;rest_length) * dis &#x2F; curr_length;&#x2F;&#x2F; 对于m2的力矢量
+        s-&gt;m1-&gt;forces -&#x3D; force;
+        s-&gt;m2-&gt;forces +&#x3D; force;
+
+        &#x2F;&#x2F; Internal Damping
+        Vector2D D_V &#x3D; s-&gt;m1-&gt;velocity - s-&gt;m2-&gt;velocity;
+        Vector2D disNorm &#x3D; dis &#x2F; curr_length;
+        float k_d &#x3D; 0.05f;
+        Vector2D force_a &#x3D; -k_d * (disNorm.x * D_V.x + disNorm.y * D_V.y) * dis &#x2F; curr_length;
+        s-&gt;m1-&gt;forces +&#x3D; force_a;
+        s-&gt;m2-&gt;forces -&#x3D; force_a;
+
+        &#x2F;&#x2F; Air Damping
+        s-&gt;m1-&gt;forces +&#x3D; -0.005f * s-&gt;m1-&gt;velocity;
+        s-&gt;m2-&gt;forces +&#x3D; -0.005f * s-&gt;m2-&gt;velocity;
+    &#125;
+
+    for (auto &amp;m : masses)
+    &#123;
+        if (!m-&gt;pinned)
+        &#123;
+            &#x2F;&#x2F; TODO (Part 2): Add the force due to gravity, then compute the new velocity and position
+            &#x2F;&#x2F; TODO (Part 2): Add global damping
+            m-&gt;forces +&#x3D; gravity * m-&gt;mass;&#x2F;&#x2F; 加上重力
+            Vector2D a &#x3D; m-&gt;forces &#x2F; m-&gt;mass;&#x2F;&#x2F; 加速度a&#x3D;F&#x2F;m
+            m-&gt;velocity +&#x3D; a * delta_t;
+            m-&gt;position +&#x3D; m-&gt;velocity * delta_t;
+        &#125;
+
+        &#x2F;&#x2F; Reset all forces on each mass
+        m-&gt;forces &#x3D; Vector2D(0, 0);
+    &#125;
+&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="ropesimulateverlet"><a class="markdownIt-Anchor" href="#ropesimulateverlet"></a> Rope::simulateVerlet</h3>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; in rope.cpp
+void Rope::simulateVerlet(float delta_t, Vector2D gravity)
+&#123;
+    for (auto &amp;s : springs)
+    &#123;
+        &#x2F;&#x2F; TODO (Part 3): Simulate one timestep of the rope using explicit Verlet （solving constraints)
+        Vector2D dis &#x3D; s-&gt;m1-&gt;position - s-&gt;m2-&gt;position;&#x2F;&#x2F; 两质量距离矢量，m2指向m1
+        float curr_length &#x3D; dis.norm();&#x2F;&#x2F; 弹簧当前长度
+        Vector2D force &#x3D; s-&gt;k * (curr_length - s-&gt;rest_length) * dis &#x2F; curr_length;&#x2F;&#x2F; 对于m2的力矢量
+        s-&gt;m1-&gt;forces -&#x3D; force;
+        s-&gt;m2-&gt;forces +&#x3D; force;
+    &#125;
+
+    for (auto &amp;m : masses)
+    &#123;
+        if (!m-&gt;pinned)
+        &#123;
+            Vector2D temp_position &#x3D; m-&gt;position;
+            &#x2F;&#x2F; TODO (Part 3.1): Set the new position of the rope mass
+            m-&gt;forces +&#x3D; gravity * m-&gt;mass;
+            Vector2D a &#x3D; m-&gt;forces &#x2F; m-&gt;mass;
+            &#x2F;&#x2F; TODO (Part 4): Add global Verlet damping
+            float damping_factor &#x3D; 0.00005;
+            m-&gt;position &#x3D; m-&gt;position + (1 - damping_factor) * (m-&gt;position - m-&gt;last_position)
+                            + a * delta_t * delta_t;
+            m-&gt;last_position &#x3D; temp_position;
+        &#125;
+        m-&gt;forces &#x3D; Vector2D(0,0);
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>前面与欧拉法一致，根据如下公式</p>
+<pre class="line-numbers language-none"><code class="language-none">x(t+1) &#x3D; x(t) + (1 - damping_factor) * [x(t)-x(t-1)] + a(t) * dt * dt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>进行模拟，并引入阻尼</p>
+<p>结果如下<br>
+<img src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/Verlet.gif" alt="Verlet" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/Verlet.gif" class="lozad post-image"></p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/">
+            https://suikasan111.github.io/2023/04/06/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A8%EF%BC%9A%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2023/11/15/GAMES202/GAMES202%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%AE%9E%E6%97%B6%E9%98%B4%E5%BD%B1/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">GAMES202笔记：实时阴影 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2023/03/28/GAMES101/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%8A%A8%E7%94%BB%E4%B8%8E%E6%A8%A1%E6%8B%9F/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">GAMES101知识梳理：动画与模拟 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#segmentation-fault-core-dumped%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95"><span class="toc-text"> Segmentation Fault (Core dumped)问题解决记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#roperope"><span class="toc-text"> Rope::Rope</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateeuler"><span class="toc-text"> Rope::simulateEuler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateverlet"><span class="toc-text"> Rope::simulateVerlet</span></a></li></ol></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#segmentation-fault-core-dumped%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95"><span class="toc-text"> Segmentation Fault (Core dumped)问题解决记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#roperope"><span class="toc-text"> Rope::Rope</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateeuler"><span class="toc-text"> Rope::simulateEuler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ropesimulateverlet"><span class="toc-text"> Rope::simulateVerlet</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-24</div>
+        <a href="/2024/06/24/UE5/UE5-MeshDrawingPipeline/"><div class="recent-posts-item-content">UE5-Mesh Drawing Pipeline</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-21</div>
+        <a href="/2024/06/21/UE5/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89GlobalShader/"><div class="recent-posts-item-content">UE5-添加自定义GlobalShader</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-18</div>
+        <a href="/2024/06/18/UE5/UE5-%E6%B7%BB%E5%8A%A0ShadingModel/"><div class="recent-posts-item-content">UE5-添加ShadingModel</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

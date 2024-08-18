@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="/img/logo.jpg">
+  <title>GAMES101作业2：Triangles and Z-buffering</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="GAMES101作业2：Triangles and Z-buffering">
+    
+    
+      <meta 
+        property="og:url" 
+        content="https://suikasan111.github.io/2023/01/10/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="/2023/01/10/GAMES101/GAMES101作业2：Triangles-and-Z-buffering/banner.png">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2023-01-10">
+      <meta 
+        property="og:article:modified_time" 
+        content="2024-08-19">
+      <meta 
+        property="og:article:author" 
+        content="Yi &#34;suikasan&#34; Xu">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="GAMES101作业">
+        
+      
+    
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  <link rel="preload" href="/css/main.css" as="style" >
+  
+  <link rel="modulepreload" href="//instant.page/5.1.0">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+  
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-tomorrow.min.css', '[data-prism]', 'prism-tomorrow');
+              } else {
+                loadCSS('/js/lib/prism/prism-tomorrow.min.css', 'prism', 'prism-tomorrow');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"> 
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <a class="navbar-logo-main" href="/">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="/img/logo.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">SUIKASAN</span>
+      </a>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          Friends
+        
+      </a>
+    
+    <button 
+      class="navbar-menu-item darknavbar navbar-menu-btn" 
+      aria-label="Toggle dark mode"
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </button>
+    <button 
+      class="navbar-menu-item searchnavbar navbar-menu-btn" 
+      aria-label="Toggle search"
+      id="search">
+      <!-- <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i> -->
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+        class="iconify iconify--ion" width="28" height="28" preserveAspectRatio="xMidYMid meet" viewBox="0 0 512 512">
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M256 80a176 176 0 1 0 176 176A176 176 0 0 0 256 80Z"></path>
+        <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="28"
+          d="M232 160a72 72 0 1 0 72 72a72 72 0 0 0-72-72Z"></path>
+        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="28"
+          d="M283.64 283.64L336 336"></path>
+      </svg>
+    </button>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/logo.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Yi "suikasan" Xu</p>
+<p class="author-description">Done is better than perfect</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>31</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>7</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>11</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://space.bilibili.com/175051927?spm_id_from=333.1007.0.0">
+          <i class="iconfont icon-bilibili society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://steamcommunity.com/id/liloneeeee/">
+          <i class="iconfont icon-steam society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:xone111@126.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rasterizer"><span class="toc-text"> rasterizer</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/CPP/">
+        <div class="categories-list-item">
+          CPP
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES101/">
+        <div class="categories-list-item">
+          GAMES101
+          <span class="categories-list-item-badge">18</span>
+        </div>
+      </a>
+    
+      <a href="/categories/GAMES202/">
+        <div class="categories-list-item">
+          GAMES202
+          <span class="categories-list-item-badge">5</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Tools/">
+        <div class="categories-list-item">
+          Tools
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Design-Pattern/">
+        <div class="categories-list-item">
+          Design-Pattern
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9%E5%AE%9E%E6%88%98/">
+        <div class="categories-list-item">
+          UE5源码修改实战
+          <span class="categories-list-item-badge">3</span>
+        </div>
+      </a>
+    
+      <a href="/categories/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/">
+        <div class="categories-list-item">
+          UE5渲染架构
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/" 
+        title="GAMES101知识梳理">
+        <div class="tags-list-item">GAMES101知识梳理</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+        title="GAMES101作业">
+        <div class="tags-list-item">GAMES101作业</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5/" 
+        title="UE5">
+        <div class="tags-list-item">UE5</div>
+      </a>
+    
+      <a 
+        href="/tags/GAMES202%E7%AC%94%E8%AE%B0/" 
+        title="GAMES202笔记">
+        <div class="tags-list-item">GAMES202笔记</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%BA%90%E7%A0%81/" 
+        title="UE5源码">
+        <div class="tags-list-item">UE5源码</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%B8%B2%E6%9F%93%E6%9E%B6%E6%9E%84/" 
+        title="UE5渲染架构">
+        <div class="tags-list-item">UE5渲染架构</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5%E6%9D%90%E8%B4%A8/" 
+        title="UE5材质">
+        <div class="tags-list-item">UE5材质</div>
+      </a>
+    
+      <a 
+        href="/tags/UE5-Shader/" 
+        title="UE5 Shader">
+        <div class="tags-list-item">UE5 Shader</div>
+      </a>
+    
+      <a 
+        href="/tags/Head-First-Design-Patterns/" 
+        title="Head First Design Patterns">
+        <div class="tags-list-item">Head First Design Patterns</div>
+      </a>
+    
+      <a 
+        href="/tags/Markdown/" 
+        title="Markdown">
+        <div class="tags-list-item">Markdown</div>
+      </a>
+    
+      <a 
+        href="/tags/CPP/" 
+        title="CPP">
+        <div class="tags-list-item">CPP</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <main class="main-column">
+              
+  <div class="image-wrapper">
+    <img 
+      src="/2023/01/10/GAMES101/GAMES101作业2：Triangles-and-Z-buffering/banner.png" 
+      data-src="/2023/01/10/GAMES101/GAMES101作业2：Triangles-and-Z-buffering/banner.png"
+      srcset="data:image/svg+xml,%3Csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20viewBox=&#39;0%200%20300%20300&#39;%3E%3C/svg%3E"
+      class="image lozad"
+      alt="GAMES101作业2：Triangles and Z-buffering thumbnail">
+  </div>
+
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      GAMES101作业2：Triangles and Z-buffering
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2023-01-10T12:25:59.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2023-01-10</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/GAMES101/" 
+          class="post-meta-link">
+          GAMES101
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>3k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/GAMES101%E4%BD%9C%E4%B8%9A/" 
+            class="post-meta-link">
+            GAMES101作业
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p><a href="https://suikasan111.github.io/tags/GAMES101%E4%BD%9C%E4%B8%9A/">GAMES101作业系列</a>为GAMES101作业记录(包含作业1-8)，文章中会解释作业内容并附上代码，同时对代码框架进行简要说明。<br>
+已完成的代码可在我的GitHub<a target="_blank" rel="noopener" href="https://github.com/SUIKASAN111/GAMES101-Assignments">GAMES101作业代码仓库</a>获取。</p>
+<p>GAMES101课程相关基础知识可参看本博客<a href="https://suikasan111.github.io/tags/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">GAMES101知识梳理系列</a>。</p>
+<hr>
+<h2 id="作业描述"><a class="markdownIt-Anchor" href="#作业描述"></a> 作业描述</h2>
+<h3 id="任务说明"><a class="markdownIt-Anchor" href="#任务说明"></a> 任务说明</h3>
+<p>本次作业在作业1基础上更进一步，需要画出两个有遮挡关系的实心三角形，实现真正的光栅化过程。<br>
+主要工作如下：</p>
+<ul>
+<li>完成static bool insideTriangle()函数，用于判断像素是否在三角形覆盖范围内</li>
+<li>完成rasterize_triangle(const Triangle&amp; t)函数
+<ul>
+<li>构建三角形的包围盒</li>
+<li>实现Z-bufferring</li>
+<li><em>提高：实现4<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span>MSAA</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="重点提要"><a class="markdownIt-Anchor" href="#重点提要"></a> 重点提要</h3>
+<p>本次作业重点是对于采样过程以及Z-buffer的理解。<br>
+相关基础知识梳理可参看本博客<a href="https://suikasan111.github.io/2023/01/05/GAMES101%E7%AE%80%E8%A6%81%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E6%A0%85%E5%8C%96/">GAMES101知识梳理：光栅化</a>。</p>
+<hr>
+<h2 id="完成作业"><a class="markdownIt-Anchor" href="#完成作业"></a> 完成作业</h2>
+<h3 id="基础"><a class="markdownIt-Anchor" href="#基础"></a> 基础</h3>
+<p><em>代码框架中main.cpp未补完的get_projection_matrix()是作业1的内容，直接将作业1中的实现复制过来即可。</em></p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; rasterizer.cpp
+static bool insideTriangle(float x, float y, const Vector3f* _v)
+&#123;   
+    Vector3f v01, v12, v20, v0p, v1p, v2p, cross0, cross1, cross2;
+    &#x2F;&#x2F; 三边向量
+    v01 &#x3D; _v[1] - _v[0];
+    v12 &#x3D; _v[2] - _v[1];
+    v20 &#x3D; _v[0] - _v[2];
+    &#x2F;&#x2F; 顶点到点(x,y)的向量
+    v0p &#x3D; Vector3f(x - _v[0].x(), y - _v[0].y(), 0);
+    v1p &#x3D; Vector3f(x - _v[1].x(), y - _v[1].y(), 0);
+    v2p &#x3D; Vector3f(x - _v[2].x(), y - _v[2].y(), 0);
+    &#x2F;&#x2F; 叉乘结果
+    cross0 &#x3D; v01.cross(v0p);
+    cross1 &#x3D; v12.cross(v1p);
+    cross2 &#x3D; v20.cross(v2p);
+    &#x2F;&#x2F; 叉乘同号在本作业背景下就是叉乘结果的向量同向，因此比较叉乘结果与三角形垂直的分量z即可
+    if ((cross0.z() &gt; 0 &amp;&amp; cross1.z() &gt; 0 &amp;&amp; cross2.z() &gt; 0)
+        || (cross0.z() &lt; 0 &amp;&amp; cross1.z() &lt; 0 &amp;&amp; cross2.z() &lt; 0))
+    &#123;
+        return true;
+    &#125;
+    return false;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>以上是insideTriangle函数的实现，基本原理就是课程中所述看三个叉乘是否同号，同号则点在三角形内。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; rasterizer.cpp
+void rst::rasterizer::rasterize_triangle(const Triangle&amp; t) &#123;
+    auto v &#x3D; t.toVector4();
+
+    &#x2F;&#x2F; 确定包围盒
+    Vector2i pmin, pmax;
+    pmin.x() &#x3D; std::min(v[0].x(), std::min(v[1].x(), v[2].x()));
+    pmin.y() &#x3D; std::min(v[0].y(), std::min(v[1].y(), v[2].y()));
+    pmax.x() &#x3D; std::max(v[0].x(), std::max(v[1].x(), v[2].x()));
+    pmax.y() &#x3D; std::max(v[0].y(), std::max(v[1].y(), v[2].y()));
+
+    &#x2F;&#x2F; 遍历包围盒中像素点
+    for (int y &#x3D; pmin.y(); y &lt;&#x3D; pmax.y(); ++y)
+    &#123;
+        for (int x &#x3D; pmin.x(); x &lt;&#x3D; pmax.x(); ++x)
+        &#123;
+            &#x2F;&#x2F; 像素中心是否在三角形中
+            if (insideTriangle(x + 0.5f, y + 0.5f, t.v))
+            &#123;
+                &#x2F;&#x2F; 深度值插值
+                auto [alpha, beta, gamma] &#x3D; computeBarycentric2D(x + 0.5f, y + 0.5f, t.v);&#x2F;&#x2F; 计算像素中心的重心坐标表示，alpha, beta, gamma为由三顶点表示该像素中心的权重
+                float w_reciprocal &#x3D; 1.0&#x2F;(alpha &#x2F; v[0].w() + beta &#x2F; v[1].w() + gamma &#x2F; v[2].w());
+                float z_interpolated &#x3D; -(alpha * v[0].z() &#x2F; v[0].w() + beta * v[1].z() &#x2F; v[1].w() + gamma * v[2].z() &#x2F; v[2].w());
+                z_interpolated *&#x3D; w_reciprocal;
+                &#x2F;&#x2F; 当前深度值是否比已记录的深度值小，如果更小则更新最小深度和像素颜色信息
+                if (z_interpolated &lt; depth_buf[get_index(x, y)])
+                &#123;
+                    depth_buf[get_index(x, y)] &#x3D; z_interpolated;
+                    Vector3f color &#x3D; t.getColor();
+                    set_pixel(&#123; x,y,1 &#125;, color);
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>以上是rasterize_triangle函数的实现。<br>
+首先要完成包围盒的构建，取三角形三个顶点中的最大和最小的x,y值构成最小点和最大点，以这两点为对角构成矩形包围盒。一般来说，要将三角形完全包围在内理应最小点下取整，最大点上取整，但是考虑到我们是用像素中心进行判断，计算时坐标值要加0.5，因此实际上就相当于上取整了，所以pmax坐标计算时没有+1；<br>
+深度值插值的代码使用代码框架给出的即可，这里将z_interpolated取负，因为顶点v取得的z值为负的坐标值，而我们要保存的深度值是正值。</p>
+<p><strong>注</strong>：</p>
+<ul>
+<li>代码框架给出的<code>auto[alpha, beta, gamma]</code>这种写法是C++17的新特性，使用这种写法需要设置一下编译器版本。</li>
+<li>在完成作业过程中，看到有各路大神讨论此处深度插值中透视矫正的问题，我个人对此无深入了解，便不在此妄加议论，完成作业时也未更改原框架，据大神们所说透视矫正问题会带来一些偏差，但是在此作业中基本上看不出来，作业3也类似。</li>
+</ul>
+<p><strong>效果</strong><br>
+<img src="/2023/01/10/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/1.png" alt="1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/10/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/1.png" class="lozad post-image"><br>
+如果放大图片看，锯齿还是非常明显的。</p>
+<h3 id="提高"><a class="markdownIt-Anchor" href="#提高"></a> 提高</h3>
+<p>作业中实现MSAA我们最先想到的可能就是将像素拆分为2$\times<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mtext>的采样，对四个采样的像素中心逐一判断是否在三角形内，将三角形颜色乘以在内部的采样数目比例作为该像素的颜色值。这样做确实会使边缘模糊，实现</mtext><mi>M</mi><mi>S</mi><mi>A</mi><mi>A</mi><mtext>，但是由于这样的做法其实是将三角形颜色与背景色黑色按比例混合。这种做法的坏处就是在三角形遮挡的边缘会出现黑线。如图所示</mtext><mo stretchy="false">!</mo><mo stretchy="false">[</mo><mtext>黑线</mtext><mo stretchy="false">]</mo><mo stretchy="false">(</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">/</mi><mi>G</mi><mi>A</mi><mi>M</mi><mi>E</mi><mi>S</mi><mn>101</mn><mtext>为解决这个问题，我们需要为拆分出的采样点专门构建一个帧缓冲区和一个深度缓冲区来分别存储其各自的像素颜色与深度信息，因为是</mtext><mn>2</mn></mrow><annotation encoding="application/x-tex">2的采样，对四个采样的像素中心逐一判断是否在三角形内，将三角形颜色乘以在内部的采样数目比例作为该像素的颜色值。
+这样做确实会使边缘模糊，实现MSAA，但是由于这样的做法其实是将三角形颜色与背景色黑色按比例混合。这种做法的坏处就是在三角形遮挡的边缘会出现黑线。如图所示
+![黑线](./GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/2.png)
+为解决这个问题，我们需要为拆分出的采样点专门构建一个帧缓冲区和一个深度缓冲区来分别存储其各自的像素颜色与深度信息，因为是2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">采</span><span class="mord cjk_fallback">样</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">对</span><span class="mord cjk_fallback">四</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">采</span><span class="mord cjk_fallback">样</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">像</span><span class="mord cjk_fallback">素</span><span class="mord cjk_fallback">中</span><span class="mord cjk_fallback">心</span><span class="mord cjk_fallback">逐</span><span class="mord cjk_fallback">一</span><span class="mord cjk_fallback">判</span><span class="mord cjk_fallback">断</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">否</span><span class="mord cjk_fallback">在</span><span class="mord cjk_fallback">三</span><span class="mord cjk_fallback">角</span><span class="mord cjk_fallback">形</span><span class="mord cjk_fallback">内</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">将</span><span class="mord cjk_fallback">三</span><span class="mord cjk_fallback">角</span><span class="mord cjk_fallback">形</span><span class="mord cjk_fallback">颜</span><span class="mord cjk_fallback">色</span><span class="mord cjk_fallback">乘</span><span class="mord cjk_fallback">以</span><span class="mord cjk_fallback">在</span><span class="mord cjk_fallback">内</span><span class="mord cjk_fallback">部</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">采</span><span class="mord cjk_fallback">样</span><span class="mord cjk_fallback">数</span><span class="mord cjk_fallback">目</span><span class="mord cjk_fallback">比</span><span class="mord cjk_fallback">例</span><span class="mord cjk_fallback">作</span><span class="mord cjk_fallback">为</span><span class="mord cjk_fallback">该</span><span class="mord cjk_fallback">像</span><span class="mord cjk_fallback">素</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">颜</span><span class="mord cjk_fallback">色</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">这</span><span class="mord cjk_fallback">样</span><span class="mord cjk_fallback">做</span><span class="mord cjk_fallback">确</span><span class="mord cjk_fallback">实</span><span class="mord cjk_fallback">会</span><span class="mord cjk_fallback">使</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">缘</span><span class="mord cjk_fallback">模</span><span class="mord cjk_fallback">糊</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">实</span><span class="mord cjk_fallback">现</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">A</span><span class="mord mathnormal">A</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">但</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">由</span><span class="mord cjk_fallback">于</span><span class="mord cjk_fallback">这</span><span class="mord cjk_fallback">样</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">做</span><span class="mord cjk_fallback">法</span><span class="mord cjk_fallback">其</span><span class="mord cjk_fallback">实</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">将</span><span class="mord cjk_fallback">三</span><span class="mord cjk_fallback">角</span><span class="mord cjk_fallback">形</span><span class="mord cjk_fallback">颜</span><span class="mord cjk_fallback">色</span><span class="mord cjk_fallback">与</span><span class="mord cjk_fallback">背</span><span class="mord cjk_fallback">景</span><span class="mord cjk_fallback">色</span><span class="mord cjk_fallback">黑</span><span class="mord cjk_fallback">色</span><span class="mord cjk_fallback">按</span><span class="mord cjk_fallback">比</span><span class="mord cjk_fallback">例</span><span class="mord cjk_fallback">混</span><span class="mord cjk_fallback">合</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">这</span><span class="mord cjk_fallback">种</span><span class="mord cjk_fallback">做</span><span class="mord cjk_fallback">法</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">坏</span><span class="mord cjk_fallback">处</span><span class="mord cjk_fallback">就</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">在</span><span class="mord cjk_fallback">三</span><span class="mord cjk_fallback">角</span><span class="mord cjk_fallback">形</span><span class="mord cjk_fallback">遮</span><span class="mord cjk_fallback">挡</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">边</span><span class="mord cjk_fallback">缘</span><span class="mord cjk_fallback">会</span><span class="mord cjk_fallback">出</span><span class="mord cjk_fallback">现</span><span class="mord cjk_fallback">黑</span><span class="mord cjk_fallback">线</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">如</span><span class="mord cjk_fallback">图</span><span class="mord cjk_fallback">所</span><span class="mord cjk_fallback">示</span><span class="mclose">!</span><span class="mopen">[</span><span class="mord cjk_fallback">黑</span><span class="mord cjk_fallback">线</span><span class="mclose">]</span><span class="mopen">(</span><span class="mord">.</span><span class="mord">/</span><span class="mord mathnormal">G</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord">1</span><span class="mord">0</span><span class="mord">1</span><span class="mord cjk_fallback">为</span><span class="mord cjk_fallback">解</span><span class="mord cjk_fallback">决</span><span class="mord cjk_fallback">这</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">问</span><span class="mord cjk_fallback">题</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">我</span><span class="mord cjk_fallback">们</span><span class="mord cjk_fallback">需</span><span class="mord cjk_fallback">要</span><span class="mord cjk_fallback">为</span><span class="mord cjk_fallback">拆</span><span class="mord cjk_fallback">分</span><span class="mord cjk_fallback">出</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">采</span><span class="mord cjk_fallback">样</span><span class="mord cjk_fallback">点</span><span class="mord cjk_fallback">专</span><span class="mord cjk_fallback">门</span><span class="mord cjk_fallback">构</span><span class="mord cjk_fallback">建</span><span class="mord cjk_fallback">一</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">帧</span><span class="mord cjk_fallback">缓</span><span class="mord cjk_fallback">冲</span><span class="mord cjk_fallback">区</span><span class="mord cjk_fallback">和</span><span class="mord cjk_fallback">一</span><span class="mord cjk_fallback">个</span><span class="mord cjk_fallback">深</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">缓</span><span class="mord cjk_fallback">冲</span><span class="mord cjk_fallback">区</span><span class="mord cjk_fallback">来</span><span class="mord cjk_fallback">分</span><span class="mord cjk_fallback">别</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">储</span><span class="mord cjk_fallback">其</span><span class="mord cjk_fallback">各</span><span class="mord cjk_fallback">自</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">像</span><span class="mord cjk_fallback">素</span><span class="mord cjk_fallback">颜</span><span class="mord cjk_fallback">色</span><span class="mord cjk_fallback">与</span><span class="mord cjk_fallback">深</span><span class="mord cjk_fallback">度</span><span class="mord cjk_fallback">信</span><span class="mord cjk_fallback">息</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">因</span><span class="mord cjk_fallback">为</span><span class="mord cjk_fallback">是</span><span class="mord">2</span></span></span></span>\times$2MSAA，这两个缓冲区的大小是代码框架中原先为屏幕像素构建的缓冲区大小的4倍。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; rasterizer.h
+std::vector&lt;Eigen::Vector3f&gt; sample_frame_buf;
+std::vector&lt;float&gt; sample_depth_buf;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>记得修改初始化函数与清空函数，在里面也加上新的缓冲区，如下</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; rasterizer.cpp
+void rst::rasterizer::clear(rst::Buffers buff)
+&#123;
+    if ((buff &amp; rst::Buffers::Color) &#x3D;&#x3D; rst::Buffers::Color)
+    &#123;
+        std::fill(frame_buf.begin(), frame_buf.end(), Eigen::Vector3f&#123; 0, 0, 0 &#125;);
+        std::fill(sample_frame_buf.begin(), sample_frame_buf.end(), Eigen::Vector3f&#123;0, 0, 0&#125;);
+        
+    &#125;
+    if ((buff &amp; rst::Buffers::Depth) &#x3D;&#x3D; rst::Buffers::Depth)
+    &#123;
+        std::fill(depth_buf.begin(), depth_buf.end(), std::numeric_limits&lt;float&gt;::infinity());
+        std::fill(sample_depth_buf.begin(), sample_depth_buf.end(), std::numeric_limits&lt;float&gt;::infinity());
+    &#125;
+&#125;
+
+void rst::rasterizer::clear(rst::Buffers buff)
+&#123;
+    if ((buff &amp; rst::Buffers::Color) &#x3D;&#x3D; rst::Buffers::Color)
+    &#123;
+        std::fill(frame_buf.begin(), frame_buf.end(), Eigen::Vector3f&#123; 0, 0, 0 &#125;);
+        std::fill(sample_frame_buf.begin(), sample_frame_buf.end(), Eigen::Vector3f&#123;0, 0, 0&#125;);
+        
+    &#125;
+    if ((buff &amp; rst::Buffers::Depth) &#x3D;&#x3D; rst::Buffers::Depth)
+    &#123;
+        std::fill(depth_buf.begin(), depth_buf.end(), std::numeric_limits&lt;float&gt;::infinity());
+        std::fill(sample_depth_buf.begin(), sample_depth_buf.end(), std::numeric_limits&lt;float&gt;::infinity());
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>对于每个采样点，分别进行深度测试与颜色设置，最后使用四个采样点中的最小深度作为当前像素的深度，使用四个采样点的颜色平均值作为像素颜色。这样一来，对于两个三角形遮挡的边缘，在三角形外的采样点颜色使用的是后面三角形的颜色，在颜色平均时是使用两个三角形颜色进行平均，而不是和背景色黑色平均，所以就不会出现黑线。</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">&#x2F;&#x2F; rasterizer.cpp
+void rst::rasterizer::rasterize_triangle(const Triangle&amp; t) &#123;
+    auto v &#x3D; t.toVector4();
+    &#x2F;&#x2F; 通过这种索引形式依次可以取得(x+0.25,y+0.25),(x+0.25,y+0.75),(x+0.75,y+0.75),(x+0.75,y+0.25)
+    std::vector&lt;float&gt; delta&#123; 0.25,0.25,0.75,0.75,0.25 &#125;;
+    &#x2F;&#x2F; 确定包围盒
+    Vector2i pmin, pmax;
+    pmin.x() &#x3D; std::min(v[0].x(), std::min(v[1].x(), v[2].x()));
+    pmin.y() &#x3D; std::min(v[0].y(), std::min(v[1].y(), v[2].y()));
+    pmax.x() &#x3D; std::max(v[0].x(), std::max(v[1].x(), v[2].x()));
+    pmax.y() &#x3D; std::max(v[0].y(), std::max(v[1].y(), v[2].y()));
+    &#x2F;&#x2F; 遍历包围盒内像素
+    for (int y &#x3D; pmin.y(); y &lt;&#x3D; pmax.y(); ++y)
+    &#123;
+        for (int x &#x3D; pmin.x(); x &lt;&#x3D; pmax.x(); ++x)
+        &#123;
+            int ind &#x3D; get_index(x, y) * 4;
+            &#x2F;&#x2F; 四个采样点在采样点的缓冲区中的索引依次为，ind,ind+1,ind+2,ind+3
+            for (int i &#x3D; 0; i &lt; 4; ++i)
+            &#123;
+                if (insideTriangle(x + delta[i], y + delta[i + 1], t.v))
+                &#123;
+                    &#x2F;&#x2F; 对采样点进行深度值插值
+                    auto [alpha, beta, gamma] &#x3D; computeBarycentric2D(x + delta[i], y + delta[i+1], t.v);
+                    float w_reciprocal &#x3D; 1.0&#x2F;(alpha &#x2F; v[0].w() + beta &#x2F; v[1].w() + gamma &#x2F; v[2].w());
+                    float z_interpolated &#x3D; -(alpha * v[0].z() &#x2F; v[0].w() + beta * v[1].z() &#x2F; v[1].w() + gamma * v[2].z() &#x2F; v[2].w());
+                    z_interpolated *&#x3D; w_reciprocal;
+                    &#x2F;&#x2F; 采样点深度值小于当前深度缓冲区存储的值，则更新深度值，设置采样点颜色
+                    if (z_interpolated &lt; sample_depth_buf[ind + i])
+                    &#123;
+                        sample_depth_buf[ind + i] &#x3D; z_interpolated;
+                        sample_frame_buf[ind + i] &#x3D; t.getColor();
+                    &#125;
+                    &#x2F;&#x2F; 取四个采样点中最小深度值作为当前像素的深度值
+                    depth_buf[get_index(x, y)] &#x3D; depth_buf[get_index(x, y)] &gt; sample_depth_buf[ind + i] ? sample_depth_buf[ind + i] : depth_buf[get_index(x, y)];
+                &#125;
+            &#125;
+            &#x2F;&#x2F; 计算四个采样点颜色平均值作为像素颜色
+            Vector3f color &#x3D; (sample_frame_buf[ind] + sample_frame_buf[ind + 1] + sample_frame_buf[ind + 2] + sample_frame_buf[ind + 3]) &#x2F; 4;
+            &#x2F;&#x2F; 设置像素颜色  frame_buf
+            set_pixel(&#123; x,y,1 &#125;, color);
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>效果</strong><br>
+<img src="/2023/01/10/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/3.png" alt="MSAA" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2023/01/10/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/3.png" class="lozad post-image"></p>
+<hr>
+<h2 id="代码框架说明"><a class="markdownIt-Anchor" href="#代码框架说明"></a> 代码框架说明</h2>
+<p>作业2的代码框架就是在作业1的基础上修改的，整体变化不大。因此本次作业就对代码框架主要的变化之处进行简要说明，更具体的说明可以参考<a href="https://suikasan111.github.io/2022/12/30/GAMES101%E4%BD%9C%E4%B8%9A1%EF%BC%9A%E6%97%8B%E8%BD%AC%E4%B8%8E%E6%8A%95%E5%BD%B1/">GAMES101作业1：旋转与投影</a></p>
+<h3 id="triangle"><a class="markdownIt-Anchor" href="#triangle"></a> Triangle</h3>
+<ol>
+<li>删除了<code>a()</code>,<code>b()</code>,<code>c()</code>三个获取顶点的成员函数；</li>
+<li>新增<code>gerColor</code>成员函数，用于获取三角形颜色，由于本次作业中每个三角形都只有一种颜色，因此<code>gerColor</code>函数只需获取一个顶点的颜色即可。</li>
+</ol>
+<h3 id="rasterizer"><a class="markdownIt-Anchor" href="#rasterizer"></a> rasterizer</h3>
+<ol>
+<li>新增<code>col_buf</code>成员和<code>load_colors</code>成员函数，分别用于存储三角形顶点颜色和将给定的三角形顶点颜色读入<code>col_buf</code>；</li>
+<li>在rasterizer.cpp中增加了<code>computeBarycentric2D</code>函数(非成员函数)的定义，用于计算某点的三角形重心坐标表示；
+<ul>
+<li>注：这里有个问题：如果使用重心坐标表示，似乎可以直接用其结果判断该点是否在三角形内而不再需要inside函数</li>
+</ul>
+</li>
+<li>增加我们实现的<code>insideTriangle</code>函数；</li>
+<li>删除<code>rasterizer_wireframe</code>函数，取而代之的是我们在作业中实现的<code>rasterizer_triangle</code>函数；</li>
+<li>原先的<code>draw</code>函数中增加对col_buf的读取，并设置三角形颜色，最后调用我们的<code>rasterizer_triangle</code>函数进行绘制。</li>
+</ol>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            SUIKASAN
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://suikasan111.github.io/2023/01/10/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/">
+            https://suikasan111.github.io/2023/01/10/GAMES101/GAMES101%E4%BD%9C%E4%B8%9A2%EF%BC%9ATriangles-and-Z-buffering/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2023/01/12/GAMES101/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E7%9D%80%E8%89%B2/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">GAMES101知识梳理：着色 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2023/01/05/GAMES101/GAMES101%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86%EF%BC%9A%E5%85%89%E6%A0%85%E5%8C%96/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">GAMES101知识梳理：光栅化 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rasterizer"><span class="toc-text"> rasterizer</span></a></li></ol></li></ol>
+</div>
+            </main>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text"> 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E4%B8%9A%E6%8F%8F%E8%BF%B0"><span class="toc-text"> 作业描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%AF%B4%E6%98%8E"><span class="toc-text"> 任务说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E6%8F%90%E8%A6%81"><span class="toc-text"> 重点提要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E4%BD%9C%E4%B8%9A"><span class="toc-text"> 完成作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-text"> 基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E9%AB%98"><span class="toc-text"> 提高</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6%E8%AF%B4%E6%98%8E"><span class="toc-text"> 代码框架说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#triangle"><span class="toc-text"> Triangle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rasterizer"><span class="toc-text"> rasterizer</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-07-16</div>
+        <a href="/2024/07/16/UE5/UE5-%E6%B8%B2%E6%9F%93%E5%B9%B6%E8%A1%8C%E5%8C%96/"><div class="recent-posts-item-content">UE5-渲染并行化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-24</div>
+        <a href="/2024/06/24/UE5/UE5-MeshDrawingPipeline/"><div class="recent-posts-item-content">UE5-Mesh Drawing Pipeline</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-21</div>
+        <a href="/2024/06/21/UE5/UE5-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89GlobalShader/"><div class="recent-posts-item-content">UE5-添加自定义GlobalShader</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2024-06-18</div>
+        <a href="/2024/06/18/UE5/UE5-%E6%B7%BB%E5%8A%A0ShadingModel/"><div class="recent-posts-item-content">UE5-添加ShadingModel</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2022
+          
+          
+                - 
+                2024
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          SUIKASAN
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+    <script src="/js/prism/prism.js" async></script>
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+      
+ 
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+    
+    <script src="//instant.page/5.1.0" type="module"
+      integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>
